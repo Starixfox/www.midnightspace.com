@@ -11,12 +11,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 
-  <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.94/build/spline-viewer.js"></script>
   <script defer src="main.js"></script>
 </head>
 <body>
 
-<canvas id="scene-canvas" aria-hidden="true"></canvas>
+<spline-viewer
+  id="scene-spline"
+  url="https://prod.spline.design/m4zyyegOQfBIuxfj/scene.splinecode"
+  loading-anim-type="spinner-small-dark"
+  aria-hidden="true"
+></spline-viewer>
 
 <nav class="site-nav" id="site-nav">
   <div class="nav-inner">

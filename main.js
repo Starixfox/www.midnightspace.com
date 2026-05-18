@@ -1,6 +1,6 @@
 /* ============================================================
    MIDNIGHT SPACE — main.js
-   Three.js 3D scene · cinematic interactions · premium polish
+   Spline 3D backdrop · cinematic interactions · premium polish
    ============================================================ */
 (function () {
   'use strict';
@@ -280,262 +280,51 @@
     });
   }
 
-  /* ── 13. Three.js scene — cinematic hero backdrop ───── */
-  function buildScene() {
-    if (reducedMotion) return;
-    var canvas = document.getElementById('scene-canvas');
-    if (!canvas || typeof THREE === 'undefined') return;
+  /* ── 13. Spline scene scroll-fade ─────────────────────
+     <spline-viewer> owns the 3D rendering. We just dim
+     and slightly zoom it as the user scrolls past the
+     hero so on-page content stays readable.              */
+  function bindSplineScroll() {
+    var sv = document.getElementById('scene-spline');
+    if (!sv) return;
+    var heroEl = document.querySelector('.hero-3d, .page-hero');
+    if (!heroEl) return;
 
-    var renderer = new THREE.WebGLRenderer({
-      canvas: canvas,
-      alpha: true,
-      antialias: window.devicePixelRatio < 2,
-      powerPreference: 'high-performance'
-    });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight, false);
-    renderer.setClearColor(0x000000, 0);
-
-    var scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x04050a, 0.04);
-
-    var camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 200);
-    camera.position.set(0, 0, 7);
-
-    /* ── Starfield ── */
-    var starCount = window.innerWidth < 700 ? 1800 : 3600;
-    var starGeom = new THREE.BufferGeometry();
-    var positions = new Float32Array(starCount * 3);
-    var colors    = new Float32Array(starCount * 3);
-    var sizes     = new Float32Array(starCount);
-    var cyan  = new THREE.Color(0x9be7ff);
-    var gold  = new THREE.Color(0xf0d6a0);
-    var white = new THREE.Color(0xffffff);
-
-    for (var i = 0; i < starCount; i++) {
-      var r = 18 + Math.random() * 32;
-      var theta = Math.random() * Math.PI * 2;
-      var phi   = Math.acos(2 * Math.random() - 1);
-      positions[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      positions[i * 3 + 2] = r * Math.cos(phi);
-
-      var c;
-      var rnd = Math.random();
-      if (rnd < 0.12) c = gold;
-      else if (rnd < 0.34) c = cyan;
-      else c = white;
-      colors[i * 3]     = c.r;
-      colors[i * 3 + 1] = c.g;
-      colors[i * 3 + 2] = c.b;
-      sizes[i] = Math.random() * 1.6 + 0.4;
-    }
-
-    starGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    starGeom.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
-    starGeom.setAttribute('size',     new THREE.BufferAttribute(sizes, 1));
-
-    var starMat = new THREE.PointsMaterial({
-      size: 0.06,
-      sizeAttenuation: true,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.95,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending
-    });
-
-    var stars = new THREE.Points(starGeom, starMat);
-    scene.add(stars);
-
-    /* ── Inner dense star cluster (close, parallax) ── */
-    var nearCount = window.innerWidth < 700 ? 400 : 800;
-    var nearGeom = new THREE.BufferGeometry();
-    var nearPos = new Float32Array(nearCount * 3);
-    var nearCol = new Float32Array(nearCount * 3);
-
-    for (var j = 0; j < nearCount; j++) {
-      nearPos[j * 3]     = (Math.random() - 0.5) * 30;
-      nearPos[j * 3 + 1] = (Math.random() - 0.5) * 18;
-      nearPos[j * 3 + 2] = -Math.random() * 18 - 1;
-      var nc = Math.random() < 0.3 ? cyan : white;
-      nearCol[j * 3]     = nc.r;
-      nearCol[j * 3 + 1] = nc.g;
-      nearCol[j * 3 + 2] = nc.b;
-    }
-    nearGeom.setAttribute('position', new THREE.BufferAttribute(nearPos, 3));
-    nearGeom.setAttribute('color',    new THREE.BufferAttribute(nearCol, 3));
-    var nearMat = new THREE.PointsMaterial({
-      size: 0.09,
-      sizeAttenuation: true,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.85,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending
-    });
-    var nearStars = new THREE.Points(nearGeom, nearMat);
-    scene.add(nearStars);
-
-    /* ── Wireframe globe (signature object) ── */
-    var globeGroup = new THREE.Group();
-    globeGroup.position.set(2.6, 0.1, 0);
-    scene.add(globeGroup);
-
-    var ico = new THREE.IcosahedronGeometry(1.55, 3);
-    var edges = new THREE.EdgesGeometry(ico);
-    var lineMat = new THREE.LineBasicMaterial({
-      color: 0x6fdcff,
-      transparent: true,
-      opacity: 0.55
-    });
-    var wireGlobe = new THREE.LineSegments(edges, lineMat);
-    globeGroup.add(wireGlobe);
-
-    var innerGeom = new THREE.SphereGeometry(1.35, 48, 48);
-    var innerMat = new THREE.MeshBasicMaterial({
-      color: 0x0a1838,
-      transparent: true,
-      opacity: 0.65
-    });
-    var innerSphere = new THREE.Mesh(innerGeom, innerMat);
-    globeGroup.add(innerSphere);
-
-    var haloGeom = new THREE.SphereGeometry(1.62, 32, 32);
-    var haloMat = new THREE.MeshBasicMaterial({
-      color: 0x5dd7ff,
-      transparent: true,
-      opacity: 0.06,
-      side: THREE.BackSide
-    });
-    var halo = new THREE.Mesh(haloGeom, haloMat);
-    globeGroup.add(halo);
-
-    var ringGeom = new THREE.RingGeometry(2.2, 2.32, 96);
-    var ringMat = new THREE.MeshBasicMaterial({
-      color: 0xe8c98a,
-      transparent: true,
-      opacity: 0.4,
-      side: THREE.DoubleSide
-    });
-    var goldRing = new THREE.Mesh(ringGeom, ringMat);
-    goldRing.rotation.x = Math.PI * 0.32;
-    goldRing.rotation.z = Math.PI * 0.08;
-    globeGroup.add(goldRing);
-
-    /* Orbiting data points */
-    var orbitGroup = new THREE.Group();
-    globeGroup.add(orbitGroup);
-    var orbitDots = [];
-    for (var k = 0; k < 12; k++) {
-      var dotGeom = new THREE.SphereGeometry(0.04, 12, 12);
-      var dotMat  = new THREE.MeshBasicMaterial({
-        color: k % 3 === 0 ? 0xe8c98a : 0x9be7ff,
-        transparent: true,
-        opacity: 0.9
-      });
-      var oDot = new THREE.Mesh(dotGeom, dotMat);
-      oDot.userData = {
-        angle: (k / 12) * Math.PI * 2,
-        radius: 2.05 + Math.random() * 0.15,
-        speed: 0.15 + Math.random() * 0.25,
-        tilt: (Math.random() - 0.5) * 0.6
-      };
-      orbitGroup.add(oDot);
-      orbitDots.push(oDot);
-    }
-
-    function layoutGlobe() {
-      if (window.innerWidth < 1024) {
-        globeGroup.position.set(0, -0.4, 0);
-        globeGroup.scale.setScalar(window.innerWidth < 600 ? 0.75 : 0.9);
-      } else {
-        globeGroup.position.set(2.6, 0.1, 0);
-        globeGroup.scale.setScalar(1);
-      }
-    }
-    layoutGlobe();
-
-    var pointerX = 0, pointerY = 0;
-    var camX = 0, camY = 0;
-
-    document.addEventListener('mousemove', function (e) {
-      pointerX = (e.clientX / window.innerWidth)  - 0.5;
-      pointerY = (e.clientY / window.innerHeight) - 0.5;
-    }, { passive: true });
-
-    var heroEl = document.querySelector('.hero-3d');
-    var scrollPct = 0;
-
-    function updateScroll() {
-      if (!heroEl) return;
+    var ticking = false;
+    function update() {
       var h = heroEl.offsetHeight || window.innerHeight;
-      scrollPct = Math.min(window.scrollY / h, 1.5);
+      var p = Math.min(window.scrollY / (h * 1.2), 1);
+      sv.style.opacity = String(1 - p * 0.55);
+      sv.style.transform = 'scale(' + (1 + p * 0.06) + ')';
+      ticking = false;
     }
-    window.addEventListener('scroll', updateScroll, { passive: true });
-    updateScroll();
-
-    function onResize() {
-      var w = window.innerWidth, h = window.innerHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h, false);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      layoutGlobe();
-    }
-    window.addEventListener('resize', onResize);
-
-    var clock = new THREE.Clock();
-    var running = true;
-    document.addEventListener('visibilitychange', function () {
-      running = !document.hidden;
-      if (running) clock.start();
-    });
-
-    function tick() {
-      requestAnimationFrame(tick);
-      if (!running) return;
-      var t = clock.getElapsedTime();
-
-      camX += (pointerX * 0.6 - camX) * 0.05;
-      camY += (-pointerY * 0.4 - camY) * 0.05;
-      camera.position.x = camX;
-      camera.position.y = camY;
-      camera.position.z = 7 + scrollPct * 5;
-      camera.lookAt(0, 0, 0);
-
-      stars.rotation.y = t * 0.012;
-      stars.rotation.x = t * 0.006;
-      nearStars.rotation.y = -t * 0.02 + pointerX * 0.15;
-      nearStars.rotation.x = pointerY * 0.1;
-
-      globeGroup.rotation.y = t * 0.12 + pointerX * 0.5;
-      globeGroup.rotation.x = pointerY * 0.25;
-      wireGlobe.scale.setScalar(1 + Math.sin(t * 0.9) * 0.012);
-      halo.material.opacity = 0.05 + Math.sin(t * 1.4) * 0.025;
-      goldRing.rotation.z += 0.0018;
-
-      orbitDots.forEach(function (d) {
-        d.userData.angle += d.userData.speed * 0.01;
-        d.position.x = Math.cos(d.userData.angle) * d.userData.radius;
-        d.position.z = Math.sin(d.userData.angle) * d.userData.radius;
-        d.position.y = Math.sin(d.userData.angle * 0.7 + d.userData.tilt) * 0.5;
-      });
-
-      var fade = Math.max(0, 1 - scrollPct * 1.1);
-      var baseScale = window.innerWidth < 1024 ? (window.innerWidth < 600 ? 0.75 : 0.9) : 1;
-      globeGroup.scale.setScalar(baseScale * (0.6 + fade * 0.4));
-      lineMat.opacity  = 0.55 * fade;
-      innerMat.opacity = 0.65 * fade;
-      ringMat.opacity  = 0.4  * fade;
-      orbitDots.forEach(function (d) { d.material.opacity = 0.9 * fade; });
-
-      renderer.render(scene, camera);
-    }
-    tick();
+    window.addEventListener('scroll', function () {
+      if (!ticking) { requestAnimationFrame(update); ticking = true; }
+    }, { passive: true });
+    update();
   }
 
-  /* ── 14. Init ────────────────────────────────────────── */
+  /* ── 14. Hide Spline watermark logo once loaded ──────── */
+  function killSplineLogo() {
+    var sv = document.getElementById('scene-spline');
+    if (!sv) return;
+    function tryRemove() {
+      try {
+        var sr = sv.shadowRoot;
+        if (sr) {
+          var logo = sr.querySelector('#logo, a[href*="spline"], .spline-logo');
+          if (logo && logo.parentNode) logo.parentNode.removeChild(logo);
+        }
+      } catch (e) {}
+    }
+    /* run a few times in case the shadow DOM populates late */
+    tryRemove();
+    setTimeout(tryRemove, 600);
+    setTimeout(tryRemove, 1800);
+    setTimeout(tryRemove, 4000);
+  }
+
+  /* ── Init ────────────────────────────────────────────── */
   function init() {
     prepHeroH1();
     runReveal();
@@ -543,7 +332,8 @@
     bindTilt();
     bindMagnetic();
     bindSectorSpotlight();
-    buildScene();
+    bindSplineScroll();
+    killSplineLogo();
   }
 
   if (document.readyState === 'loading') {
@@ -552,7 +342,7 @@
     init();
   }
 
-  /* ── 15. Contact form Formspree success ──────────────── */
+  /* ── Contact form Formspree success ──────────────────── */
   if (/[?&]submitted=1/.test(window.location.search)) {
     document.addEventListener('DOMContentLoaded', function () {
       var formSuccess = document.getElementById('form-success');

@@ -429,15 +429,21 @@ p {
   z-index: 1;
 }
 
-/* canvas placeholder (Three.js fills this) */
-#scene-canvas {
+/* Spline 3D backdrop — fills viewport, sits behind all content */
+spline-viewer#scene-spline {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
   z-index: 0;
-  pointer-events: none;
+  pointer-events: none;        /* clicks pass through to page content */
+  background: transparent;
+  display: block;
 }
+
+/* Hide the small "Built with Spline" watermark Spline injects */
+spline-viewer#scene-spline::part(logo) { display: none; }
+#scene-spline + #spline-watermark { display: none !important; }
 
 /* fallback gradient if canvas fails */
 .hero-3d::before {
