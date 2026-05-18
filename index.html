@@ -26,6 +26,16 @@
       border: 0;
       z-index: 0;
     }
+    .badge-cover {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 220px;
+      height: 80px;
+      background: #06040a;
+      z-index: 2;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -36,5 +46,6 @@
     allow="autoplay; xr-spatial-tracking"
     loading="eager"
   ></iframe>
+  <div class="badge-cover" aria-hidden="true"></div>
 </body>
 </html>
