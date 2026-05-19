@@ -151,6 +151,10 @@
       background: transparent;
       --poster-color: transparent;
       outline: none;
+      filter:
+        drop-shadow(0 0 24px rgba(95, 212, 224, .55))
+        drop-shadow(0 0 80px rgba(0, 156, 220, .35))
+        drop-shadow(0 0 180px rgba(0, 108, 255, .25));
     }
 
     .content {
@@ -742,9 +746,9 @@
         interaction-prompt="none"
         camera-orbit="0deg 75deg 4.5m"
         field-of-view="30deg"
-        exposure="1.0"
+        exposure="1.6"
         shadow-intensity="0"
-        tone-mapping="reinhard"
+        tone-mapping="neutral"
         environment-image="legacy"
       ></model-viewer>
     </div>
@@ -754,10 +758,16 @@
       mv.addEventListener('load', () => {
         const model = mv.model;
         [...model.materials].forEach(mat => {
-          mat.pbrMetallicRoughness.setBaseColorFactor([0, 0.424, 1, 1]);
-          mat.pbrMetallicRoughness.setMetallicFactor(1);
-          mat.pbrMetallicRoughness.setRoughnessFactor(1);
-          mat.setEmissiveFactor([0.396, 0.647, 1]);
+          // Dim cool-blue base — let the emissive do the work.
+          mat.pbrMetallicRoughness.setBaseColorFactor([0.04, 0.18, 0.42, 1]);
+          mat.pbrMetallicRoughness.setMetallicFactor(0.2);
+          mat.pbrMetallicRoughness.setRoughnessFactor(0.85);
+          // Bright cyan-white emissive — the glow.
+          mat.setEmissiveFactor([0.55, 0.95, 1.0]);
+          // KHR_materials_emissive_strength — push beyond clamped [0,1] for true bloom.
+          if (mat.setEmissiveStrength) {
+            mat.setEmissiveStrength(3.2);
+          }
         });
       });
     </script>
