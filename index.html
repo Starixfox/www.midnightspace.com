@@ -6,8 +6,15 @@
   <title>Midnight Space — A space-data platform, in orbit</title>
   <meta name="description" content="Midnight Space is an honest space-data platform. We map the funding, programs, and accelerators shaping the next generation of space business — beginning with Saudi Arabia and the GCC." />
   <meta name="theme-color" content="#06040a" />
-  <link rel="preload" as="fetch" href="./model.glb" crossorigin="anonymous" />
-  <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+  <link rel="preload" as="fetch" href="./models/model.glb" crossorigin="anonymous" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..800,0..100;1,9..144,300..800,0..100&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -145,21 +152,13 @@
       inset: 0; z-index: 1;
       display: grid; place-items: center;
     }
-    model-viewer {
-      width: min(92vw, 900px);
-      height: min(80vh, 720px);
+    canvas#hero3d {
+      width: min(100vw, 1280px);
+      height: min(86vh, 820px);
+      display: block;
       background: transparent;
-      --poster-color: transparent;
       outline: none;
-      /* Stacked drop-shadows approximate post-processing bloom — each layer
-         adds a wider, dimmer halo so the cyan light feels like it's spilling
-         past the geometry the way it does in the reference render. */
-      filter:
-        drop-shadow(0 0 6px  rgba(220, 250, 255, .95))
-        drop-shadow(0 0 18px rgba(140, 230, 255, .85))
-        drop-shadow(0 0 42px rgba(80, 200, 255, .70))
-        drop-shadow(0 0 90px rgba(40, 160, 255, .50))
-        drop-shadow(0 0 180px rgba(0, 120, 240, .35));
+      touch-action: none;
     }
 
     .content {
@@ -702,7 +701,7 @@
       .contact-grid { grid-template-columns: 1fr; gap: 18px; }
       .contact-meta { grid-template-columns: 1fr; gap: 16px; }
       .foot-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
-      model-viewer { height: 70vh; }
+      canvas#hero3d { height: 70vh; }
     }
     @media (max-width: 480px) {
       .foot-grid { grid-template-columns: 1fr; }
@@ -741,46 +740,157 @@
     </nav>
 
     <div class="stage" aria-hidden="true">
-      <model-viewer
-        id="heroModel"
-        src="./models/model.glb"
-        alt="Animated cycle model"
-        autoplay
-        camera-controls
-        disable-zoom
-        interaction-prompt="none"
-        camera-orbit="0deg 75deg 4.5m"
-        field-of-view="30deg"
-        exposure="2.2"
-        shadow-intensity="0"
-        tone-mapping="neutral"
-        environment-image="neutral"
-        skybox-image=""
-      ></model-viewer>
+      <canvas id="hero3d"></canvas>
     </div>
 
     <script type="module">
-      const mv = document.getElementById('heroModel');
-      mv.addEventListener('load', () => {
-        const model = mv.model;
-        [...model.materials].forEach(mat => {
-          // Glass-like translucent base: dark cyan tint with very low alpha.
-          // Combined with BLEND mode this makes the broad faces see-through
-          // while the thin radial bars still register as lit emissive lines.
-          mat.pbrMetallicRoughness.setBaseColorFactor([0.02, 0.06, 0.10, 0.18]);
-          mat.pbrMetallicRoughness.setMetallicFactor(0);
-          mat.pbrMetallicRoughness.setRoughnessFactor(1);
-          // Bright cyan-white emission — drives the line glow.
-          mat.setEmissiveFactor([0.62, 0.96, 1.0]);
-          // Transparent blend so the broad faces become glass.
-          if (mat.setAlphaMode) mat.setAlphaMode('BLEND');
-          // Show back faces so depth reads through the translucent body.
-          if (mat.setDoubleSided) mat.setDoubleSided(true);
-          // HDR emissive multiplier — pushes the bars past clamp so they
-          // read as bright lines against the see-through body.
-          if (mat.setEmissiveStrength) mat.setEmissiveStrength(9);
-        });
+      // Three.js hero — cycle model with procedural dash alpha map + UnrealBloom.
+      // Approximates the Peach Worlds / Vexel AI look: dashes of bright cyan
+      // arrayed across a glass torus, with real post-processing bloom.
+      import * as THREE from 'three';
+      import { GLTFLoader }      from 'three/addons/loaders/GLTFLoader.js';
+      import { EffectComposer }  from 'three/addons/postprocessing/EffectComposer.js';
+      import { RenderPass }      from 'three/addons/postprocessing/RenderPass.js';
+      import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+      import { OutputPass }      from 'three/addons/postprocessing/OutputPass.js';
+
+      const canvas = document.getElementById('hero3d');
+      const renderer = new THREE.WebGLRenderer({
+        canvas, alpha: true, antialias: true, premultipliedAlpha: false,
       });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.NoToneMapping;
+      renderer.setClearColor(0x000000, 0);
+
+      const scene  = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
+      camera.position.set(0, 0, 6.4);
+      camera.lookAt(0, 0, 0);
+
+      /* ── procedural dash texture ─────────────────────────────
+         Tileable grid of short horizontal strokes. The mesh material
+         uses this as alphaMap, so only the strokes are visible — the
+         broad faces of the cycle mesh disappear, leaving a forest of
+         bright cyan dashes that read as lines under bloom. */
+      const dashTex = (() => {
+        const c = document.createElement('canvas');
+        c.width = 1024; c.height = 256;
+        const g = c.getContext('2d');
+        g.fillStyle = '#000';
+        g.fillRect(0, 0, c.width, c.height);
+        g.fillStyle = '#fff';
+        const cols = 96, rows = 18;
+        const cellW = c.width / cols, cellH = c.height / rows;
+        const dashW = cellW * 0.42, dashH = Math.max(2, cellH * 0.22);
+        for (let r = 0; r < rows; r++) {
+          const xOffset = (r % 2 === 0) ? 0 : cellW * 0.5;
+          for (let i = 0; i < cols; i++) {
+            const x = (i * cellW + xOffset + (cellW - dashW) / 2) % c.width;
+            const y = r * cellH + (cellH - dashH) / 2;
+            g.fillRect(x, y, dashW, dashH);
+          }
+        }
+        const t = new THREE.CanvasTexture(c);
+        t.wrapS = t.wrapT = THREE.RepeatWrapping;
+        t.repeat.set(3, 1.4);
+        t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        t.minFilter = THREE.LinearMipmapLinearFilter;
+        t.magFilter = THREE.LinearFilter;
+        t.needsUpdate = true;
+        return t;
+      })();
+
+      /* ── material: bright cyan-white dashes, additive, no tone-map ── */
+      const dashMaterial = new THREE.MeshBasicMaterial({
+        color: new THREE.Color(0xbfeaff),
+        transparent: true,
+        alphaMap: dashTex,
+        alphaTest: 0.18,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        toneMapped: false,
+      });
+
+      /* ── model — load the cycle GLB, fall back to a torus ───────── */
+      const root = new THREE.Group();
+      scene.add(root);
+
+      const fitObject = (obj, target = 3.0) => {
+        const box = new THREE.Box3().setFromObject(obj);
+        const size = box.getSize(new THREE.Vector3()).length();
+        const center = box.getCenter(new THREE.Vector3());
+        obj.position.sub(center);
+        obj.scale.setScalar(target / size);
+      };
+
+      const buildFallback = () => {
+        const geo = new THREE.TorusGeometry(1.0, 0.55, 128, 220);
+        const mesh = new THREE.Mesh(geo, dashMaterial);
+        root.add(mesh);
+        fitObject(root, 3.6);
+        // Side view of the torus — the "hourglass-from-the-side" look.
+        root.rotation.x = Math.PI * 0.5;
+      };
+
+      new GLTFLoader().load(
+        './models/model.glb',
+        (gltf) => {
+          gltf.scene.traverse((n) => {
+            if (n.isMesh) {
+              n.material = dashMaterial;
+              n.frustumCulled = false;
+            }
+          });
+          root.add(gltf.scene);
+          fitObject(root, 3.6);
+          // Orient so the long axis is horizontal — matches the reference frame.
+          root.rotation.x = 0;
+          root.rotation.z = 0;
+        },
+        undefined,
+        (err) => { console.warn('GLB load failed, using fallback torus', err); buildFallback(); }
+      );
+
+      /* ── post-processing: real bloom (no CSS shadow needed) ──────── */
+      const composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      const bloom = new UnrealBloomPass(
+        new THREE.Vector2(1, 1),
+        1.6,   // strength
+        0.55,  // radius
+        0.0    // threshold (let dim pixels bloom too)
+      );
+      composer.addPass(bloom);
+      composer.addPass(new OutputPass());
+
+      /* ── resize ──────────────────────────────────────────────────── */
+      const resize = () => {
+        const r = canvas.getBoundingClientRect();
+        const w = Math.max(1, r.width), h = Math.max(1, r.height);
+        renderer.setSize(w, h, false);
+        composer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      };
+      resize();
+      new ResizeObserver(resize).observe(canvas);
+
+      /* ── animate: slow rotation around the long axis ─────────────── */
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const start = performance.now();
+      const tick = (t) => {
+        if (!reduce) {
+          const elapsed = (t - start) / 1000;
+          root.rotation.y = elapsed * 0.18;
+          // Tiny axial wobble so the silhouette feels alive.
+          root.rotation.x = Math.sin(elapsed * 0.35) * 0.04;
+        }
+        composer.render();
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
     </script>
 
     <div class="content">
