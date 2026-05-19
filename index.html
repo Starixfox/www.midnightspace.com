@@ -766,7 +766,7 @@
       renderer.setClearColor(0x000000, 0); // hero CSS gradient shows through
 
       const scene  = new THREE.Scene();
-      // Camera + lighting copied from Peach Worlds scene-state JSON.
+      scene.background = new THREE.Color(0x06040a); // dark page-tone bg
       const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 1000);
       camera.position.set(0, -0.02, 8.39);
       camera.lookAt(0, 0, 0);
@@ -781,14 +781,17 @@
       lightTR.position.set(0.87, 1.18, 1.22);
       scene.add(lightTR);
 
-      /* ── post-processing: bloom values lifted from reference ─────── */
+      /* ── post-processing: UnrealBloomPass has a hard threshold, unlike
+         the reference's BloomEffect with luminanceSmoothing. Drop the
+         threshold so the emissive dashes actually trigger bloom. ───── */
       const composer = new EffectComposer(renderer);
       composer.addPass(new RenderPass(scene, camera));
       const bloom = new UnrealBloomPass(
         new THREE.Vector2(1, 1),
-        1.5,   // strength       (ref: BLOOM.intensity)
-        0.75,  // radius         (ref: BLOOM.radius)
-        0.9    // threshold      (ref: BLOOM.luminanceThreshold)
+        2.4,   // strength
+        0.85,  // radius
+        0.0    // threshold — let the emissive cyan bloom (ref uses 0.9 with
+               // luminanceSmoothing which UnrealBloomPass can't replicate)
       );
       composer.addPass(bloom);
       composer.addPass(new OutputPass());
@@ -809,17 +812,20 @@
 
         // Reference material (PHYSICAL): metallic blue body, cyan emissive,
         // alpha-map as opaque cutout (alphaTest 0.1, transparent false).
+        // Boosted emissiveIntensity vs the reference because UnrealBloomPass
+        // needs brighter input than the postprocessing BloomEffect they use.
         const material = new THREE.MeshPhysicalMaterial({
           color:      new THREE.Color(0x006cff),
           emissive:   new THREE.Color(0x65a5ff),
-          emissiveIntensity: 1,
+          emissiveIntensity: 4.5,
           metalness:  1,
-          roughness:  1,
+          roughness:  0.55,   // shinier than ref so point lights actually
+                              // create the specular hits that bloom amplifies
           ior:        1.5,
           alphaMap:   alphaTex,
           alphaTest:  0.1,
           transparent: false,
-          side:       THREE.FrontSide,
+          side:       THREE.DoubleSide, // show back faces — depth reads through
         });
 
         new GLTFLoader().load('./models/model.glb', (gltf) => {
@@ -833,17 +839,12 @@
           gltf.scene.scale.set(1.5, 1.5, 1.5);
           scene.add(gltf.scene);
 
-          // The GLB ships with a baked animation clip ("Animation") at
-          // timeScale 0.5 — that's the deformation motion in the video.
-          if (gltf.animations && gltf.animations.length) {
-            mixer = new THREE.AnimationMixer(gltf.scene);
-            gltf.animations.forEach((clip) => {
-              const action = mixer.clipAction(clip);
-              action.setLoop(THREE.LoopRepeat, Infinity);
-              action.timeScale = 0.5;
-              action.play();
-            });
-          }
+          // Skip baked animation playback for now — the clip deforms the
+          // mesh shape over time which was a likely cause of the model
+          // becoming invisible / unrecognisable. Add a slow Y spin instead
+          // so the dashes catch the side-lighting as it rotates past.
+          gltf.scene.userData.spin = true;
+          window.__heroRoot = gltf.scene;
         }, undefined, (err) => console.error('GLB load failed', err));
       }, undefined, (err) => console.error('alpha-map load failed', err));
 
@@ -859,10 +860,12 @@
       resize();
       new ResizeObserver(resize).observe(canvas);
 
-      /* ── render loop: drives the baked animation via AnimationMixer ── */
+      /* ── render loop ─────────────────────────────────────────────── */
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
       const tick = () => {
         const dt = clock.getDelta();
         if (mixer) mixer.update(dt);
+        if (!reduce && window.__heroRoot) window.__heroRoot.rotation.y += dt * 0.25;
         composer.render();
         requestAnimationFrame(tick);
       };
