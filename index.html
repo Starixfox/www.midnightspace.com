@@ -6,6 +6,8 @@
   <title>Midnight Space — A space-data platform, in orbit</title>
   <meta name="description" content="Midnight Space is an honest space-data platform. We map the funding, programs, and accelerators shaping the next generation of space business — beginning with Saudi Arabia and the GCC." />
   <meta name="theme-color" content="#06040a" />
+  <link rel="preload" as="fetch" href="./models/model.glb" crossorigin="anonymous" />
+  <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..800,0..100;1,9..144,300..800,0..100&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -143,15 +145,12 @@
       inset: 0; z-index: 1;
       display: grid; place-items: center;
     }
-    iframe#hero3d {
-      width: min(100vw, 1280px);
-      height: min(86vh, 820px);
-      display: block;
+    model-viewer {
+      width: min(92vw, 900px);
+      height: min(80vh, 720px);
       background: transparent;
-      border: 0;
+      --poster-color: transparent;
       outline: none;
-      pointer-events: none; /* keep the hero text clickable; user can still
-                               see the model rotating but not drag it */
     }
 
     .content {
@@ -694,7 +693,7 @@
       .contact-grid { grid-template-columns: 1fr; gap: 18px; }
       .contact-meta { grid-template-columns: 1fr; gap: 16px; }
       .foot-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
-      iframe#hero3d { height: 70vh; }
+      model-viewer { height: 70vh; }
     }
     @media (max-width: 480px) {
       .foot-grid { grid-template-columns: 1fr; }
@@ -733,17 +732,36 @@
     </nav>
 
     <div class="stage" aria-hidden="true">
-      <iframe
-        id="hero3d"
-        title="Clockwork by tamminen"
-        src="https://sketchfab.com/models/7d62398d5f31413f91a1181d3cec3260/embed?autostart=1&autospin=0.2&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_inspector=0&ui_watermark=0&ui_watermark_link=0&ui_animations=0&ui_annotations=0&ui_hint=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_loading=0&ui_color=a78bfa&dnt=1"
-        allow="autoplay; fullscreen; xr-spatial-tracking"
-        allowfullscreen
-        mozallowfullscreen="true"
-        webkitallowfullscreen="true"
-        loading="lazy"
-      ></iframe>
+      <model-viewer
+        id="heroModel"
+        src="./models/model.glb"
+        alt="Animated cycle model"
+        autoplay
+        camera-controls
+        disable-zoom
+        interaction-prompt="none"
+        camera-orbit="0deg 75deg 4.5m"
+        field-of-view="30deg"
+        exposure="1.0"
+        shadow-intensity="0"
+        tone-mapping="reinhard"
+        environment-image="legacy"
+      ></model-viewer>
     </div>
+
+    <script type="module">
+      // Original Peachworlds blue/cyan material override on the cycle model.
+      const mv = document.getElementById('heroModel');
+      mv.addEventListener('load', () => {
+        const model = mv.model;
+        [...model.materials].forEach(mat => {
+          mat.pbrMetallicRoughness.setBaseColorFactor([0, 0.424, 1, 1]); // #006cff
+          mat.pbrMetallicRoughness.setMetallicFactor(1);
+          mat.pbrMetallicRoughness.setRoughnessFactor(1);
+          mat.setEmissiveFactor([0.396, 0.647, 1]); // #65a5ff
+        });
+      });
+    </script>
 
     <div class="content">
       <p class="eyebrow">A space-data platform · In orbit</p>
@@ -1047,7 +1065,7 @@
   </footer>
 
   <div class="credit">
-    Model: <a href="https://sketchfab.com/3d-models/clockwork-7d62398d5f31413f91a1181d3cec3260" target="_blank" rel="noopener">"Clockwork"</a> by <a href="https://sketchfab.com/tamminen" target="_blank" rel="noopener">tamminen</a> · CC-BY-4.0
+    Model: "Cycle" by <a href="https://sketchfab.com/tamminen" target="_blank" rel="noopener">tamminen</a> · CC-BY-4.0
   </div>
 
   <script>
