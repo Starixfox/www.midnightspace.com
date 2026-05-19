@@ -773,47 +773,22 @@
          uses this as alphaMap, so only the strokes are visible — the
          broad faces of the cycle mesh disappear, leaving a forest of
          bright cyan dashes that read as lines under bloom. */
-      const dashTex = (() => {
-        const c = document.createElement('canvas');
-        c.width = 1024; c.height = 512;
-        const g = c.getContext('2d');
-        g.fillStyle = '#000';
-        g.fillRect(0, 0, c.width, c.height);
-        g.fillStyle = '#fff';
-        // Solid white dashes at a sensible density — readable at any zoom.
-        const cols = 80, rows = 22;
-        const cellW = c.width / cols, cellH = c.height / rows;
-        const dashW = cellW * 0.46, dashH = Math.max(3, cellH * 0.28);
-        for (let r = 0; r < rows; r++) {
-          const xOffset = (r % 2 === 0) ? 0 : cellW * 0.5;
-          for (let i = 0; i < cols; i++) {
-            const x = (i * cellW + xOffset + (cellW - dashW) / 2) % c.width;
-            const y = r * cellH + (cellH - dashH) / 2;
-            // Rounded short stroke — solid white, opaque alpha.
-            const radius = dashH / 2;
-            g.beginPath();
-            g.moveTo(x + radius, y);
-            g.arcTo(x + dashW, y, x + dashW, y + dashH, radius);
-            g.arcTo(x + dashW, y + dashH, x, y + dashH, radius);
-            g.arcTo(x, y + dashH, x, y, radius);
-            g.arcTo(x, y, x + dashW, y, radius);
-            g.closePath();
-            g.fill();
-          }
-        }
-        const t = new THREE.CanvasTexture(c);
+      // Load the reference dash alpha-map. This is the texture the Peach
+      // Worlds / Vexel AI scene uses on the same tamminen cycle GLB —
+      // a uniform grid of tiny vertical dashes that, when wrapped on the
+      // torus UVs, render as the concentric stroke pattern from the ref.
+      const dashTex = new THREE.TextureLoader().load('./models/alpha-map.png', (t) => {
         t.wrapS = t.wrapT = THREE.RepeatWrapping;
-        t.repeat.set(3, 1.6);
         t.anisotropy = renderer.capabilities.getMaxAnisotropy();
         t.minFilter = THREE.LinearMipmapLinearFilter;
         t.magFilter = THREE.LinearFilter;
         t.needsUpdate = true;
-        return t;
-      })();
+      });
+      dashTex.wrapS = dashTex.wrapT = THREE.RepeatWrapping;
+      dashTex.repeat.set(1, 1);
 
-      /* ── material: alphaMap-driven cyan dashes; transparent blending,
-         no alphaTest cutoff (let the cutout edges be antialiased rather
-         than hard-thresholded so thin dashes don't vanish). ── */
+      /* ── material: cyan dashes cut from the alpha-map. Transparent
+         blending without alphaTest so edges antialias cleanly. ── */
       const dashMaterial = new THREE.MeshBasicMaterial({
         color: new THREE.Color(0xbfeaff),
         transparent: true,
