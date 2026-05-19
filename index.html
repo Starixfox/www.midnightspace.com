@@ -764,18 +764,21 @@
       mv.addEventListener('load', () => {
         const model = mv.model;
         [...model.materials].forEach(mat => {
-          // Black base + fully matte: kills reflections so only emission shows.
-          mat.pbrMetallicRoughness.setBaseColorFactor([0, 0, 0, 1]);
+          // Glass-like translucent base: dark cyan tint with very low alpha.
+          // Combined with BLEND mode this makes the broad faces see-through
+          // while the thin radial bars still register as lit emissive lines.
+          mat.pbrMetallicRoughness.setBaseColorFactor([0.02, 0.06, 0.10, 0.18]);
           mat.pbrMetallicRoughness.setMetallicFactor(0);
           mat.pbrMetallicRoughness.setRoughnessFactor(1);
-          // Cyan-white emissive at max colour saturation.
+          // Bright cyan-white emission — drives the line glow.
           mat.setEmissiveFactor([0.62, 0.96, 1.0]);
-          // KHR_materials_emissive_strength — HDR multiplier; the Peach Worlds
-          // renderer gets its bloom from real post-processing, so we push the
-          // emission well past 1 to compensate inside model-viewer.
-          if (mat.setEmissiveStrength) {
-            mat.setEmissiveStrength(7.5);
-          }
+          // Transparent blend so the broad faces become glass.
+          if (mat.setAlphaMode) mat.setAlphaMode('BLEND');
+          // Show back faces so depth reads through the translucent body.
+          if (mat.setDoubleSided) mat.setDoubleSided(true);
+          // HDR emissive multiplier — pushes the bars past clamp so they
+          // read as bright lines against the see-through body.
+          if (mat.setEmissiveStrength) mat.setEmissiveStrength(9);
         });
       });
     </script>
