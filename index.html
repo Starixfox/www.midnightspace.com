@@ -775,33 +775,35 @@
          bright cyan dashes that read as lines under bloom. */
       const dashTex = (() => {
         const c = document.createElement('canvas');
-        c.width = 2048; c.height = 512;
+        c.width = 1024; c.height = 512;
         const g = c.getContext('2d');
         g.fillStyle = '#000';
         g.fillRect(0, 0, c.width, c.height);
-        // Smaller, thinner, much denser dashes — closer to the reference.
-        const cols = 200, rows = 48;
+        g.fillStyle = '#fff';
+        // Solid white dashes at a sensible density — readable at any zoom.
+        const cols = 80, rows = 22;
         const cellW = c.width / cols, cellH = c.height / rows;
-        const dashW = cellW * 0.36, dashH = Math.max(2, cellH * 0.14);
+        const dashW = cellW * 0.46, dashH = Math.max(3, cellH * 0.28);
         for (let r = 0; r < rows; r++) {
           const xOffset = (r % 2 === 0) ? 0 : cellW * 0.5;
           for (let i = 0; i < cols; i++) {
             const x = (i * cellW + xOffset + (cellW - dashW) / 2) % c.width;
             const y = r * cellH + (cellH - dashH) / 2;
-            // Soft-edged dash: bright core, dim falloff — bloom blurs them
-            // together into the strokes from the reference.
-            const grad = g.createLinearGradient(x, y, x, y + dashH);
-            grad.addColorStop(0, 'rgba(255,255,255,0)');
-            grad.addColorStop(0.5, '#ffffff');
-            grad.addColorStop(1, 'rgba(255,255,255,0)');
-            g.fillStyle = grad;
-            g.fillRect(x, y, dashW, dashH);
+            // Rounded short stroke — solid white, opaque alpha.
+            const radius = dashH / 2;
+            g.beginPath();
+            g.moveTo(x + radius, y);
+            g.arcTo(x + dashW, y, x + dashW, y + dashH, radius);
+            g.arcTo(x + dashW, y + dashH, x, y + dashH, radius);
+            g.arcTo(x, y + dashH, x, y, radius);
+            g.arcTo(x, y, x + dashW, y, radius);
+            g.closePath();
+            g.fill();
           }
         }
         const t = new THREE.CanvasTexture(c);
         t.wrapS = t.wrapT = THREE.RepeatWrapping;
-        // Tile aggressively so dashes stay small across the whole surface.
-        t.repeat.set(6, 3);
+        t.repeat.set(3, 1.6);
         t.anisotropy = renderer.capabilities.getMaxAnisotropy();
         t.minFilter = THREE.LinearMipmapLinearFilter;
         t.magFilter = THREE.LinearFilter;
@@ -809,14 +811,13 @@
         return t;
       })();
 
-      /* ── material: cyan-white dashes, normal blending so the cycle
-         model's silhouette stays recognisable; alphaTest cuts cleanly so
-         each dash reads as a discrete stroke instead of a blob. ── */
+      /* ── material: alphaMap-driven cyan dashes; transparent blending,
+         no alphaTest cutoff (let the cutout edges be antialiased rather
+         than hard-thresholded so thin dashes don't vanish). ── */
       const dashMaterial = new THREE.MeshBasicMaterial({
         color: new THREE.Color(0xbfeaff),
         transparent: true,
         alphaMap: dashTex,
-        alphaTest: 0.45,
         side: THREE.DoubleSide,
         depthWrite: false,
         toneMapped: false,
