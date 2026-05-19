@@ -151,10 +151,15 @@
       background: transparent;
       --poster-color: transparent;
       outline: none;
+      /* Stacked drop-shadows approximate post-processing bloom — each layer
+         adds a wider, dimmer halo so the cyan light feels like it's spilling
+         past the geometry the way it does in the reference render. */
       filter:
-        drop-shadow(0 0 24px rgba(95, 212, 224, .55))
-        drop-shadow(0 0 80px rgba(0, 156, 220, .35))
-        drop-shadow(0 0 180px rgba(0, 108, 255, .25));
+        drop-shadow(0 0 6px  rgba(220, 250, 255, .95))
+        drop-shadow(0 0 18px rgba(140, 230, 255, .85))
+        drop-shadow(0 0 42px rgba(80, 200, 255, .70))
+        drop-shadow(0 0 90px rgba(40, 160, 255, .50))
+        drop-shadow(0 0 180px rgba(0, 120, 240, .35));
     }
 
     .content {
@@ -746,10 +751,11 @@
         interaction-prompt="none"
         camera-orbit="0deg 75deg 4.5m"
         field-of-view="30deg"
-        exposure="1.6"
+        exposure="2.2"
         shadow-intensity="0"
         tone-mapping="neutral"
-        environment-image="legacy"
+        environment-image="neutral"
+        skybox-image=""
       ></model-viewer>
     </div>
 
@@ -758,15 +764,17 @@
       mv.addEventListener('load', () => {
         const model = mv.model;
         [...model.materials].forEach(mat => {
-          // Dim cool-blue base — let the emissive do the work.
-          mat.pbrMetallicRoughness.setBaseColorFactor([0.04, 0.18, 0.42, 1]);
-          mat.pbrMetallicRoughness.setMetallicFactor(0.2);
-          mat.pbrMetallicRoughness.setRoughnessFactor(0.85);
-          // Bright cyan-white emissive — the glow.
-          mat.setEmissiveFactor([0.55, 0.95, 1.0]);
-          // KHR_materials_emissive_strength — push beyond clamped [0,1] for true bloom.
+          // Black base + fully matte: kills reflections so only emission shows.
+          mat.pbrMetallicRoughness.setBaseColorFactor([0, 0, 0, 1]);
+          mat.pbrMetallicRoughness.setMetallicFactor(0);
+          mat.pbrMetallicRoughness.setRoughnessFactor(1);
+          // Cyan-white emissive at max colour saturation.
+          mat.setEmissiveFactor([0.62, 0.96, 1.0]);
+          // KHR_materials_emissive_strength — HDR multiplier; the Peach Worlds
+          // renderer gets its bloom from real post-processing, so we push the
+          // emission well past 1 to compensate inside model-viewer.
           if (mat.setEmissiveStrength) {
-            mat.setEmissiveStrength(3.2);
+            mat.setEmissiveStrength(7.5);
           }
         });
       });
