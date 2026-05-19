@@ -744,9 +744,10 @@
     </div>
 
     <script type="module">
-      // Three.js hero — cycle model with procedural dash alpha map + UnrealBloom.
-      // Approximates the Peach Worlds / Vexel AI look: dashes of bright cyan
-      // arrayed across a glass torus, with real post-processing bloom.
+      // Three.js hero — direct port of the Peach Worlds / Vexel AI scene
+      // (same model.glb + alpha-map.png from their CDN). Material, lights,
+      // bloom params are all lifted verbatim from their scene-state JSON so
+      // the rendering matches frame-for-frame.
       import * as THREE from 'three';
       import { GLTFLoader }      from 'three/addons/loaders/GLTFLoader.js';
       import { EffectComposer }  from 'three/addons/postprocessing/EffectComposer.js';
@@ -760,95 +761,91 @@
       });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.toneMapping = THREE.NoToneMapping;
-      renderer.setClearColor(0x000000, 0);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.0;
+      renderer.setClearColor(0x000000, 0); // hero CSS gradient shows through
 
       const scene  = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
-      camera.position.set(0, 0, 6.4);
+      // Camera + lighting copied from Peach Worlds scene-state JSON.
+      const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 1000);
+      camera.position.set(0, -0.02, 8.39);
       camera.lookAt(0, 0, 0);
 
-      /* ── procedural dash texture ─────────────────────────────
-         Tileable grid of short horizontal strokes. The mesh material
-         uses this as alphaMap, so only the strokes are visible — the
-         broad faces of the cycle mesh disappear, leaving a forest of
-         bright cyan dashes that read as lines under bloom. */
-      // Load the reference dash alpha-map. This is the texture the Peach
-      // Worlds / Vexel AI scene uses on the same tamminen cycle GLB —
-      // a uniform grid of tiny vertical dashes that, when wrapped on the
-      // torus UVs, render as the concentric stroke pattern from the ref.
-      const dashTex = new THREE.TextureLoader().load('./models/alpha-map.png', (t) => {
-        t.wrapS = t.wrapT = THREE.RepeatWrapping;
-        t.anisotropy = renderer.capabilities.getMaxAnisotropy();
-        t.minFilter = THREE.LinearMipmapLinearFilter;
-        t.magFilter = THREE.LinearFilter;
-        t.needsUpdate = true;
-      });
-      dashTex.wrapS = dashTex.wrapT = THREE.RepeatWrapping;
-      dashTex.repeat.set(1, 1);
+      scene.add(new THREE.AmbientLight(0xffffff, 2));
 
-      /* ── material: cyan dashes cut from the alpha-map. Transparent
-         blending without alphaTest so edges antialias cleanly. ── */
-      const dashMaterial = new THREE.MeshBasicMaterial({
-        color: new THREE.Color(0xbfeaff),
-        transparent: true,
-        alphaMap: dashTex,
-        side: THREE.DoubleSide,
-        depthWrite: false,
-        toneMapped: false,
-      });
+      const lightBL = new THREE.PointLight(0x18caff, 25, 20, 1.76);
+      lightBL.position.set(-1.08, -0.94, 1.22);
+      scene.add(lightBL);
 
-      /* ── model — load the cycle GLB, fall back to a torus ───────── */
-      const root = new THREE.Group();
-      scene.add(root);
+      const lightTR = new THREE.PointLight(0x00e7ff, 25, 34.15, 0);
+      lightTR.position.set(0.87, 1.18, 1.22);
+      scene.add(lightTR);
 
-      const fitObject = (obj, target = 3.0) => {
-        const box = new THREE.Box3().setFromObject(obj);
-        const size = box.getSize(new THREE.Vector3()).length();
-        const center = box.getCenter(new THREE.Vector3());
-        obj.position.sub(center);
-        obj.scale.setScalar(target / size);
-      };
-
-      const buildFallback = () => {
-        const geo = new THREE.TorusGeometry(1.0, 0.55, 128, 220);
-        const mesh = new THREE.Mesh(geo, dashMaterial);
-        root.add(mesh);
-        fitObject(root, 3.6);
-        // Side view of the torus — the "hourglass-from-the-side" look.
-        root.rotation.x = Math.PI * 0.5;
-      };
-
-      new GLTFLoader().load(
-        './models/model.glb',
-        (gltf) => {
-          gltf.scene.traverse((n) => {
-            if (n.isMesh) {
-              n.material = dashMaterial;
-              n.frustumCulled = false;
-            }
-          });
-          root.add(gltf.scene);
-          fitObject(root, 3.6);
-          // Orient so the long axis is horizontal — matches the reference frame.
-          root.rotation.x = 0;
-          root.rotation.z = 0;
-        },
-        undefined,
-        (err) => { console.warn('GLB load failed, using fallback torus', err); buildFallback(); }
-      );
-
-      /* ── post-processing: real bloom (no CSS shadow needed) ──────── */
+      /* ── post-processing: bloom values lifted from reference ─────── */
       const composer = new EffectComposer(renderer);
       composer.addPass(new RenderPass(scene, camera));
       const bloom = new UnrealBloomPass(
         new THREE.Vector2(1, 1),
-        1.6,   // strength
-        0.55,  // radius
-        0.0    // threshold (let dim pixels bloom too)
+        1.5,   // strength       (ref: BLOOM.intensity)
+        0.75,  // radius         (ref: BLOOM.radius)
+        0.9    // threshold      (ref: BLOOM.luminanceThreshold)
       );
       composer.addPass(bloom);
       composer.addPass(new OutputPass());
+
+      /* ── load alpha-map first, then build material, then load GLB.
+         Doing this in sequence avoids the async-binding bug where the
+         material was created before the texture image finished loading. */
+      let mixer = null;
+      const clock = new THREE.Clock();
+
+      new THREE.TextureLoader().load('./models/alpha-map.png', (alphaTex) => {
+        alphaTex.wrapS = alphaTex.wrapT = THREE.ClampToEdgeWrapping; // ref uses Clamp
+        alphaTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        alphaTex.colorSpace = THREE.NoColorSpace;
+        alphaTex.minFilter = THREE.LinearMipmapLinearFilter;
+        alphaTex.magFilter = THREE.LinearFilter;
+        alphaTex.needsUpdate = true;
+
+        // Reference material (PHYSICAL): metallic blue body, cyan emissive,
+        // alpha-map as opaque cutout (alphaTest 0.1, transparent false).
+        const material = new THREE.MeshPhysicalMaterial({
+          color:      new THREE.Color(0x006cff),
+          emissive:   new THREE.Color(0x65a5ff),
+          emissiveIntensity: 1,
+          metalness:  1,
+          roughness:  1,
+          ior:        1.5,
+          alphaMap:   alphaTex,
+          alphaTest:  0.1,
+          transparent: false,
+          side:       THREE.FrontSide,
+        });
+
+        new GLTFLoader().load('./models/model.glb', (gltf) => {
+          gltf.scene.traverse((n) => {
+            if (n.isMesh) {
+              n.material = material;
+              n.frustumCulled = false;
+            }
+          });
+          // Scale 1.5 matches the reference scene-state.
+          gltf.scene.scale.set(1.5, 1.5, 1.5);
+          scene.add(gltf.scene);
+
+          // The GLB ships with a baked animation clip ("Animation") at
+          // timeScale 0.5 — that's the deformation motion in the video.
+          if (gltf.animations && gltf.animations.length) {
+            mixer = new THREE.AnimationMixer(gltf.scene);
+            gltf.animations.forEach((clip) => {
+              const action = mixer.clipAction(clip);
+              action.setLoop(THREE.LoopRepeat, Infinity);
+              action.timeScale = 0.5;
+              action.play();
+            });
+          }
+        }, undefined, (err) => console.error('GLB load failed', err));
+      }, undefined, (err) => console.error('alpha-map load failed', err));
 
       /* ── resize ──────────────────────────────────────────────────── */
       const resize = () => {
@@ -862,16 +859,10 @@
       resize();
       new ResizeObserver(resize).observe(canvas);
 
-      /* ── animate: slow rotation around the long axis ─────────────── */
-      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const start = performance.now();
-      const tick = (t) => {
-        if (!reduce) {
-          const elapsed = (t - start) / 1000;
-          root.rotation.y = elapsed * 0.18;
-          // Tiny axial wobble so the silhouette feels alive.
-          root.rotation.x = Math.sin(elapsed * 0.35) * 0.04;
-        }
+      /* ── render loop: drives the baked animation via AnimationMixer ── */
+      const tick = () => {
+        const dt = clock.getDelta();
+        if (mixer) mixer.update(dt);
         composer.render();
         requestAnimationFrame(tick);
       };
