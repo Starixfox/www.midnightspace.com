@@ -751,15 +751,24 @@
     </div>
 
     <script type="module">
-      // Original Peachworlds blue/cyan material override on the cycle model.
+      // Glass-like green material override on the cycle model.
+      // Translucent emerald body, smooth surface for clear reflections,
+      // soft inner glow from a low-strength emissive.
       const mv = document.getElementById('heroModel');
       mv.addEventListener('load', () => {
         const model = mv.model;
         [...model.materials].forEach(mat => {
-          mat.pbrMetallicRoughness.setBaseColorFactor([0, 0.424, 1, 1]); // #006cff
-          mat.pbrMetallicRoughness.setMetallicFactor(1);
-          mat.pbrMetallicRoughness.setRoughnessFactor(1);
-          mat.setEmissiveFactor([0.396, 0.647, 1]); // #65a5ff
+          // Translucent emerald: alpha 0.35 makes the geometry see-through.
+          mat.pbrMetallicRoughness.setBaseColorFactor([0.18, 0.78, 0.48, 0.35]);
+          mat.pbrMetallicRoughness.setMetallicFactor(0.05);
+          mat.pbrMetallicRoughness.setRoughnessFactor(0.12);
+          // Gentle green inner glow so the form reads against the dark bg.
+          mat.setEmissiveFactor([0.18, 0.78, 0.48]);
+          if (mat.setEmissiveStrength) mat.setEmissiveStrength(1.4);
+          // Glass behaviour: alpha-blend, double-sided so back faces show
+          // through the translucent body the way real glass does.
+          if (mat.setAlphaMode) mat.setAlphaMode('BLEND');
+          if (mat.setDoubleSided) mat.setDoubleSided(true);
         });
       });
     </script>
