@@ -64,11 +64,3 @@ document.querySelectorAll('.hero-tabs').forEach(group => {
   });
 });
 
-// fake live "orbit temperature" — small editorial flourish
-const tempEl = document.getElementById('orbitTemp');
-if (tempEl) {
-  const base = -270.4;
-  const jitter = () => (base + (Math.random() - 0.5) * 0.4).toFixed(1) + '°C';
-  tempEl.textContent = jitter();
-  setInterval(() => { tempEl.textContent = jitter(); }, 4200);
-}
