@@ -51,15 +51,21 @@ document.querySelectorAll('[data-scroll-target]').forEach(group => {
   });
 });
 
-// hero tabs visual switch
+// hero tabs — toggle active state AND swap matching [data-tab-pane] panes
 document.querySelectorAll('.hero-tabs').forEach(group => {
+  const hero = group.closest('.hero') || document;
+  const panes = hero.querySelectorAll('[data-tab-pane]');
   group.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', (e) => {
-      if (a.dataset.tab) {
-        e.preventDefault();
-        group.querySelectorAll('a').forEach(x => x.classList.remove('active'));
-        a.classList.add('active');
-      }
+      if (!a.dataset.tab) return;
+      e.preventDefault();
+      const key = a.dataset.tab;
+      group.querySelectorAll('a').forEach(x => x.classList.toggle('active', x === a));
+      panes.forEach(p => {
+        const match = p.dataset.tabPane === key;
+        p.hidden = !match;
+        p.setAttribute('aria-hidden', match ? 'false' : 'true');
+      });
     });
   });
 });
