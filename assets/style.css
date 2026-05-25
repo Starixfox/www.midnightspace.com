@@ -291,6 +291,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   box-shadow: var(--shadow-card);
   background: #1a2a3a center/cover;
 }
+.hero-card.is-screen { background-color: #fff; background-size: cover; background-position: top center; }
+.hero-card.is-screen .play { display: none; }
+.hero-card.is-screen .card-label { background: linear-gradient(180deg, transparent, rgba(0,0,0,.78)); }
 .hero-card .play {
   position: absolute; inset: 0;
   display: grid; place-items: center;
@@ -501,6 +504,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   aspect-ratio: 4 / 3;
   border-radius: 6px; overflow: hidden;
   background: var(--surface) center/cover;
+  background-position: top center;
   box-shadow: var(--shadow-card);
 }
 .split-image .pin {
@@ -592,6 +596,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   color: #fff;
   opacity: .95;
 }
+.feature-card.is-screen { background-color: #fff; background-size: cover; background-position: top center; }
+.feature-card.is-screen::after { background: linear-gradient(180deg, rgba(8,20,40,.0) 35%, rgba(8,20,40,.92) 100%); }
 
 /* ─── signature attraction (full-bleed) ───── */
 .signature {
@@ -635,6 +641,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   aspect-ratio: 4/3;
   border-radius: 4px;
   background: var(--bg-warm) center/cover;
+  background-position: top center;
   margin-bottom: 14px;
 }
 .signature-card .sc-label {
