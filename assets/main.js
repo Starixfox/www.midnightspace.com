@@ -29,12 +29,46 @@ openBtn?.addEventListener('click', () => {
 closeBtn?.addEventListener('click', closeSheet);
 backdrop?.addEventListener('click', closeSheet);
 
-// signature tabs (visual only — content stays)
-document.querySelectorAll('.signature-tabs').forEach(group => {
+// signature tabs — swap the section's eyebrow / headline / body / CTA / image / caption.
+// Each button carries: data-eyebrow, data-title (top line) + data-title-em (italic line),
+// data-body, data-cta-label, data-cta-href, data-img, data-cap.
+// Headline is rebuilt with safe DOM nodes (no innerHTML on untrusted-looking text).
+document.querySelectorAll('.signature').forEach(section => {
+  const group = section.querySelector('.signature-tabs');
+  if (!group) return;
+  const els = {
+    eyebrow: section.querySelector('.eyebrow'),
+    h2: section.querySelector('h2'),
+    body: section.querySelector('h2 ~ p'),
+    cta: section.querySelector('.btn'),
+    img: section.querySelector('.sc-img'),
+    cap: section.querySelector('.sc-label'),
+  };
+  const setTitle = (top, italic) => {
+    if (!els.h2) return;
+    els.h2.replaceChildren();
+    els.h2.append(document.createTextNode(top));
+    if (italic) {
+      els.h2.append(document.createElement('br'));
+      const em = document.createElement('em');
+      em.textContent = italic;
+      els.h2.append(em);
+    }
+  };
   group.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => {
-      group.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      group.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+      const d = btn.dataset;
+      if (d.eyebrow && els.eyebrow) els.eyebrow.textContent = d.eyebrow;
+      if (d.title) setTitle(d.title, d.titleEm || '');
+      if (d.body && els.body) els.body.textContent = d.body;
+      if (d.ctaLabel && els.cta) {
+        const label = els.cta.querySelector('span') || els.cta;
+        label.textContent = d.ctaLabel;
+      }
+      if (d.ctaHref && els.cta) els.cta.setAttribute('href', d.ctaHref);
+      if (d.img && els.img) els.img.style.backgroundImage = `url('${d.img}')`;
+      if (d.cap && els.cap) els.cap.textContent = d.cap;
     });
   });
 });
