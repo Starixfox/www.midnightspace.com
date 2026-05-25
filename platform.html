@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Platform — Midnight Space</title>
+  <meta name="description" content="The Midnight Space platform: a curated, current source of space-funding programs, grants, accelerators, and public tenders." />
+  <meta name="theme-color" content="#eef5f5" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..800,0..100;1,9..144,300..800,0..100&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/style.css" />
+</head>
+<body>
+
+  <header class="site-header over-hero">
+    <div class="util-bar">
+      <div class="util-left">
+        <button class="util-pill" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          <span class="util-label">EN / SAR</span>
+        </button>
+        <button class="util-pill" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2"/></svg>
+          <span class="util-label" id="orbitTemp">−270.4°C</span>
+        </button>
+      </div>
+      <a href="./index.html" class="brand-stack">
+        <span class="brand-top">Visit</span>
+        <span class="brand-bottom">Midnight Space</span>
+      </a>
+      <div class="util-right">
+        <button class="util-pill" type="button"><span class="util-label">Coverage</span></button>
+        <button class="util-pill" type="button"><span class="util-label">Sign in</span></button>
+        <a href="./contact.html" class="nav-cta">Book a demo</a>
+        <button class="nav-mobile-btn" id="navMobileBtn" aria-label="Open menu"><span></span></button>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <a href="./index.html">Home</a>
+      <a href="./platform.html" class="active">Platform</a>
+      <a href="./modules.html">Modules</a>
+      <a href="./pilots.html">Pilots</a>
+      <a href="./about.html">About</a>
+      <a href="./contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-bg gradient" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="hero-eyebrow">THE PLATFORM</p>
+        <h1 class="hero-title">A region<br/><em>of opportunity.</em></h1>
+        <p class="hero-sub">From a single GCC-focused database to a global view of public space-funding — Midnight Space curates the programs, grants, and accelerators that actually move the sector forward.</p>
+        <div class="hero-cta-row">
+          <a class="btn btn-primary" href="./modules.html">See the modules</a>
+          <a class="btn btn-ghost" href="./contact.html">Request access</a>
+        </div>
+      </div>
+      <a class="hero-card" href="./modules.html" style="background-image:linear-gradient(160deg, #1d6b73 0%, #062235 100%);">
+        <div class="play"></div>
+        <div class="card-label">Tour the prototype</div>
+      </a>
+    </div>
+    <div class="hero-tabs">
+      <a href="#" data-tab="gcc" class="active">The GCC</a>
+      <a href="#" data-tab="global">Global · soon</a>
+    </div>
+  </section>
+
+  <!-- numbers / stats -->
+  <section class="section bg-surface">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow r">BY THE NUMBERS</p>
+          <h2 class="section-title r r1">Live coverage,<br/><em>kept current.</em></h2>
+        </div>
+        <p class="section-lead r r2">Hand-curated and updated by a small team. Every program in the database is verified against a primary source — no scraped half-truths, no broken links.</p>
+      </div>
+
+      <div class="stats-row r r3" id="statsRow">
+        <article class="stat-card" style="background-image:linear-gradient(160deg, #0e3a4a 0%, #051a2a 100%);">
+          <span class="stat-num">210<span style="color:#7cd8e0;">+</span></span>
+          <span class="stat-label">Programs tracked</span>
+        </article>
+        <article class="stat-card" style="background-image:linear-gradient(160deg, #1d6b73 0%, #062235 100%);">
+          <span class="stat-num">90</span>
+          <span class="stat-label">Active calls</span>
+        </article>
+        <article class="stat-card" style="background-image:linear-gradient(160deg, #062235 0%, #1d6b73 100%);">
+          <span class="stat-num">50<span style="color:#7cd8e0;">+</span></span>
+          <span class="stat-label">Accelerators &amp; funds</span>
+        </article>
+      </div>
+      <div class="scroll-arrows" data-scroll-target="#statsRow">
+        <button type="button" data-dir="prev" aria-label="Previous">←</button>
+        <button type="button" data-dir="next" aria-label="Next">→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- what's inside -->
+  <section class="section bg-warm">
+    <div class="wrap">
+      <div class="split reverse">
+        <div class="split-text">
+          <p class="eyebrow r">INSIDE THE PLATFORM</p>
+          <h2 class="r r1">A single source.<br/><em>Kept honest.</em></h2>
+          <p class="r r2"><strong>The Saudi Space Opportunity Hub is live.</strong> It's the first surface of the Midnight Space platform — a manually curated database paired with leadership-grade dashboards.</p>
+          <p class="r r3">From there, we extend outward: structured API access, custom views for agencies, signals and alerts, exports for briefings, and ecosystem-level intelligence.</p>
+          <div class="r r4" style="margin-top:24px;">
+            <a class="btn btn-outline" href="./modules.html">View all modules</a>
+          </div>
+        </div>
+        <div class="split-image r r2" style="background-image:linear-gradient(135deg, #d4e8ee 0%, #f5f1ea 100%);">
+          <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" style="position:absolute; inset:0; width:100%; height:100%;">
+            <defs>
+              <pattern id="grid2" width="32" height="32" patternUnits="userSpaceOnUse">
+                <path d="M 32 0 L 0 0 0 32" fill="none" stroke="rgba(11,58,74,.14)" stroke-width=".5"/>
+              </pattern>
+            </defs>
+            <rect width="400" height="300" fill="url(#grid2)"/>
+            <rect x="60" y="60" width="120" height="60" fill="rgba(11,58,74,.12)" stroke="rgba(11,58,74,.4)"/>
+            <rect x="200" y="60" width="140" height="60" fill="rgba(184,137,90,.18)" stroke="rgba(184,137,90,.5)"/>
+            <rect x="60" y="140" width="280" height="40" fill="rgba(11,58,74,.08)" stroke="rgba(11,58,74,.3)"/>
+            <rect x="60" y="200" width="180" height="40" fill="rgba(11,58,74,.08)" stroke="rgba(11,58,74,.3)"/>
+            <rect x="260" y="200" width="80" height="40" fill="rgba(29,107,115,.18)" stroke="rgba(29,107,115,.5)"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- coverage map -->
+  <section class="signature">
+    <div class="signature-bg" style="background-image:linear-gradient(160deg, #050a18 0%, #08172a 60%, #0a1f33 100%);"></div>
+    <div class="signature-inner wrap">
+      <div>
+        <p class="eyebrow">COVERAGE</p>
+        <h2>The GCC<br/><em>is just the start.</em></h2>
+        <p style="max-width:46ch; color:rgba(255,255,255,.78); line-height:1.6; margin:0 0 28px; font-size:17px; font-weight:300;">We started with Saudi Arabia and the GCC because that's where the data is most concentrated and least centralised. Next: Europe, North America, Asia, and the emerging markets where the next operators are coming from.</p>
+        <a class="btn btn-primary" href="./contact.html">Request the map</a>
+      </div>
+      <div class="signature-card">
+        <div class="sc-img" style="background-image:linear-gradient(135deg, #1d6b73 0%, #062235 100%); position:relative;">
+          <svg viewBox="0 0 200 150" style="position:absolute; inset:0; width:100%; height:100%;">
+            <circle cx="100" cy="75" r="55" fill="none" stroke="rgba(255,255,255,.4)" stroke-width=".5"/>
+            <circle cx="100" cy="75" r="35" fill="none" stroke="rgba(255,255,255,.3)" stroke-width=".5"/>
+            <circle cx="100" cy="75" r="3" fill="#7cd8e0"/>
+            <circle cx="155" cy="75" r="2" fill="rgba(255,255,255,.7)"/>
+            <circle cx="125" cy="40" r="2" fill="rgba(255,255,255,.7)"/>
+            <circle cx="70" cy="105" r="2" fill="rgba(255,255,255,.7)"/>
+          </svg>
+        </div>
+        <p class="sc-label">Live: GCC — extending outward</p>
+      </div>
+    </div>
+    <div class="signature-tabs">
+      <button type="button" class="active">GCC</button>
+      <button type="button">Europe</button>
+      <button type="button">North America</button>
+      <button type="button">APAC</button>
+    </div>
+  </section>
+
+  <!-- methodology callout -->
+  <section class="section bg-warm">
+    <div class="wrap">
+      <div class="callout r">
+        <div>
+          <p class="eyebrow">METHODOLOGY</p>
+          <h2 class="callout-title">Curated by hand.<br/><em>Verified by source.</em></h2>
+          <p class="callout-lead">Every program in the database has a name, a sponsor, a status, a deadline, and a primary-source link. No scraped half-truths. When something changes, we change it — and we tell you when.</p>
+          <a class="btn btn-outline" href="./about.html">Read our approach</a>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div style="padding:18px 22px; border:1px solid var(--hair); border-radius:6px;"><b style="font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted);">01 — Source</b><div style="margin-top:6px;">Primary-source link or it doesn't ship.</div></div>
+          <div style="padding:18px 22px; border:1px solid var(--hair); border-radius:6px;"><b style="font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted);">02 — Status</b><div style="margin-top:6px;">Open · upcoming · closed — always current.</div></div>
+          <div style="padding:18px 22px; border:1px solid var(--hair); border-radius:6px;"><b style="font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted);">03 — Signal</b><div style="margin-top:6px;">Changes flagged, not silently overwritten.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap">
+      <div class="foot-top">
+        <div class="foot-brand">
+          <a href="./index.html" class="brand-stack" style="align-items:flex-start;">
+            <span class="brand-top">Visit</span>
+            <span class="brand-bottom">Midnight Space</span>
+          </a>
+          <p>Space-data and analytics tools for governments, agencies, and investors. An early-stage prototype, looking for pilot partners.</p>
+        </div>
+        <div class="foot-col"><h4>Explore</h4><ul><li><a href="./platform.html">Platform</a></li><li><a href="./modules.html">Modules</a></li><li><a href="./pilots.html">Pilots</a></li><li><a href="./about.html">About</a></li></ul></div>
+        <div class="foot-col"><h4>Connect</h4><ul><li><a href="mailto:jblancoapodaca@gmail.com">Email</a></li><li><a href="./contact.html">Contact</a></li><li><a href="#" rel="noopener">LinkedIn</a></li></ul></div>
+        <div class="foot-col"><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Colophon</a></li></ul></div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 Midnight Space · Founded by Jordan Van Der Sloten</span>
+        <span class="stamp"><span class="dot"></span>Currently in orbit · Onboarding pilot partners</span>
+      </div>
+    </div>
+  </footer>
+
+  <a href="./contact.html" class="chat-fab" aria-label="Open chat"></a>
+
+  <div class="sheet-backdrop" id="sheetBackdrop"></div>
+  <aside class="mobile-sheet" id="mobileSheet">
+    <button class="sheet-close" id="sheetClose" aria-label="Close menu">×</button>
+    <a href="./index.html">Home</a>
+    <a href="./platform.html">Platform</a>
+    <a href="./modules.html">Modules</a>
+    <a href="./pilots.html">Pilots</a>
+    <a href="./about.html">About</a>
+    <a href="./contact.html">Contact</a>
+  </aside>
+
+  <script src="./assets/main.js"></script>
+</body>
+</html>

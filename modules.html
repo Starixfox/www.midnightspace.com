@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Modules — Midnight Space</title>
+  <meta name="description" content="The eight modules of the Midnight Space platform — what's live, what's planned." />
+  <meta name="theme-color" content="#eef5f5" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..800,0..100;1,9..144,300..800,0..100&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/style.css" />
+</head>
+<body>
+
+  <header class="site-header over-hero">
+    <div class="util-bar">
+      <div class="util-left">
+        <button class="util-pill" type="button"><span class="util-label">EN / SAR</span></button>
+        <button class="util-pill" type="button"><span class="util-label" id="orbitTemp">−270.4°C</span></button>
+      </div>
+      <a href="./index.html" class="brand-stack"><span class="brand-top">Visit</span><span class="brand-bottom">Midnight Space</span></a>
+      <div class="util-right">
+        <button class="util-pill" type="button"><span class="util-label">Coverage</span></button>
+        <button class="util-pill" type="button"><span class="util-label">Sign in</span></button>
+        <a href="./contact.html" class="nav-cta">Book a demo</a>
+        <button class="nav-mobile-btn" id="navMobileBtn" aria-label="Open menu"><span></span></button>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <a href="./index.html">Home</a>
+      <a href="./platform.html">Platform</a>
+      <a href="./modules.html" class="active">Modules</a>
+      <a href="./pilots.html">Pilots</a>
+      <a href="./about.html">About</a>
+      <a href="./contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-bg gradient" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="hero-eyebrow">MODULES</p>
+        <h1 class="hero-title">Eight modules.<br/><em>One platform.</em></h1>
+        <p class="hero-sub">A working prototype today — the database and dashboards are live. The rest is on the runway. Everything is designed to compose.</p>
+        <div class="hero-cta-row">
+          <a class="btn btn-primary" href="#list">Browse the modules</a>
+          <a class="btn btn-ghost" href="./pilots.html">Become a pilot partner</a>
+        </div>
+      </div>
+      <a class="hero-card" href="#list" style="background-image:linear-gradient(160deg, #062235 0%, #1d6b73 100%);">
+        <div class="play"></div>
+        <div class="card-label">Module map</div>
+      </a>
+    </div>
+    <div class="hero-tabs">
+      <a href="#" data-tab="all" class="active">All</a>
+      <a href="#" data-tab="live">Live</a>
+      <a href="#" data-tab="planned">Planned</a>
+    </div>
+  </section>
+
+  <!-- featured cards -->
+  <section class="section bg-surface">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow r">LIVE TODAY</p>
+          <h2 class="section-title r r1">Prototype<br/><em>in the open.</em></h2>
+        </div>
+        <p class="section-lead r r2">Two modules are live in the Saudi Space Opportunity Hub. They are how Midnight Space exists today — working, partial, and getting better every week.</p>
+      </div>
+
+      <div class="cards-row r r3">
+        <article class="feature-card" style="background-image:linear-gradient(180deg, rgba(8,30,42,.2), rgba(8,30,42,.85)), linear-gradient(135deg, #1d6b73 0%, #062235 100%);">
+          <span class="fc-logo">01 / DB</span>
+          <div class="fc-body">
+            <p class="fc-eyebrow">PROTOTYPE LIVE</p>
+            <h3 class="fc-title">Funding &amp; Program Database</h3>
+            <div class="fc-meta"><span>Grants</span><span>Accelerators</span><span>Tenders</span></div>
+            <a class="fc-link" href="#m1">Read more →</a>
+          </div>
+        </article>
+        <article class="feature-card" style="background-image:linear-gradient(180deg, rgba(8,30,42,.2), rgba(8,30,42,.85)), linear-gradient(135deg, #0e3a4a 0%, #1a4858 100%);">
+          <span class="fc-logo">02 / DASH</span>
+          <div class="fc-body">
+            <p class="fc-eyebrow">PROTOTYPE LIVE</p>
+            <h3 class="fc-title">Basic Dashboards</h3>
+            <div class="fc-meta"><span>KPIs</span><span>Charts</span><span>Summary views</span></div>
+            <a class="fc-link" href="#m2">Read more →</a>
+          </div>
+        </article>
+        <article class="feature-card" style="background-image:linear-gradient(180deg, rgba(8,30,42,.2), rgba(8,30,42,.85)), linear-gradient(135deg, #2a4a5a 0%, #0a1f33 100%);">
+          <span class="fc-logo">03 / GLOBAL</span>
+          <div class="fc-body">
+            <p class="fc-eyebrow">PLANNED</p>
+            <h3 class="fc-title">Global Funding View</h3>
+            <div class="fc-meta"><span>EU</span><span>NA</span><span>APAC</span></div>
+            <a class="fc-link" href="#m3">Read more →</a>
+          </div>
+        </article>
+        <article class="feature-card" style="background-image:linear-gradient(180deg, rgba(8,30,42,.2), rgba(8,30,42,.85)), linear-gradient(135deg, #062235 0%, #0e3a4a 100%);">
+          <span class="fc-logo">04 / API</span>
+          <div class="fc-body">
+            <p class="fc-eyebrow">PLANNED</p>
+            <h3 class="fc-title">API Access</h3>
+            <div class="fc-meta"><span>Structured</span><span>Versioned</span></div>
+            <a class="fc-link" href="#m4">Read more →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- full module list -->
+  <section class="section bg-warm" id="list">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow r">FULL CATALOGUE</p>
+          <h2 class="section-title r r1">All modules,<br/><em>in order.</em></h2>
+        </div>
+        <p class="section-lead r r2">Numbered roughly in build order. Each module compounds the value of the one before it — start with data, end with intelligence.</p>
+      </div>
+
+      <div class="module-list">
+        <article class="module-row r" id="m1">
+          <div class="m-idx">01</div>
+          <div class="m-head">
+            <h3>Funding &amp; Program <em>Database</em></h3>
+            <div class="m-tags"><span>Grants</span><span>Accelerators</span><span>Tenders</span><span>Public programs</span></div>
+          </div>
+          <div class="m-body">A manually curated database of space-related funding calls, grants, accelerators, and public programs. Focused on Saudi Arabia and the GCC, with selected global entries open to regional actors.</div>
+          <span class="m-status live">Prototype live</span>
+        </article>
+
+        <article class="module-row r" id="m2">
+          <div class="m-idx">02</div>
+          <div class="m-head">
+            <h3>Basic <em>Dashboards</em></h3>
+            <div class="m-tags"><span>KPIs</span><span>Charts</span><span>Summary views</span></div>
+          </div>
+          <div class="m-body">Charts and summary views built from the program database — designed for leadership-level overviews rather than deep data exploration. The Saudi Space Opportunity Hub runs on this.</div>
+          <span class="m-status live">Prototype live</span>
+        </article>
+
+        <article class="module-row r" id="m3">
+          <div class="m-idx">03</div>
+          <div class="m-head">
+            <h3>Global Space <em>Funding View</em></h3>
+            <div class="m-tags"><span>Europe</span><span>North America</span><span>Asia</span><span>Emerging markets</span></div>
+          </div>
+          <div class="m-body">Extending coverage beyond the GCC to include major space-funding programs from Europe, North America, Asia, and emerging markets — with the same curation discipline.</div>
+          <span class="m-status">Planned</span>
+        </article>
+
+        <article class="module-row r" id="m4">
+          <div class="m-idx">04</div>
+          <div class="m-head">
+            <h3>API <em>Access</em></h3>
+            <div class="m-tags"><span>Structured data</span><span>Internal tools</span><span>Workflows</span></div>
+          </div>
+          <div class="m-body">Structured data access for organisations that want to integrate Midnight Space data into their own internal tools, reports, or workflows. Versioned, rate-limited, documented.</div>
+          <span class="m-status">Planned</span>
+        </article>
+
+        <article class="module-row r">
+          <div class="m-idx">05</div>
+          <div class="m-head">
+            <h3>Custom Views <em>for Agencies</em></h3>
+            <div class="m-tags"><span>Sector filters</span><span>Regional cuts</span><span>Mandate-aligned</span></div>
+          </div>
+          <div class="m-body">Tailored dashboard configurations for specific agency mandates — filtered to the sectors, regions, and program types each team actually cares about.</div>
+          <span class="m-status">Planned</span>
+        </article>
+
+        <article class="module-row r">
+          <div class="m-idx">06</div>
+          <div class="m-head">
+            <h3>Signals &amp; <em>Alerts</em></h3>
+            <div class="m-tags"><span>New programs</span><span>Deadlines</span><span>Status changes</span></div>
+          </div>
+          <div class="m-body">Automated notifications when new programs open, deadlines approach, or data changes — so the right people hear about the right opportunities in time to act.</div>
+          <span class="m-status">Planned</span>
+        </article>
+
+        <article class="module-row r">
+          <div class="m-idx">07</div>
+          <div class="m-head">
+            <h3>Exports &amp; <em>Reports</em></h3>
+            <div class="m-tags"><span>CSV</span><span>PDF briefings</span><span>Curated views</span></div>
+          </div>
+          <div class="m-body">Export filtered datasets, generate summary reports, and share curated views with stakeholders who don't need a login. Built for how briefings actually circulate.</div>
+          <span class="m-status">Planned</span>
+        </article>
+
+        <article class="module-row r">
+          <div class="m-idx">08</div>
+          <div class="m-head">
+            <h3>Ecosystem <em>Intelligence</em></h3>
+            <div class="m-tags"><span>Trends</span><span>Scenario views</span><span>Gap analysis</span></div>
+          </div>
+          <div class="m-body">Deeper analytics — trend views over time, scenario comparisons across regions, and gap analysis between programs. The layer that turns data into a point of view.</div>
+          <span class="m-status">Planned</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- closing callout -->
+  <section class="section bg-surface">
+    <div class="wrap">
+      <div class="callout dark r">
+        <div>
+          <p class="eyebrow" style="color:rgba(255,255,255,.65);">PARTNER WITH US</p>
+          <h2 class="callout-title">Help shape<br/><em>what's next.</em></h2>
+          <p class="callout-lead">Pilot partners get early access to planned modules and a real voice in what we ship first. If you'd rebuild this from a spreadsheet otherwise — let's talk instead.</p>
+          <a class="btn btn-primary" href="./pilots.html">See the pilot tiers</a>
+        </div>
+        <div style="aspect-ratio:1; border-radius:6px; background:linear-gradient(135deg, rgba(184,137,90,.3), rgba(11,58,74,.6)); position:relative; overflow:hidden;">
+          <div style="position:absolute; inset:30%; border-radius:50%; background:linear-gradient(135deg, #1a3344, #050a18);"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap">
+      <div class="foot-top">
+        <div class="foot-brand">
+          <a href="./index.html" class="brand-stack" style="align-items:flex-start;"><span class="brand-top">Visit</span><span class="brand-bottom">Midnight Space</span></a>
+          <p>Space-data and analytics tools for governments, agencies, and investors. An early-stage prototype, looking for pilot partners.</p>
+        </div>
+        <div class="foot-col"><h4>Explore</h4><ul><li><a href="./platform.html">Platform</a></li><li><a href="./modules.html">Modules</a></li><li><a href="./pilots.html">Pilots</a></li><li><a href="./about.html">About</a></li></ul></div>
+        <div class="foot-col"><h4>Connect</h4><ul><li><a href="mailto:jblancoapodaca@gmail.com">Email</a></li><li><a href="./contact.html">Contact</a></li><li><a href="#" rel="noopener">LinkedIn</a></li></ul></div>
+        <div class="foot-col"><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Colophon</a></li></ul></div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 Midnight Space · Founded by Jordan Van Der Sloten</span>
+        <span class="stamp"><span class="dot"></span>Currently in orbit · Onboarding pilot partners</span>
+      </div>
+    </div>
+  </footer>
+
+  <a href="./contact.html" class="chat-fab" aria-label="Open chat"></a>
+
+  <div class="sheet-backdrop" id="sheetBackdrop"></div>
+  <aside class="mobile-sheet" id="mobileSheet">
+    <button class="sheet-close" id="sheetClose" aria-label="Close menu">×</button>
+    <a href="./index.html">Home</a>
+    <a href="./platform.html">Platform</a>
+    <a href="./modules.html">Modules</a>
+    <a href="./pilots.html">Pilots</a>
+    <a href="./about.html">About</a>
+    <a href="./contact.html">Contact</a>
+  </aside>
+
+  <script src="./assets/main.js"></script>
+</body>
+</html>
