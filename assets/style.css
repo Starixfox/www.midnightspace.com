@@ -416,7 +416,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   margin: -14px 0;             /* keep visual baseline */
   transition: color .2s var(--ease);
 }
-.main-nav a:hover { color: var(--accent); }
+.main-nav a:hover { color: var(--c-cyan); }
 .main-nav a.active::after {
   content: ""; position: absolute;
   left: 4px; right: 4px; bottom: 10px;
@@ -596,7 +596,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   font-variation-settings: "opsz" 60, "SOFT" 30;
   font-weight: 400;
   font-size: 18px;
-  color: var(--muted);
+  /* Sits on the white-glass pill — fixed ink color regardless of theme. */
+  color: rgba(10, 20, 40, 0.55);
   position: relative;
   padding: 10px 6px;            /* taller hit target — keyboard + touch */
   margin: -10px -2px;            /* preserve visual baseline */
@@ -604,17 +605,20 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   cursor: pointer;
   transition: color .18s var(--ease);
 }
+/* Hero-tabs sit on a white glass pill — text colour must be ink-dark,
+   not var(--ink) (which is now white). Hardcode to space-900 so the
+   pill stays legible regardless of theme drift. */
 .hero-tabs a:hover,
-.hero-tabs button:hover { color: var(--ink); }
+.hero-tabs button:hover { color: var(--c-space-900); }
 .hero-tabs a:active,
 .hero-tabs button:active { transform: scale(.97); transition-duration: 80ms; }
 .hero-tabs a.active,
-.hero-tabs button.active { color: var(--ink); }
+.hero-tabs button.active { color: var(--c-space-900); }
 .hero-tabs a.active::after,
 .hero-tabs button.active::after {
   content: ""; position: absolute;
   left: 6px; right: 6px; bottom: 4px;
-  height: 2px; background: var(--accent);
+  height: 2px; background: var(--c-cyan-mid);
 }
 
 /* ─── buttons ──────────────────────────────── */
@@ -647,7 +651,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .btn-primary {
   background: linear-gradient(180deg, #ffffff 0%, #f3f7f7 100%);
-  color: var(--ink);
+  /* Hardcoded ink — sits on white, must stay dark regardless of theme. */
+  color: var(--c-space-900);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(10, 20, 40, 0.04),
@@ -1105,7 +1110,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .signature-tabs button:active { transform: scale(.97); transition-duration: 80ms; }
 .signature-tabs button.active {
   background: linear-gradient(180deg, #fff 0%, #f3f7f7 100%);
-  color: var(--ink);
+  /* Hardcoded ink — sits on white, must stay dark regardless of theme. */
+  color: var(--c-space-900);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), 0 4px 12px -2px rgba(0, 0, 0, 0.18);
 }
 
