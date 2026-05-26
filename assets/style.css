@@ -1918,12 +1918,36 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   width: 100%; height: 100%;
   display: block;
 }
-.ff-peninsula {
-  fill: rgba(124, 216, 224, 0.018);
-  stroke: rgba(124, 216, 224, 0.32);
-  stroke-width: 1.3;
+/* GCC country shapes — real boundaries from world-atlas 110m
+   projected by scripts/gen-gcc-map.mjs. Faint cyan fill with a
+   slightly stronger dashed stroke. Saudi gets a touch more presence
+   because it carries most of the data. */
+.ff-countries { pointer-events: none; }
+.ff-country-shape {
+  fill: rgba(124, 216, 224, 0.025);
+  stroke: rgba(124, 216, 224, 0.28);
+  stroke-width: 0.9;
   stroke-dasharray: 4 5;
-  filter: drop-shadow(0 0 12px rgba(124, 216, 224, 0.18));
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 10px rgba(124, 216, 224, 0.14));
+  transition: fill .35s var(--ease-emil), stroke .35s var(--ease-emil);
+}
+.ff-country-shape[data-country="saudi-arabia"] {
+  fill: rgba(124, 216, 224, 0.045);
+  stroke-width: 1.1;
+}
+.ff-country-shape[data-country="bahrain"] {
+  fill: rgba(124, 216, 224, 0.06);
+  stroke-dasharray: 2 3;
+  stroke-width: 0.7;
+}
+/* Subtle hover lift — only on devices that hover, only on the lit map. */
+@media (hover: hover) and (pointer: fine) {
+  .funding-field.ff-lit .ff-country-shape:hover {
+    fill: rgba(124, 216, 224, 0.10);
+    stroke: rgba(124, 216, 224, 0.55);
+  }
 }
 .ff-grid {
   stroke: rgba(255, 255, 255, .04);
