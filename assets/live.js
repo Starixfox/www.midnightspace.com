@@ -109,6 +109,68 @@ export function formatVerified(iso) {
   return 'Verified ' + then.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
 }
 
+// Country centroids — approximate, hand-picked so the dots cluster
+// where the country actually is on the SVG without us needing a real
+// map projection. Lng east, lat north, projected by the renderer.
+const COUNTRY_GEO = {
+  'Saudi Arabia':         { lng: 45.0, lat: 24.7, region: 'gcc' },
+  'UAE':                  { lng: 54.5, lat: 24.4, region: 'gcc' },
+  'United Arab Emirates': { lng: 54.5, lat: 24.4, region: 'gcc' },
+  'Qatar':                { lng: 51.2, lat: 25.3, region: 'gcc' },
+  'Bahrain':              { lng: 50.6, lat: 26.0, region: 'gcc' },
+  'Kuwait':               { lng: 47.6, lat: 29.3, region: 'gcc' },
+  'Oman':                 { lng: 57.0, lat: 21.5, region: 'gcc' },
+  // Adjacent / regional — drawn at the edges of the field
+  'Jordan':               { lng: 38.5, lat: 31.0, region: 'adjacent' },
+  'Egypt':                { lng: 32.0, lat: 28.0, region: 'adjacent' },
+  'Lebanon':              { lng: 36.0, lat: 33.8, region: 'adjacent' },
+  'Saudi Arabia / MENA':  { lng: 45.0, lat: 24.7, region: 'gcc' },
+  'GCC':                  { lng: 49.0, lat: 25.5, region: 'gcc' },
+  // Global — these accumulate into the "elsewhere" counter
+};
+
+// Distinct color band — each sector gets a hue slot around the cyan/teal
+// brand spectrum. Generated deterministically from the canonical list so
+// the same sector always maps to the same dot color.
+const SECTOR_PALETTE = [
+  '#7cd8e0', // 1  cyan (the LIVE accent)
+  '#5cc6cf', // 2  cyan deeper
+  '#3bb3bd', // 3  teal
+  '#2a8e98', // 4  teal deeper
+  '#1d6b73', // 5  ocean
+  '#0e5560', // 6  ocean deeper
+  '#9ed5d4', // 7  pale teal
+  '#b8c7c4', // 8  silver-teal
+  '#c8a87c', // 9  warm gold
+  '#b8895a', // 10 warm gold deeper
+  '#7da5b3', // 11 slate
+  '#5a8a99', // 12 slate deeper
+  '#a4dfd7', // 13 mint
+  '#84c7be', // 14 mint deeper
+  '#d4b58e', // 15 sand
+  '#8a93a8', // 16 fog
+  '#c5d5d3', // 17 silver
+];
+
+export function sectorColor(sectorLabel, sectorIndex) {
+  const i = ((sectorIndex ?? 0) % SECTOR_PALETTE.length + SECTOR_PALETTE.length) % SECTOR_PALETTE.length;
+  return SECTOR_PALETTE[i];
+}
+
+export function getCountryGeo(country) {
+  if (!country) return null;
+  return COUNTRY_GEO[country] || null;
+}
+
+// Pull the open programs we need to render dots — minimal columns only so
+// the payload stays small. Returns up to `limit` rows.
+export async function getFundingField(limit = 1500) {
+  const url = `${SB.url}/opportunities?select=id,title,country,sectors,funding_type,sponsor_institution&status=eq.open&limit=${limit}`;
+  const r = await fetch(url, { headers });
+  if (!r.ok) throw new Error('field ' + r.status);
+  return r.json();
+}
+
 // Fetch one extra slice for the sectoral chart. We pull the sector arrays
 // from opportunities and tally client-side — keeps the live.js footprint
 // small without needing a server-side view.

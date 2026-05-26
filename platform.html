@@ -135,54 +135,55 @@
     </div>
   </section>
 
-  <!-- coverage map -->
-  <section class="signature">
-    <div class="signature-bg" style="background-image:linear-gradient(160deg, #050a18 0%, #08172a 60%, #0a1f33 100%);"></div>
-    <div class="signature-inner wrap">
-      <div>
-        <p class="eyebrow">COVERAGE</p>
-        <h2>The GCC<br/><em>is just the start.</em></h2>
-        <p style="max-width:46ch; color:rgba(255,255,255,.78); line-height:1.6; margin:0 0 28px; font-size:17px; font-weight:300;">We started with Saudi Arabia and the GCC because that's where the data is most concentrated and least centralised. Next: Europe, North America, Asia, and the emerging markets where the next operators are coming from.</p>
-        <a class="btn btn-primary" href="./contact.html">Request the map</a>
+  <!-- Live Funding Field — the signature visualisation -->
+  <section class="funding-field" id="coverage" data-funding-field data-state="loading" aria-labelledby="ffTitle">
+    <div class="ff-wrap">
+      <div class="ff-head">
+        <div>
+          <p class="eyebrow r">
+            <span class="ff-stamp"><span class="dot" aria-hidden="true"></span>Live · One dot per open program</span>
+          </p>
+          <h2 class="r r1" id="ffTitle">The funding<br/><em>landscape, live.</em></h2>
+        </div>
+        <p class="lead r r2">Every open program in the database, drawn at the country it belongs to. Hover any dot to see the program, sponsor, and instrument. The cluster around Saudi Arabia isn't an accident — it's the regional cycle, rendered honestly.</p>
       </div>
-      <div class="signature-card">
-        <div class="sc-img" style="background-image:url('./assets/screens/sectors.png');"></div>
-        <p class="sc-label">Live: GCC — extending outward</p>
+
+      <div class="ff-stage r r3">
+        <svg viewBox="0 0 800 560" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Map of open funding programs across the GCC">
+          <!-- Hand-drawn-feeling Arabian peninsula outline. Not geographically
+               precise — a place-cue, not a chart axis. -->
+          <path class="ff-peninsula" d="M 232 60 L 290 50 L 365 70 L 430 88 L 485 120 L 525 150 L 555 195 L 600 230 L 660 265 L 690 315 L 685 365 L 650 400 L 605 425 L 555 440 L 495 445 L 440 435 L 380 415 L 325 390 L 280 355 L 245 310 L 215 255 L 195 195 L 200 130 L 220 80 Z" />
+          <!-- Faint latitude/longitude tick marks -->
+          <g class="ff-grid">
+            <line x1="0" y1="140" x2="800" y2="140"/>
+            <line x1="0" y1="280" x2="800" y2="280"/>
+            <line x1="0" y1="420" x2="800" y2="420"/>
+            <line x1="200" y1="0" x2="200" y2="560"/>
+            <line x1="400" y1="0" x2="400" y2="560"/>
+            <line x1="600" y1="0" x2="600" y2="560"/>
+          </g>
+          <!-- Country labels (rendered dynamically alongside the dots) -->
+          <g data-ff-labels></g>
+          <!-- Per-program dots — populated from live data on scroll-into-view -->
+          <g data-ff-dots></g>
+        </svg>
+
+        <div class="ff-tooltip" data-ff-tooltip data-visible="false" role="status" aria-live="polite">
+          <p class="tip-title" data-tip-title></p>
+          <p class="tip-meta" data-tip-meta></p>
+        </div>
       </div>
-    </div>
-    <div class="signature-tabs">
-      <button type="button" class="active"
-        data-eyebrow="COVERAGE"
-        data-title="The GCC" data-title-em="is just the start."
-        data-body="We started with Saudi Arabia and the GCC because that's where the data is most concentrated and least centralised. Next: Europe, North America, Asia, and the emerging markets where the next operators are coming from."
-        data-cta-label="Request the map"
-        data-cta-href="./contact.html"
-        data-img="./assets/screens/sectors.png"
-        data-cap="Live: GCC — extending outward">GCC</button>
-      <button type="button"
-        data-eyebrow="COVERAGE · PLANNED"
-        data-title="Europe" data-title-em="next on the map."
-        data-body="Horizon Europe, ESA programs, national space agencies, and the EIC accelerator — all curated with the same verification discipline. Joining the database in the next pilot phase."
-        data-cta-label="Join the waitlist"
-        data-cta-href="./contact.html"
-        data-img="./assets/screens/analytics.png"
-        data-cap="Planned: Q4 2026">Europe</button>
-      <button type="button"
-        data-eyebrow="COVERAGE · ROADMAP"
-        data-title="North America" data-title-em="on the roadmap."
-        data-body="NASA programs, DARPA tenders, SBIR/STTR rounds, state-level grants, and the private-accelerator ecosystem that's reshaping the industry."
-        data-cta-label="Join the waitlist"
-        data-cta-href="./contact.html"
-        data-img="./assets/screens/opportunities.png"
-        data-cap="Planned: 2027">North America</button>
-      <button type="button"
-        data-eyebrow="COVERAGE · TRACKING"
-        data-title="APAC" data-title-em="tracking quietly."
-        data-body="JAXA, ISRO, KASA, MOST, and the rising Singapore- and UAE-aligned hubs. Coverage scoped, partners welcome to shape priorities."
-        data-cta-label="Join the waitlist"
-        data-cta-href="./contact.html"
-        data-img="./assets/screens/home.png"
-        data-cap="Tracking — waitlist open">APAC</button>
+
+      <div class="ff-foot">
+        <div class="ff-foot-left">
+          <div><strong class="live" data-ff-total>—</strong>Open programs · GCC field</div>
+          <div><strong data-ff-elsewhere>—</strong>Elsewhere · global pinpricks</div>
+        </div>
+        <div class="ff-legend" data-ff-legend role="group" aria-label="Filter by sector — hover a chip to highlight matching programs"></div>
+        <div class="ff-foot-right">
+          <a class="btn btn-primary" href="./contact.html">Request the map</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -240,5 +241,6 @@
   </aside>
 
   <script src="./assets/main.js"></script>
+  <script type="module" src="./assets/enhance.js"></script>
 </body>
 </html>
