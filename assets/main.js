@@ -36,6 +36,8 @@ backdrop?.addEventListener('click', closeSheet);
 document.querySelectorAll('.signature').forEach(section => {
   const group = section.querySelector('.signature-tabs');
   if (!group) return;
+  // ARIA wiring — give the strip tablist semantics, and mark each button.
+  group.setAttribute('role', 'tablist');
   const els = {
     eyebrow: section.querySelector('.eyebrow'),
     h2: section.querySelector('h2'),
@@ -55,9 +57,18 @@ document.querySelectorAll('.signature').forEach(section => {
       els.h2.append(em);
     }
   };
-  group.querySelectorAll('button').forEach(btn => {
+  const buttons = [...group.querySelectorAll('button')];
+  buttons.forEach(b => {
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', b.classList.contains('active') ? 'true' : 'false');
+  });
+  buttons.forEach(btn => {
     btn.addEventListener('click', () => {
-      group.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+      buttons.forEach(b => {
+        const is = b === btn;
+        b.classList.toggle('active', is);
+        b.setAttribute('aria-selected', is ? 'true' : 'false');
+      });
       const d = btn.dataset;
       if (d.eyebrow && els.eyebrow) els.eyebrow.textContent = d.eyebrow;
       if (d.title) setTitle(d.title, d.titleEm || '');
@@ -89,12 +100,22 @@ document.querySelectorAll('[data-scroll-target]').forEach(group => {
 document.querySelectorAll('.hero-tabs').forEach(group => {
   const hero = group.closest('.hero') || document;
   const panes = hero.querySelectorAll('[data-tab-pane]');
-  group.querySelectorAll('a').forEach(a => {
+  group.setAttribute('role', 'tablist');
+  const links = [...group.querySelectorAll('a')];
+  links.forEach(a => {
+    a.setAttribute('role', 'tab');
+    a.setAttribute('aria-selected', a.classList.contains('active') ? 'true' : 'false');
+  });
+  links.forEach(a => {
     a.addEventListener('click', (e) => {
       if (!a.dataset.tab) return;
       e.preventDefault();
       const key = a.dataset.tab;
-      group.querySelectorAll('a').forEach(x => x.classList.toggle('active', x === a));
+      links.forEach(x => {
+        const is = x === a;
+        x.classList.toggle('active', is);
+        x.setAttribute('aria-selected', is ? 'true' : 'false');
+      });
       panes.forEach(p => {
         const match = p.dataset.tabPane === key;
         p.hidden = !match;
