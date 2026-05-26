@@ -50,12 +50,18 @@ allergic to puffery. Most of them have spreadsheets that are out of date.
 - **Typography.** Fraunces serif (variable `SOFT` axis used as a meaningful
   axis, not for decoration). Inter sans (300/400/500/600/700). JetBrains Mono
   for codes, labels, eyebrows, metadata.
-- **Color.** Three roles: ink (deep navy, `--c-ink-900`), space (the deep
-  blue-black, `--c-space-deep`), and cyan (the accent, `--c-cyan`). Use cyan
-  sparingly — it's how we mark "live" things and only "live" things.
-- **Surfaces.** Warm paper (`--bg-warm`) for editorial sections, pale aqua
-  (`--bg`) for surfaces between, deep space gradient for hero/signature
-  full-bleeds.
+- **Color.** Three roles: ink (white on dark), space (the deep blue-black
+  ground `--c-space-700`/`--c-space-900`), and cyan (the accent, `--c-cyan`).
+  Use cyan sparingly — it's how we mark "live" things and only "live" things.
+  The italic accent on serif headlines uses `--c-cyan` directly (one of the
+  few non-live uses); plain copy stays in white at varying alpha.
+- **Surfaces.** Dark-cosmic-editorial — the page ground is the deep space
+  gradient. Section surfaces vary only in depth: `bg-warm` is a heavier
+  warm-dark, `bg-surface` a lifted dark, `bg-dark` the deepest. Light paper
+  is the exception, not the rule — pulled only when `.bg-paper` is set on a
+  section that needs to read as a "moment of warmth" (e.g. an editorial
+  pullquote, a contributor note). Most pages should have at most one paper
+  moment, or none.
 - **Density.** Air around content is part of the brand. Never compress the
   layout to fit. If something doesn't fit, cut it.
 
