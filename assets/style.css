@@ -575,6 +575,32 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   background: linear-gradient(180deg, rgba(8,20,40,.05) 0%, rgba(8,20,40,.55) 100%);
   pointer-events: none;
 }
+/* Subtle dot field behind the stat number — a calm preview of the
+   Funding Field aesthetic. Pure decoration; no interaction. */
+.stat-card .stat-field {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 0;
+  opacity: .55;
+  background-image:
+    radial-gradient(1.6px 1.6px at 12% 22%, rgba(124, 216, 224, .85), transparent 60%),
+    radial-gradient(1.4px 1.4px at 18% 38%, rgba(124, 216, 224, .60), transparent 60%),
+    radial-gradient(1.6px 1.6px at 28% 18%, rgba(124, 216, 224, .70), transparent 60%),
+    radial-gradient(1.8px 1.8px at 32% 52%, rgba(124, 216, 224, .65), transparent 60%),
+    radial-gradient(1.4px 1.4px at 22% 64%, rgba(184, 137, 90, .55), transparent 60%),
+    radial-gradient(1.6px 1.6px at 42% 28%, rgba(124, 216, 224, .55), transparent 60%),
+    radial-gradient(1.4px 1.4px at 48% 64%, rgba(124, 216, 224, .50), transparent 60%),
+    radial-gradient(1.8px 1.8px at 36% 84%, rgba(29, 107, 115, .85), transparent 60%),
+    radial-gradient(1.2px 1.2px at 56% 18%, rgba(124, 216, 224, .55), transparent 60%),
+    radial-gradient(1.4px 1.4px at 62% 38%, rgba(124, 216, 224, .50), transparent 60%),
+    radial-gradient(1.6px 1.6px at 72% 78%, rgba(184, 137, 90, .55), transparent 60%),
+    radial-gradient(1.4px 1.4px at 78% 28%, rgba(124, 216, 224, .50), transparent 60%),
+    radial-gradient(1.6px 1.6px at 84% 56%, rgba(124, 216, 224, .55), transparent 60%),
+    radial-gradient(1.4px 1.4px at 88% 80%, rgba(29, 107, 115, .55), transparent 60%),
+    radial-gradient(1.2px 1.2px at 92% 16%, rgba(124, 216, 224, .55), transparent 60%);
+  transition: opacity .5s var(--ease-out), transform .5s var(--ease-out);
+}
+.stat-card:hover .stat-field { opacity: .85; transform: scale(1.04); }
+.stat-card > .stat-num, .stat-card > .stat-label { position: relative; z-index: 2; }
 .stat-card > * { position: relative; z-index: 1; }
 .stat-card .stat-num {
   font-family: var(--serif);
@@ -1429,10 +1455,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   display: block;
 }
 .ff-peninsula {
-  fill: rgba(124, 216, 224, 0.025);
-  stroke: rgba(124, 216, 224, 0.16);
-  stroke-width: 1;
-  stroke-dasharray: 3 4;
+  fill: rgba(124, 216, 224, 0.018);
+  stroke: rgba(124, 216, 224, 0.32);
+  stroke-width: 1.3;
+  stroke-dasharray: 4 5;
+  filter: drop-shadow(0 0 12px rgba(124, 216, 224, 0.18));
 }
 .ff-grid {
   stroke: rgba(255, 255, 255, .04);
@@ -1475,13 +1502,21 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .ff-country {
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .14em;
+  font-size: 10px;
+  letter-spacing: .18em;
   text-transform: uppercase;
-  fill: rgba(255, 255, 255, .55);
+  fill: rgba(255, 255, 255, .65);
   pointer-events: none;
+  paint-order: stroke;
+  stroke: rgba(5, 10, 24, 0.6);
+  stroke-width: 3;
+  stroke-linejoin: round;
 }
-.ff-country-n { fill: var(--c-cyan); font-weight: 500; }
+.ff-country-n {
+  fill: var(--c-cyan);
+  font-weight: 500;
+  font-size: 11px;
+}
 /* Glassmorphic tooltip — dark glass with inset cyan highlight on top,
    subtle ambient shadow underneath. Sits above the cursor. */
 .ff-tooltip {

@@ -157,9 +157,23 @@ export function sectorColor(sectorLabel, sectorIndex) {
   return SECTOR_PALETTE[i];
 }
 
-export function getCountryGeo(country) {
+// Normalize the country name to one canonical label per place — the DB
+// has e.g. both "UAE" (143 rows) and "United Arab Emirates" (6 rows) and
+// we want both to land in the same cluster.
+const COUNTRY_ALIAS = {
+  'United Arab Emirates': 'UAE',
+  'Saudi Arabia / MENA':  'Saudi Arabia',
+  'GCC':                  'Saudi Arabia',
+};
+export function canonicalCountry(country) {
   if (!country) return null;
-  return COUNTRY_GEO[country] || null;
+  return COUNTRY_ALIAS[country] || country;
+}
+
+export function getCountryGeo(country) {
+  const c = canonicalCountry(country);
+  if (!c) return null;
+  return COUNTRY_GEO[c] || null;
 }
 
 // Pull the open programs we need to render dots — minimal columns only so

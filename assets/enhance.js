@@ -9,8 +9,20 @@
 
 import {
   getStats, getSectorBreakdown, countUp, formatVerified,
-  getFundingField, getCountryGeo, sectorColor,
+  getFundingField, getCountryGeo, sectorColor, canonicalCountry,
 } from './live.js';
+
+// 0) Stat-card dot fields ---------------------------------------------
+// Inject a decorative dot-field layer into every .stat-card so they
+// echo the Funding Field aesthetic without each HTML page needing to
+// know about it.
+document.querySelectorAll('.stat-card').forEach(card => {
+  if (card.querySelector('.stat-field')) return;
+  const field = document.createElement('span');
+  field.className = 'stat-field';
+  field.setAttribute('aria-hidden', 'true');
+  card.prepend(field);
+});
 
 // 1) Hero entry --------------------------------------------------------
 (() => {
@@ -169,10 +181,11 @@ function buildFieldSvg(rows, sectorIndex) {
   const buckets = new Map();
   let elsewhere = 0;
   for (const r of rows) {
+    const canon = canonicalCountry(r.country);
     const geo = getCountryGeo(r.country);
-    if (!geo) { elsewhere++; continue; }
-    if (!buckets.has(r.country)) buckets.set(r.country, []);
-    buckets.get(r.country).push(r);
+    if (!geo || !canon) { elsewhere++; continue; }
+    if (!buckets.has(canon)) buckets.set(canon, []);
+    buckets.get(canon).push(r);
   }
 
   // Concentric stagger anchor — dots ripple outward from Saudi's centroid.
@@ -222,17 +235,27 @@ function buildFieldSvg(rows, sectorIndex) {
       total++;
     });
 
-    // Country label
-    const labelOffset = country === 'Saudi Arabia' ? 130 :
-                        country === 'Oman' ? 50 :
-                        country === 'UAE' || country === 'United Arab Emirates' ? 50 :
-                        country === 'Kuwait' ? 36 :
-                        country === 'Bahrain' ? -22 :
-                        country === 'Qatar' ? -32 : 36;
-    const lx = c.x.toFixed(0);
-    const ly = (c.y + labelOffset).toFixed(0);
+    // Country label — manual layout per country so labels don't collide.
+    // Format: { dx, dy, anchor }. Defaults are centred under the cluster.
+    const labelLayout = {
+      'Saudi Arabia':         { dx: 0,   dy: 138, anchor: 'middle' },
+      'Oman':                 { dx: 8,   dy: 56,  anchor: 'start'  },
+      'UAE':                  { dx: 50,  dy: 12,  anchor: 'start'  },
+      'United Arab Emirates': { dx: 50,  dy: 12,  anchor: 'start'  },
+      'Kuwait':               { dx: 0,   dy: -32, anchor: 'middle' },
+      'Bahrain':              { dx: -22, dy: -10, anchor: 'end'    },
+      'Qatar':                { dx: 32,  dy: 28,  anchor: 'start'  },
+      'Jordan':               { dx: 0,   dy: -28, anchor: 'middle' },
+      'Egypt':                { dx: 0,   dy: 36,  anchor: 'middle' },
+      'Lebanon':              { dx: 0,   dy: -28, anchor: 'middle' },
+      'GCC':                  { dx: 0,   dy: 36,  anchor: 'middle' },
+      'Saudi Arabia / MENA':  { dx: 0,   dy: 120, anchor: 'middle' },
+    };
+    const layout = labelLayout[country] ?? { dx: 0, dy: 36, anchor: 'middle' };
+    const lx = (c.x + layout.dx).toFixed(0);
+    const ly = (c.y + layout.dy).toFixed(0);
     labelsSvg.push(
-      `<text class="ff-country" x="${lx}" y="${ly}" text-anchor="middle">${xmlEscape(country)} · <tspan class="ff-country-n">${list.length}</tspan></text>`
+      `<text class="ff-country" x="${lx}" y="${ly}" text-anchor="${layout.anchor}">${xmlEscape(country)} <tspan class="ff-country-n">${list.length}</tspan></text>`
     );
   }
 
