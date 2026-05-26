@@ -88,6 +88,22 @@
   --rail:     clamp(20px, 5vw, 64px);
   --ease:     cubic-bezier(.2, .7, .2, 1);
   --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-emil: cubic-bezier(.23, 1, .32, 1);     /* strong ease-out for entries */
+  --ease-press: cubic-bezier(.32, .72, 0, 1);    /* iOS-feel for press / drawer */
+
+  /* Spacing scale — codified from values already in use across components. */
+  --s-1:  4px;  --s-2:  8px;  --s-3: 12px;  --s-4: 16px;
+  --s-5: 20px;  --s-6: 24px;  --s-7: 32px;  --s-8: 40px;
+  --s-9: 56px;  --s-10: 72px; --s-11: 96px; --s-12: 128px;
+
+  /* Radius scale */
+  --r-xs:   4px;
+  --r-sm:   6px;
+  --r-md:  10px;
+  --r-lg:  12px;
+  --r-xl:  16px;
+  --r-2xl: 20px;
+  --r-pill: 999px;
 
   /* ── Focus / a11y ────────────────────────────────────────────────── */
   --focus-ring:        0 0 0 3px rgba(124, 216, 224, 0.65), 0 0 0 5px rgba(10, 20, 40, 0.9);
@@ -104,7 +120,32 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 html { scroll-behavior: smooth; }
-body { min-height: 100vh; overflow-x: hidden; }
+body { min-height: 100dvh; overflow-x: hidden; }
+
+/* ─── skip-to-main link ──────────────────────────────────────────────
+   Hidden until keyboard focus. Lands above all chrome with the
+   ink-dark backdrop so it reads on any header colour. */
+.skip-link {
+  position: absolute;
+  top: 12px; left: 50%;
+  transform: translate(-50%, -120%);
+  z-index: 200;
+  padding: 12px 22px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .18em; text-transform: uppercase;
+  box-shadow: 0 14px 30px -10px rgba(10, 20, 40, .45);
+  transition: transform .22s var(--ease-emil);
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translate(-50%, 0);
+  outline: none;
+}
+
+main { display: block; }
 a { color: inherit; text-decoration: none; }
 img, svg { display: block; max-width: 100%; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
@@ -204,15 +245,17 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .util-pill {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 10px 16px;
-  border-radius: 999px;
+  min-height: 44px;          /* a11y touch target */
+  border-radius: var(--r-pill);
   border: 1px solid var(--hair-strong);
   background: rgba(255, 255, 255, 0.6);
   color: var(--ink);
   font-size: 13px; letter-spacing: .02em;
   cursor: pointer;
-  transition: background .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease);
+  transition: background .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease), transform .15s var(--ease-emil);
 }
 .util-pill:hover { background: rgba(255, 255, 255, 0.9); border-color: var(--ink); }
+.util-pill:active { transform: scale(.97); transition-duration: 80ms; }
 .util-pill svg { width: 16px; height: 16px; flex-shrink: 0; opacity: .8; }
 
 .brand-stack {
@@ -241,17 +284,21 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 .nav-cta {
+  --mx: 0px; --my: 0px;
   display: inline-flex; align-items: center; gap: 8px;
   padding: 12px 22px;
-  border-radius: 999px;
+  min-height: 44px;
+  border-radius: var(--r-pill);
   border: 2px solid var(--accent);
   color: var(--accent);
   font-size: 13px; font-weight: 600;
   letter-spacing: .14em; text-transform: uppercase;
-  transition: background .2s var(--ease), color .2s var(--ease);
+  transform: translate3d(var(--mx), var(--my), 0);
+  transition: background .2s var(--ease), color .2s var(--ease), transform .18s var(--ease-emil);
   cursor: pointer;
 }
 .nav-cta:hover { background: var(--accent); color: #fff; }
+.nav-cta:active { filter: brightness(.95); transition-duration: 80ms; }
 
 .main-nav {
   display: flex; align-items: center; justify-content: center; gap: clamp(20px, 3.5vw, 48px);
@@ -264,13 +311,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   font-size: 13px; font-weight: 600;
   letter-spacing: .18em; text-transform: uppercase;
   color: var(--ink);
-  padding: 6px 2px;
+  padding: 14px 4px;          /* taller for keyboard + touch */
+  margin: -14px 0;             /* keep visual baseline */
   transition: color .2s var(--ease);
 }
 .main-nav a:hover { color: var(--accent); }
 .main-nav a.active::after {
   content: ""; position: absolute;
-  left: 0; right: 0; bottom: -4px;
+  left: 4px; right: 4px; bottom: 10px;
   height: 2px; background: var(--accent);
 }
 
@@ -278,9 +326,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   display: none;
   width: 44px; height: 44px;
   border: 1px solid var(--hair-strong);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   align-items: center; justify-content: center;
+  transition: background .18s var(--ease), border-color .18s var(--ease), transform .15s var(--ease-emil);
 }
+.nav-mobile-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+.nav-mobile-btn:active { transform: scale(.94); transition-duration: 80ms; }
 .nav-mobile-btn span {
   display: block; width: 18px; height: 2px;
   background: var(--ink); position: relative;
@@ -295,7 +346,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ─── hero (photo / 3D, light overlay) ────── */
 .hero {
   position: relative;
-  min-height: clamp(620px, 96vh, 920px);
+  min-height: clamp(620px, 96dvh, 920px);
   width: 100%;
   overflow: hidden;
   isolation: isolate;
@@ -438,34 +489,61 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
-.hero-tabs a {
+.hero-tabs a,
+.hero-tabs button {
   font-family: var(--serif);
   font-variation-settings: "opsz" 60, "SOFT" 30;
   font-weight: 400;
   font-size: 18px;
   color: var(--muted);
   position: relative;
-  padding: 4px 2px;
+  padding: 10px 6px;            /* taller hit target — keyboard + touch */
+  margin: -10px -2px;            /* preserve visual baseline */
+  background: none; border: 0;
+  cursor: pointer;
+  transition: color .18s var(--ease);
 }
-.hero-tabs a.active { color: var(--ink); }
-.hero-tabs a.active::after {
+.hero-tabs a:hover,
+.hero-tabs button:hover { color: var(--ink); }
+.hero-tabs a:active,
+.hero-tabs button:active { transform: scale(.97); transition-duration: 80ms; }
+.hero-tabs a.active,
+.hero-tabs button.active { color: var(--ink); }
+.hero-tabs a.active::after,
+.hero-tabs button.active::after {
   content: ""; position: absolute;
-  left: 0; right: 0; bottom: -6px;
+  left: 6px; right: 6px; bottom: 4px;
   height: 2px; background: var(--accent);
 }
 
 /* ─── buttons ──────────────────────────────── */
 .btn {
+  /* --mx / --my carry the magnetic offset so the inline-set transform
+     on hover doesn't collide with the :active feedback below. */
+  --mx: 0px;
+  --my: 0px;
+  --lift: 0px;
   display: inline-flex; align-items: center; gap: 10px;
   padding: 14px 28px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   font-size: 13px; font-weight: 600;
   letter-spacing: .14em; text-transform: uppercase;
   border: 2px solid transparent;
-  transition: transform .2s var(--ease), background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+  transform: translate3d(var(--mx), calc(var(--my) + var(--lift)), 0);
+  transition:
+    transform .2s var(--ease-emil),
+    background .2s var(--ease),
+    color .2s var(--ease),
+    border-color .2s var(--ease),
+    box-shadow .25s var(--ease);
   cursor: pointer;
 }
-.btn:hover { transform: translateY(-1px); }
+.btn:hover { --lift: -1px; }
+.btn:active {
+  --lift: 0px;
+  filter: brightness(.95);
+  transition-duration: 80ms;
+}
 .btn-primary {
   background: linear-gradient(180deg, #ffffff 0%, #f3f7f7 100%);
   color: var(--ink);
@@ -495,9 +573,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .section.bg-warm { background: var(--bg-warm); border-top: 0; }
 .section.bg-surface { background: var(--surface); border-top: 0; }
 .section.bg-dark { background: #08172a; color: #fff; border-top: 0; }
-.section.bg-dark .eyebrow { color: rgba(255,255,255,.65); }
+.section.bg-dark .eyebrow { color: rgba(255,255,255,.78); }
 .section.bg-dark .section-title { color: #fff; }
-.section.bg-dark .section-lead { color: rgba(255,255,255,.78); }
+.section.bg-dark .section-lead { color: rgba(255,255,255,.82); }
+
+/* Section rhythm modifiers — broken from the metronomic baseline.
+   Use --tight where the surrounding sections already feel heavy
+   (stats + sectoral, back-to-back); use --breath where one moment
+   deserves more air (the signature, the funding-field, the callout). */
+.section.section--tight  { padding: clamp(56px, 8vh, 92px) 0; }
+.section.section--breath { padding: clamp(112px, 16vh, 180px) 0; }
 
 .section-head {
   display: grid;
@@ -505,6 +590,18 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   gap: 48px;
   align-items: end;
   margin-bottom: clamp(48px, 7vh, 80px);
+}
+/* Stacked variant — kills the 50/50 split when the lead is shorter
+   than the title needs and the symmetry just adds visual weight.
+   Title sits left, lead drops into a 52ch column beneath the eyebrow
+   group instead of competing on the same baseline. */
+.section-head.section-head--stacked {
+  display: block;
+  max-width: 920px;
+}
+.section-head.section-head--stacked .section-lead {
+  margin-top: clamp(20px, 2.4vw, 32px);
+  max-width: 56ch;
 }
 .eyebrow {
   font-size: 12px; font-weight: 600;
@@ -535,22 +632,23 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   margin: 0;
 }
 
-/* ─── stats strip (image-backed cards) ─────── */
+/* ─── stats strip (image-backed cards) ───────
+   Editorial 1.4 / 1 / 1 split — one feature card on the left,
+   two equal cards to its right. Breaks the symmetric 3-up
+   feature-grid trap while keeping the live data legible.
+   Falls back to 3-equal then horizontal scroll on narrower screens. */
 .stats-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: clamp(14px, 1.4vw, 22px);
   padding-bottom: 24px;
   -webkit-overflow-scrolling: touch;
 }
 .stat-card {
   position: relative;
   aspect-ratio: 4 / 3;
-  border-radius: 10px;
+  border-radius: var(--r-md);
   overflow: hidden;
-  scroll-snap-align: start;
   background: var(--c-ink-900) center/cover;
   color: #fff;
   box-shadow:
@@ -558,9 +656,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     inset 0 0 0 1px rgba(255, 255, 255, 0.04),
     0 20px 50px -20px rgba(10, 20, 40, 0.55),
     0 0 30px -8px rgba(11, 58, 74, 0.35);
-  display: flex; align-items: flex-start;
-  padding: 36px;
-  transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(24px, 2.4vw, 36px);
+  transition: transform .35s var(--ease-emil), box-shadow .35s var(--ease-emil);
+}
+/* The lead card on the left gets a wider aspect so it earns its column. */
+.stats-row .stat-card:first-child {
+  aspect-ratio: 5 / 4;
 }
 .stat-card:hover {
   transform: translateY(-2px);
@@ -602,20 +706,25 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .stat-card:hover .stat-field { opacity: .85; transform: scale(1.04); }
 .stat-card > .stat-num, .stat-card > .stat-label { position: relative; z-index: 2; }
 .stat-card > * { position: relative; z-index: 1; }
+
+/* Hero tabpanels — `hidden` attribute hides; visible pane fills the
+   stage. No extra display rules needed since hero-text inherits its
+   block layout. Reduced-motion / aria-hidden state stays correct. */
+.hero [data-tab-pane][hidden] { display: none; }
 .stat-card .stat-num {
   font-family: var(--serif);
   font-variation-settings: "opsz" 144, "SOFT" 30;
   font-weight: 400;
-  font-size: clamp(64px, 8vw, 112px);
+  font-size: clamp(56px, 7.2vw, 104px);
   line-height: 1;
   letter-spacing: -.025em;
 }
 .stat-card .stat-label {
-  position: absolute; left: 36px; right: 36px; bottom: 28px;
   font-family: var(--serif);
   font-variation-settings: "opsz" 60, "SOFT" 30;
   font-weight: 400;
-  font-size: 18px;
+  font-size: clamp(15px, 1.2vw, 18px);
+  align-self: flex-start;
 }
 
 .scroll-track {
@@ -628,13 +737,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .scroll-track .knob { position: absolute; top: -3px; bottom: -3px; background: var(--ink); border-radius: 999px; width: 20%; }
 .scroll-arrows { display: flex; justify-content: flex-end; gap: 10px; margin-top: -28px; }
 .scroll-arrows button {
-  width: 36px; height: 36px;
-  border-radius: 999px;
+  width: 44px; height: 44px;       /* a11y touch target */
+  border-radius: var(--r-pill);
   border: 1px solid var(--hair-strong);
   display: grid; place-items: center;
   color: var(--ink);
+  background: rgba(255, 255, 255, 0.6);
+  transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease), transform .15s var(--ease-emil);
 }
 .scroll-arrows button:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+.scroll-arrows button:active { transform: scale(.92); transition-duration: 80ms; }
 
 /* ─── location / two-up section ────────────── */
 .split {
@@ -853,13 +965,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .signature-tabs button {
   padding: 12px 22px;
-  border-radius: 999px;
+  min-height: 44px;
+  border-radius: var(--r-pill);
   font-size: 13px; font-weight: 600;
   letter-spacing: .16em; text-transform: uppercase;
   color: rgba(255, 255, 255, .85);
-  transition: background .22s var(--ease), color .22s var(--ease), box-shadow .22s var(--ease);
+  transition: background .22s var(--ease), color .22s var(--ease), box-shadow .22s var(--ease), transform .15s var(--ease-emil);
 }
 .signature-tabs button:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+.signature-tabs button:active { transform: scale(.97); transition-duration: 80ms; }
 .signature-tabs button.active {
   background: linear-gradient(180deg, #fff 0%, #f3f7f7 100%);
   color: var(--ink);
@@ -1067,6 +1181,48 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   margin: 0 0 24px;
 }
 
+/* Callout aside — the screenshot card that replaced the decorative
+   orb in the home page's pilot callout. Doppelrand structure: an
+   outer card holds the screenshot with a hairline + glow, and a
+   caption row underneath. The whole thing is a link. */
+.callout-aside {
+  display: flex; flex-direction: column;
+  gap: 16px;
+  padding: 10px 10px 12px;
+  border-radius: var(--r-lg);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(124, 216, 224, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(124, 216, 224, 0.18),
+    0 22px 50px -22px rgba(0, 0, 0, 0.55);
+  text-decoration: none;
+  color: inherit;
+  transition: transform .3s var(--ease-emil), box-shadow .3s var(--ease-emil), border-color .3s var(--ease);
+}
+.callout-aside:hover {
+  transform: translateY(-2px);
+  border-color: rgba(124, 216, 224, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(124, 216, 224, 0.28),
+    0 30px 64px -22px rgba(0, 0, 0, 0.6),
+    0 0 30px -8px rgba(124, 216, 224, 0.28);
+}
+.callout-aside:active { transform: translateY(0); transition-duration: 120ms; }
+.callout-aside-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-sm);
+  background: var(--c-space-700) center top / cover no-repeat;
+}
+.callout-aside-cap {
+  margin: 0;
+  display: flex; align-items: center; gap: 12px;
+  flex-wrap: wrap;
+  padding: 4px 6px 6px;
+  font-size: 12px; line-height: 1.4;
+  color: rgba(255, 255, 255, 0.78);
+}
+
 /* ─── footer ───────────────────────────────── */
 .foot {
   background: var(--ink);
@@ -1092,12 +1248,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   font-family: var(--mono);
   font-size: 11px; font-weight: 500;
   letter-spacing: .22em; text-transform: uppercase;
-  color: rgba(255,255,255,.55);
+  color: rgba(255,255,255,.72);    /* WCAG AA fix — was .55 (~4.0:1, failed) */
   margin: 0 0 18px;
 }
 .foot-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .foot-col a {
-  font-size: 14px; color: rgba(255,255,255,.78);
+  font-size: 14px; color: rgba(255,255,255,.82);
   transition: color .2s var(--ease);
 }
 .foot-col a:hover { color: #fff; }
@@ -1107,7 +1263,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   padding-top: 28px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.72);  /* WCAG AA fix — was .55 */
 }
 .foot-bottom .stamp { display: inline-flex; align-items: center; gap: 10px; }
 .foot-bottom .stamp .dot {
@@ -1117,24 +1273,39 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   animation: pulse 2.8s var(--ease) infinite;
 }
 
-/* ─── floating chat helper ─────────────────── */
+/* ─── floating contact helper ───────────────
+   Honest-naming fix — was `chat-fab` with a chat-bubble icon,
+   implying a chat widget that doesn't exist. Now a discrete
+   envelope pill that opens email/contact, matched to the
+   brand's "say what is true" rule. */
 .chat-fab {
   position: fixed;
-  right: 24px; bottom: 24px;
+  right: clamp(16px, 2vw, 28px);
+  bottom: clamp(16px, 2vw, 28px);
   width: 56px; height: 56px;
   border-radius: 50%;
   background: var(--accent);
   color: #fff;
   display: grid; place-items: center;
   z-index: 60;
-  box-shadow: 0 8px 24px rgba(11, 58, 74, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(124, 216, 224, 0.25),
+    0 14px 32px -8px rgba(11, 58, 74, 0.4);
   cursor: pointer;
-  transition: transform .2s var(--ease), background .2s var(--ease);
+  transition: transform .22s var(--ease-emil), background .2s var(--ease), box-shadow .25s var(--ease);
 }
-.chat-fab:hover { transform: scale(1.05); background: var(--accent-2); }
+.chat-fab:hover {
+  transform: scale(1.05);
+  background: var(--accent-2);
+  box-shadow:
+    inset 0 1px 0 rgba(124, 216, 224, 0.35),
+    0 18px 38px -8px rgba(11, 58, 74, 0.48),
+    0 0 22px -6px rgba(124, 216, 224, 0.45);
+}
+.chat-fab:active { transform: scale(.94); transition-duration: 80ms; }
 .chat-fab::before {
   content: ""; width: 22px; height: 22px;
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'><path d='M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z'/></svg>") center/contain no-repeat;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='M3 7l9 6 9-6'/></svg>") center/contain no-repeat;
 }
 
 /* ─── responsive ───────────────────────────── */
@@ -1142,7 +1313,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .section-head { grid-template-columns: 1fr; gap: 18px; }
   .split { grid-template-columns: 1fr; }
   .split.reverse > :first-child { order: 0; }
-  .stats-row { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: minmax(280px, 1fr); }
+  .stats-row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: minmax(260px, 1fr);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+  .stats-row .stat-card { aspect-ratio: 4 / 3; scroll-snap-align: start; }
+  .stats-row .stat-card:first-child { aspect-ratio: 4 / 3; }
   .module-row { grid-template-columns: 64px 1fr 1fr 120px; gap: 18px; }
   .signature-inner { grid-template-columns: 1fr; }
   .callout { grid-template-columns: 1fr; }
@@ -1180,11 +1360,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* mobile menu sheet */
 .mobile-sheet {
   position: fixed;
-  top: 0; right: 0; height: 100vh; width: min(360px, 84vw);
+  top: 0; right: 0; height: 100dvh; width: min(360px, 84vw);
   z-index: 100;
   background: var(--surface);
   transform: translateX(100%);
-  transition: transform .35s var(--ease);
+  transition: transform .35s var(--ease-press);
   display: flex; flex-direction: column;
   padding: 80px 32px 32px;
   box-shadow: -20px 0 60px rgba(10, 20, 40, .2);
@@ -1201,11 +1381,20 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .mobile-sheet a:hover { color: var(--accent); }
 .sheet-close {
-  position: absolute; top: 28px; right: 28px;
-  width: 36px; height: 36px;
+  position: absolute; top: 22px; right: 22px;
+  width: 44px; height: 44px;
+  border-radius: var(--r-pill);
   display: grid; place-items: center;
-  font-size: 24px; color: var(--ink);
+  font-size: 22px; color: var(--ink);
+  transition: background .18s var(--ease), transform .15s var(--ease-emil);
 }
+.sheet-close:hover { background: var(--accent-soft); }
+.sheet-close:active { transform: scale(.92); transition-duration: 80ms; }
+.mobile-sheet a {
+  padding: 14px 0;
+  transition: color .18s var(--ease), transform .15s var(--ease-emil);
+}
+.mobile-sheet a:active { transform: scale(.985); transition-duration: 80ms; }
 .sheet-backdrop {
   position: fixed; inset: 0; z-index: 99;
   background: rgba(8, 16, 30, 0.5);
@@ -1218,10 +1407,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .live-stamp {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 4px 12px 4px 8px;
-  border-radius: 999px;
-  background: var(--live-soft);
-  border: 1px solid var(--live-line);
-  color: var(--live);
+  border-radius: var(--r-pill);
+  /* Default = ink-on-paper variant. WCAG AA on light surfaces.
+     Dark-surface override below restores the cyan-on-glass look
+     where the stamp sits over the hero / signature / funding-field. */
+  background: rgba(11, 58, 74, 0.06);
+  border: 1px solid rgba(11, 58, 74, 0.22);
+  color: var(--accent);
   font-family: var(--mono);
   font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
   font-weight: 500;
@@ -1229,9 +1421,35 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .live-stamp .live-dot {
   width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent-2);
+  box-shadow: 0 0 0 0 rgba(29, 107, 115, .55);
+  animation: livePulseInk 2.4s var(--ease, ease) infinite;
+}
+@keyframes livePulseInk {
+  0%   { box-shadow: 0 0 0 0 rgba(29, 107, 115, .55); }
+  70%  { box-shadow: 0 0 0 12px rgba(29, 107, 115, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(29, 107, 115, 0); }
+}
+/* Cyan variant — restore on dark surfaces only. */
+.site-header.over-hero .live-stamp,
+.hero .live-stamp,
+.signature .live-stamp,
+.funding-field .live-stamp,
+.section.bg-dark .live-stamp,
+.callout.dark .live-stamp {
+  background: var(--live-soft);
+  border-color: var(--live-line);
+  color: var(--live);
+}
+.site-header.over-hero .live-stamp .live-dot,
+.hero .live-stamp .live-dot,
+.signature .live-stamp .live-dot,
+.funding-field .live-stamp .live-dot,
+.section.bg-dark .live-stamp .live-dot,
+.callout.dark .live-stamp .live-dot {
   background: var(--live);
   box-shadow: 0 0 0 0 rgba(124, 216, 224, .6);
-  animation: livePulse 2.4s var(--ease, ease) infinite;
+  animation-name: livePulse;
 }
 .live-stamp.stale .live-dot {
   background: #c8a87c; box-shadow: none; animation: none;

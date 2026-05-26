@@ -514,11 +514,18 @@ async function hydrateField() {
 
 // 3) Magnetic CTA polish ----------------------------------------------
 // Subtle: button drifts toward the cursor by ~18% of the offset inside a
-// 90px halo. Reset on leave. No lib, no layout thrash.
+// 90px halo. Writes CSS variables (--mx / --my) instead of a full
+// transform string so the button's :active scale + hover :lift don't
+// stomp each other. The base .btn rule composes them.
 document.querySelectorAll('.btn-primary, .nav-cta').forEach(btn => {
   if (window.matchMedia('(pointer: coarse)').matches) return;
   btn.setAttribute('data-magnetic', '');
   let raf = 0;
+  const reset = () => {
+    cancelAnimationFrame(raf);
+    btn.style.setProperty('--mx', '0px');
+    btn.style.setProperty('--my', '0px');
+  };
   btn.addEventListener('pointermove', (e) => {
     const r = btn.getBoundingClientRect();
     const cx = r.left + r.width / 2;
@@ -526,14 +533,13 @@ document.querySelectorAll('.btn-primary, .nav-cta').forEach(btn => {
     const dx = e.clientX - cx;
     const dy = e.clientY - cy;
     const dist = Math.hypot(dx, dy);
-    if (dist > 90) return;
+    if (dist > 90) { reset(); return; }
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(() => {
-      btn.style.transform = `translate(${(dx * 0.18).toFixed(2)}px, ${(dy * 0.18).toFixed(2)}px)`;
+      btn.style.setProperty('--mx', (dx * 0.18).toFixed(2) + 'px');
+      btn.style.setProperty('--my', (dy * 0.18).toFixed(2) + 'px');
     });
   });
-  btn.addEventListener('pointerleave', () => {
-    cancelAnimationFrame(raf);
-    btn.style.transform = '';
-  });
+  btn.addEventListener('pointerleave', reset);
+  btn.addEventListener('blur', reset);
 });

@@ -19,6 +19,8 @@
 </head>
 <body>
 
+  <a class="skip-link" href="#main">Skip to main content</a>
+
   <header class="site-header over-hero">
     <div class="util-bar">
       <div class="util-left">
@@ -41,15 +43,17 @@
         <button class="nav-mobile-btn" id="navMobileBtn" aria-label="Open menu"><span></span></button>
       </div>
     </div>
-    <nav class="main-nav">
+    <nav class="main-nav" aria-label="Primary">
       <a href="./index.html">Home</a>
       <a href="./platform.html">Platform</a>
       <a href="./modules.html">Modules</a>
       <a href="./pilots.html">Pilots</a>
       <a href="./about.html">About</a>
-      <a href="./contact.html" class="active">Contact</a>
+      <a href="./contact.html" class="active" aria-current="page">Contact</a>
     </nav>
   </header>
+
+  <main id="main">
 
   <section class="hero">
     <div class="hero-bg gradient" aria-hidden="true"></div>
@@ -67,9 +71,9 @@
         <div class="card-label">Direct to founder</div>
       </a>
     </div>
-    <div class="hero-tabs">
-      <a href="#" data-tab="pilot" class="active">Pilot enquiry</a>
-      <a href="#" data-tab="press">Press / other</a>
+    <div class="hero-tabs" role="tablist" aria-label="Enquiry type">
+      <button type="button" data-tab="pilot" class="active">Pilot enquiry</button>
+      <button type="button" data-tab="press">Press / other</button>
     </div>
   </section>
 
@@ -120,6 +124,8 @@
       </div>
     </div>
   </section>
+
+  </main>
 
   <footer class="foot">
     <div class="wrap">

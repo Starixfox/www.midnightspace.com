@@ -11,23 +11,62 @@ const io = new IntersectionObserver(entries => {
 }, { threshold: .12, rootMargin: '0px 0px -8% 0px' });
 document.querySelectorAll('.r').forEach(el => io.observe(el));
 
-// mobile menu
+// mobile menu — open / close + focus trap + Escape-to-close
 const sheet = document.getElementById('mobileSheet');
 const backdrop = document.getElementById('sheetBackdrop');
 const openBtn = document.getElementById('navMobileBtn');
 const closeBtn = document.getElementById('sheetClose');
+
+let lastFocusBeforeSheet = null;
+const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 const closeSheet = () => {
-  sheet?.classList.remove('open');
+  if (!sheet?.classList.contains('open')) return;
+  sheet.classList.remove('open');
   backdrop?.classList.remove('open');
   document.body.style.overflow = '';
+  // Return focus to whatever opened the sheet so keyboard users
+  // don't end up at the top of the page.
+  if (lastFocusBeforeSheet && typeof lastFocusBeforeSheet.focus === 'function') {
+    lastFocusBeforeSheet.focus();
+  }
 };
-openBtn?.addEventListener('click', () => {
-  sheet?.classList.add('open');
+
+const openSheet = () => {
+  if (!sheet) return;
+  lastFocusBeforeSheet = document.activeElement;
+  sheet.classList.add('open');
   backdrop?.classList.add('open');
   document.body.style.overflow = 'hidden';
-});
+  // Focus the close button so Escape / Tab have a sensible start.
+  requestAnimationFrame(() => closeBtn?.focus());
+};
+
+openBtn?.addEventListener('click', openSheet);
 closeBtn?.addEventListener('click', closeSheet);
 backdrop?.addEventListener('click', closeSheet);
+
+// Global key handlers — Escape closes, Tab is trapped.
+document.addEventListener('keydown', (e) => {
+  if (!sheet?.classList.contains('open')) return;
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeSheet();
+    return;
+  }
+  if (e.key !== 'Tab') return;
+  const items = sheet.querySelectorAll(FOCUSABLE);
+  if (!items.length) return;
+  const first = items[0];
+  const last = items[items.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
+});
 
 // signature tabs — swap the section's eyebrow / headline / body / CTA / image / caption.
 // Each button carries: data-eyebrow, data-title (top line) + data-title-em (italic line),
@@ -96,32 +135,60 @@ document.querySelectorAll('[data-scroll-target]').forEach(group => {
   });
 });
 
-// hero tabs — toggle active state AND swap matching [data-tab-pane] panes
+// hero tabs — toggle active state AND swap matching [data-tab-pane] panes.
+// Accepts either <a data-tab="..."> or <button data-tab="..."> children.
+// Sets tablist / tab / tabpanel ARIA so screen-readers can navigate the strip.
 document.querySelectorAll('.hero-tabs').forEach(group => {
   const hero = group.closest('.hero') || document;
   const panes = hero.querySelectorAll('[data-tab-pane]');
   group.setAttribute('role', 'tablist');
-  const links = [...group.querySelectorAll('a')];
-  links.forEach(a => {
-    a.setAttribute('role', 'tab');
-    a.setAttribute('aria-selected', a.classList.contains('active') ? 'true' : 'false');
+  const items = [...group.querySelectorAll('a[data-tab], button[data-tab]')];
+  if (!items.length) return;
+
+  // Assign tab + tabpanel IDs so aria-controls / aria-labelledby resolve.
+  items.forEach((el, i) => {
+    el.setAttribute('role', 'tab');
+    if (!el.id) el.id = `heroTab-${i}-${Math.random().toString(36).slice(2, 7)}`;
+    el.setAttribute('aria-selected', el.classList.contains('active') ? 'true' : 'false');
+    el.setAttribute('tabindex', el.classList.contains('active') ? '0' : '-1');
+    const target = [...panes].find(p => p.dataset.tabPane === el.dataset.tab);
+    if (target) {
+      if (!target.id) target.id = `heroPane-${i}-${Math.random().toString(36).slice(2, 7)}`;
+      target.setAttribute('role', 'tabpanel');
+      target.setAttribute('aria-labelledby', el.id);
+      el.setAttribute('aria-controls', target.id);
+    }
   });
-  links.forEach(a => {
-    a.addEventListener('click', (e) => {
-      if (!a.dataset.tab) return;
+
+  const activate = (el) => {
+    items.forEach(x => {
+      const is = x === el;
+      x.classList.toggle('active', is);
+      x.setAttribute('aria-selected', is ? 'true' : 'false');
+      x.setAttribute('tabindex', is ? '0' : '-1');
+    });
+    panes.forEach(p => {
+      const match = p.dataset.tabPane === el.dataset.tab;
+      p.hidden = !match;
+      p.setAttribute('aria-hidden', match ? 'false' : 'true');
+    });
+  };
+
+  items.forEach(el => {
+    el.addEventListener('click', (e) => {
+      if (el.tagName === 'A') e.preventDefault();
+      activate(el);
+    });
+    // Arrow-key navigation between tabs (WAI-ARIA pattern).
+    el.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
       e.preventDefault();
-      const key = a.dataset.tab;
-      links.forEach(x => {
-        const is = x === a;
-        x.classList.toggle('active', is);
-        x.setAttribute('aria-selected', is ? 'true' : 'false');
-      });
-      panes.forEach(p => {
-        const match = p.dataset.tabPane === key;
-        p.hidden = !match;
-        p.setAttribute('aria-hidden', match ? 'false' : 'true');
-      });
+      const idx = items.indexOf(el);
+      const next = e.key === 'ArrowRight'
+        ? items[(idx + 1) % items.length]
+        : items[(idx - 1 + items.length) % items.length];
+      activate(next);
+      next.focus();
     });
   });
 });
-

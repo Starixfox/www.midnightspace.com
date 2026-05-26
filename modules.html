@@ -19,6 +19,8 @@
 </head>
 <body>
 
+  <a class="skip-link" href="#main">Skip to main content</a>
+
   <header class="site-header over-hero">
     <div class="util-bar">
       <div class="util-left">
@@ -41,15 +43,17 @@
         <button class="nav-mobile-btn" id="navMobileBtn" aria-label="Open menu"><span></span></button>
       </div>
     </div>
-    <nav class="main-nav">
+    <nav class="main-nav" aria-label="Primary">
       <a href="./index.html">Home</a>
       <a href="./platform.html">Platform</a>
-      <a href="./modules.html" class="active">Modules</a>
+      <a href="./modules.html" class="active" aria-current="page">Modules</a>
       <a href="./pilots.html">Pilots</a>
       <a href="./about.html">About</a>
       <a href="./contact.html">Contact</a>
     </nav>
   </header>
+
+  <main id="main">
 
   <section class="hero">
     <div class="hero-bg gradient" aria-hidden="true"></div>
@@ -67,10 +71,10 @@
         <div class="card-label">Live: home dashboard</div>
       </a>
     </div>
-    <div class="hero-tabs">
-      <a href="#" data-tab="all" class="active">All</a>
-      <a href="#" data-tab="live">Live</a>
-      <a href="#" data-tab="planned">Planned</a>
+    <div class="hero-tabs" role="tablist" aria-label="Filter by status">
+      <button type="button" data-tab="all" class="active">All</button>
+      <button type="button" data-tab="live">Live</button>
+      <button type="button" data-tab="planned">Planned</button>
     </div>
   </section>
 
@@ -222,21 +226,27 @@
   </section>
 
   <!-- closing callout -->
-  <section class="section bg-surface">
+  <section class="section section--breath bg-surface">
     <div class="wrap">
       <div class="callout dark r">
         <div>
-          <p class="eyebrow" style="color:rgba(255,255,255,.65);">PARTNER WITH US</p>
+          <p class="eyebrow" style="color:rgba(255,255,255,.78);">PARTNER WITH US</p>
           <h2 class="callout-title">Help shape<br/><em>what's next.</em></h2>
           <p class="callout-lead">Pilot partners get early access to planned modules and a real voice in what we ship first. If you'd rebuild this from a spreadsheet otherwise — let's talk instead.</p>
           <a class="btn btn-primary" href="./pilots.html">See the pilot tiers</a>
         </div>
-        <div style="aspect-ratio:1; border-radius:6px; background:linear-gradient(135deg, rgba(184,137,90,.3), rgba(11,58,74,.6)); position:relative; overflow:hidden;">
-          <div style="position:absolute; inset:30%; border-radius:50%; background:linear-gradient(135deg, #1a3344, #050a18);"></div>
-        </div>
+        <a class="callout-aside" href="./pilots.html" aria-label="See pilot tiers">
+          <div class="callout-aside-img" style="background-image:url('./assets/screens/opportunities.png');" role="img" aria-label="Opportunities dashboard screenshot"></div>
+          <p class="callout-aside-cap">
+            <span class="live-stamp"><span class="live-dot" aria-hidden="true"></span>Prototype live</span>
+            <span>What pilot partners see inside the platform today.</span>
+          </p>
+        </a>
       </div>
     </div>
   </section>
+
+  </main>
 
   <footer class="foot">
     <div class="wrap">

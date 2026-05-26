@@ -4,12 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Midnight Space — A space-data platform</title>
-  <meta name="description" content="Midnight Space maps the funding, programs, and accelerators shaping the next generation of space business — starting with Saudi Arabia and the GCC." />
+  <meta name="description" content="Midnight Space maps the funding, programs, and accelerators shaping space business — starting with Saudi Arabia and the GCC." />
   <meta name="theme-color" content="#eef5f5" />
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Midnight Space — A space-data platform" />
-  <meta property="og:description" content="Midnight Space maps the funding, programs, and accelerators shaping the next generation of space business — starting with Saudi Arabia and the GCC." />
+  <meta property="og:description" content="Midnight Space maps the funding, programs, and accelerators shaping space business — starting with Saudi Arabia and the GCC." />
   <meta property="og:image" content="./assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -22,6 +22,8 @@
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
 <body>
+
+  <a class="skip-link" href="#main">Skip to main content</a>
 
   <header class="site-header over-hero">
     <div class="util-bar">
@@ -51,8 +53,8 @@
       </div>
     </div>
 
-    <nav class="main-nav">
-      <a href="./index.html" class="active">Home</a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="./index.html" class="active" aria-current="page">Home</a>
       <a href="./platform.html">Platform</a>
       <a href="./modules.html">Modules</a>
       <a href="./pilots.html">Pilots</a>
@@ -60,6 +62,8 @@
       <a href="./contact.html">Contact</a>
     </nav>
   </header>
+
+  <main id="main">
 
   <!-- hero -->
   <section class="hero" id="top" data-entry>
@@ -88,7 +92,7 @@
       <div class="hero-text" data-tab-pane="gcc">
         <p class="hero-eyebrow">A SPACE-DATA PLATFORM</p>
         <h1 class="hero-title">Explore<br/><em>Midnight Space</em></h1>
-        <p class="hero-sub">An honest space-data platform. We map the funding, programs, and accelerators shaping the next generation of space business — beginning with Saudi Arabia and the GCC.</p>
+        <p class="hero-sub">An honest space-data platform. We map the funding, programs, and accelerators shaping space business, beginning with Saudi Arabia and the GCC.</p>
         <div class="hero-cta-row">
           <a class="btn btn-primary" href="./platform.html">Explore the platform</a>
           <a class="btn btn-ghost" href="./pilots.html">Become a pilot partner</a>
@@ -109,9 +113,9 @@
       </a>
     </div>
 
-    <div class="hero-tabs" role="tablist">
-      <a href="#" data-tab="gcc" class="active">The GCC</a>
-      <a href="#" data-tab="global">Global · soon</a>
+    <div class="hero-tabs" role="tablist" aria-label="Coverage scope">
+      <button type="button" data-tab="gcc" class="active">The GCC</button>
+      <button type="button" data-tab="global">Global · soon</button>
     </div>
   </section>
 
@@ -132,7 +136,7 @@
   </script>
 
   <!-- stats strip · live -->
-  <section class="section bg-surface" id="liveStats">
+  <section class="section section--tight bg-surface" id="liveStats">
     <div class="wrap">
       <div class="section-head">
         <div>
@@ -316,11 +320,11 @@
   </section>
 
   <!-- callout -->
-  <section class="section bg-warm">
+  <section class="section section--breath bg-warm">
     <div class="wrap">
       <div class="callout dark r">
         <div>
-          <p class="eyebrow" style="color:rgba(255,255,255,.65);">PILOT PROGRAMME</p>
+          <p class="eyebrow" style="color:rgba(255,255,255,.78);">PILOT PROGRAMME</p>
           <h2 class="callout-title">Help us build the<br/><em>tool you need.</em></h2>
           <p class="callout-lead">If you're inside an agency, fund, operator, or government office and you've ever rebuilt a space-funding spreadsheet from scratch — we'd like to compare notes. Sketches, half-thoughts, and bad ideas welcome.</p>
           <div style="display:flex; gap:12px; flex-wrap:wrap;">
@@ -328,13 +332,21 @@
             <a class="btn btn-ghost" href="./pilots.html">See the tiers</a>
           </div>
         </div>
-        <div style="aspect-ratio:1; border-radius:6px; background:linear-gradient(135deg, rgba(184,137,90,.3), rgba(11,58,74,.6)); position:relative; overflow:hidden;">
-          <div style="position:absolute; inset:30%; border-radius:50%; background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.2) 0%, transparent 60%), linear-gradient(135deg, #1a3344, #050a18); box-shadow:inset 20px 20px 40px rgba(124,216,224,.15);"></div>
-          <div style="position:absolute; inset:0; border-radius:50%; border:1px solid rgba(255,255,255,.1); margin:18%;"></div>
-        </div>
+        <!-- A real preview of the platform instead of an abstract orb.
+             "Specific beats abstract" (BRAND.md). The screenshot is the
+             actual login surface a pilot partner lands on. -->
+        <a class="callout-aside" href="https://starixfox.github.io/Saudi-Opportunity-Hub-DEMO-white-label/login.html" target="_blank" rel="noopener" aria-label="Open the Saudi Space Opportunity Hub">
+          <div class="callout-aside-img" style="background-image:url('./assets/screens/login.png');" role="img" aria-label="Saudi Space Opportunity Hub sign-in screen"></div>
+          <p class="callout-aside-cap">
+            <span class="live-stamp"><span class="live-dot" aria-hidden="true"></span>Live</span>
+            <span>The hub a pilot partner sees on day one.</span>
+          </p>
+        </a>
       </div>
     </div>
   </section>
+
+  </main>
 
   <!-- footer -->
   <footer class="foot">
@@ -380,7 +392,7 @@
     </div>
   </footer>
 
-  <a href="./contact.html" class="chat-fab" aria-label="Open chat"></a>
+  <a href="./contact.html" class="chat-fab" aria-label="Get in touch"></a>
 
   <div class="sheet-backdrop" id="sheetBackdrop"></div>
   <aside class="mobile-sheet" id="mobileSheet">

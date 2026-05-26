@@ -19,6 +19,8 @@
 </head>
 <body>
 
+  <a class="skip-link" href="#main">Skip to main content</a>
+
   <header class="site-header over-hero">
     <div class="util-bar">
       <div class="util-left">
@@ -44,15 +46,17 @@
         <button class="nav-mobile-btn" id="navMobileBtn" aria-label="Open menu"><span></span></button>
       </div>
     </div>
-    <nav class="main-nav">
+    <nav class="main-nav" aria-label="Primary">
       <a href="./index.html">Home</a>
-      <a href="./platform.html" class="active">Platform</a>
+      <a href="./platform.html" class="active" aria-current="page">Platform</a>
       <a href="./modules.html">Modules</a>
       <a href="./pilots.html">Pilots</a>
       <a href="./about.html">About</a>
       <a href="./contact.html">Contact</a>
     </nav>
   </header>
+
+  <main id="main">
 
   <section class="hero">
     <div class="hero-bg gradient" aria-hidden="true"></div>
@@ -79,9 +83,9 @@
         <div class="card-label">Funding database · live</div>
       </a>
     </div>
-    <div class="hero-tabs">
-      <a href="#" data-tab="gcc" class="active">The GCC</a>
-      <a href="#" data-tab="global">Global · soon</a>
+    <div class="hero-tabs" role="tablist" aria-label="Coverage scope">
+      <button type="button" data-tab="gcc" class="active">The GCC</button>
+      <button type="button" data-tab="global">Global · soon</button>
     </div>
   </section>
 
@@ -106,7 +110,7 @@
           <span class="stat-label">Open calls</span>
         </article>
         <article class="stat-card" style="background-image:linear-gradient(160deg, #062235 0%, #1d6b73 100%);">
-          <span class="stat-num">300<span style="color:#7cd8e0;">+</span></span>
+          <span class="stat-num">300<span style="color:rgba(255,255,255,.62);">+</span></span>
           <span class="stat-label">Accelerators &amp; funds</span>
         </article>
       </div>
@@ -205,6 +209,8 @@
       </div>
     </div>
   </section>
+
+  </main>
 
   <footer class="foot">
     <div class="wrap">
