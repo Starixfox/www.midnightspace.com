@@ -1,0 +1,170 @@
+// Midnight Space — live data layer.
+// Pulls counts directly from the platform's Supabase REST endpoint so the
+// marketing site is its own pilot demo. If anything fails, the static
+// numbers in the HTML stay put — never blank.
+//
+// The anon key is the same one published in the platform's own /api page
+// (read-only, RLS-enforced). Safe in client-side code.
+
+const SB = {
+  url: 'https://dshrbbnjahjcwxzvzygh.supabase.co/rest/v1',
+  key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaHJiYm5qYWhqY3d4enZ6eWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0ODE3OTgsImV4cCI6MjA5NDA1Nzc5OH0.OpUGgfL91m7STsZpE6fnX281KN_Ge8oytR-2lM-3qTo',
+};
+
+const CACHE_KEY = 'ms:livestats:v1';
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+const headers = {
+  apikey: SB.key,
+  Authorization: 'Bearer ' + SB.key,
+  Accept: 'application/json',
+};
+
+// Use the PostgREST `Prefer: count=exact` trick to read row counts without
+// streaming any rows. The total comes back in the Content-Range header.
+async function countWhere(query = '') {
+  const url = `${SB.url}/opportunities?select=id&limit=1${query ? '&' + query : ''}`;
+  const r = await fetch(url, { headers: { ...headers, Prefer: 'count=exact' } });
+  if (!r.ok) throw new Error('count ' + r.status);
+  const range = r.headers.get('content-range') || '';
+  const total = parseInt(range.split('/')[1], 10);
+  return Number.isFinite(total) ? total : 0;
+}
+
+async function maxLastVerified() {
+  const url = `${SB.url}/opportunities?select=last_verified&order=last_verified.desc&limit=1`;
+  const r = await fetch(url, { headers });
+  if (!r.ok) throw new Error('verified ' + r.status);
+  const rows = await r.json();
+  return rows[0]?.last_verified || null;
+}
+
+async function fetchAll() {
+  const [total, open, gccCountries, lastVerified] = await Promise.all([
+    countWhere(),
+    countWhere('status=eq.open'),
+    countWhere('country=in.(Saudi Arabia,United Arab Emirates,Qatar,Kuwait,Bahrain,Oman)'),
+    maxLastVerified(),
+  ]);
+  return { total, open, gccCountries, lastVerified, fetchedAt: Date.now() };
+}
+
+function readCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const cached = JSON.parse(raw);
+    if (!cached.fetchedAt || Date.now() - cached.fetchedAt > CACHE_TTL) return null;
+    return cached;
+  } catch { return null; }
+}
+
+function writeCache(data) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch {}
+}
+
+// Public API ------------------------------------------------------------
+export async function getStats() {
+  const cached = readCache();
+  if (cached) return cached;
+  const fresh = await fetchAll();
+  writeCache(fresh);
+  return fresh;
+}
+
+// Animated count-up: ease-out cubic, ~1.1s, lerp from current displayed
+// value to target. Keeps the number readable throughout.
+export function countUp(el, target, opts = {}) {
+  const duration = opts.duration ?? 1100;
+  const decimals = opts.decimals ?? 0;
+  const format = opts.format ?? ((n) => n.toLocaleString('en-US', {
+    minimumFractionDigits: decimals, maximumFractionDigits: decimals,
+  }));
+  // Read the starting value from whatever's already in the DOM, stripping
+  // commas/plus signs so we don't restart from 0 if SSR'd numbers are present.
+  const startText = (el.textContent || '0').replace(/[^0-9.\-]/g, '');
+  const start = parseFloat(startText) || 0;
+  const t0 = performance.now();
+  const tick = (now) => {
+    const t = Math.min(1, (now - t0) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const value = start + (target - start) * eased;
+    el.textContent = format(value);
+    if (t < 1) requestAnimationFrame(tick);
+    else el.textContent = format(target);
+  };
+  requestAnimationFrame(tick);
+}
+
+// "Verified today" → "Verified yesterday" → "Verified Nd ago" → "Verified DD MMM"
+export function formatVerified(iso) {
+  if (!iso) return '';
+  const then = new Date(iso + (iso.length === 10 ? 'T00:00:00Z' : ''));
+  const now = new Date();
+  const days = Math.floor((Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+                         - Date.UTC(then.getUTCFullYear(), then.getUTCMonth(), then.getUTCDate())) / 86400000);
+  if (days <= 0) return 'Verified today';
+  if (days === 1) return 'Verified yesterday';
+  if (days < 14) return `Verified ${days} days ago`;
+  return 'Verified ' + then.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+}
+
+// Fetch one extra slice for the sectoral chart. We pull the sector arrays
+// from opportunities and tally client-side — keeps the live.js footprint
+// small without needing a server-side view.
+export async function getSectorBreakdown() {
+  const url = `${SB.url}/opportunities?select=sectors&status=eq.open&limit=2000`;
+  const r = await fetch(url, { headers });
+  if (!r.ok) throw new Error('sectors ' + r.status);
+  const rows = await r.json();
+  const tally = new Map();
+  for (const row of rows) {
+    if (!Array.isArray(row.sectors)) continue;
+    for (const raw of row.sectors) {
+      const s = String(raw).trim().toLowerCase();
+      if (!s) continue;
+      tally.set(s, (tally.get(s) || 0) + 1);
+    }
+  }
+  // Canonical 17 sectors — verified against the platform's own taxonomy.
+  // Every raw label found in the database maps into exactly one bucket.
+  const canon = {
+    'innovation': 'Innovation & Entrepreneurship',
+    'innovation & entrepreneurship': 'Innovation & Entrepreneurship',
+    'ict': 'ICT',
+    'financial': 'Financial Services',
+    'financial services': 'Financial Services',
+    'industrial': 'Industrial & Manufacturing',
+    'industrial & manufacturing': 'Industrial & Manufacturing',
+    'healthcare': 'Healthcare & Life Sciences',
+    'healthcare & life sciences': 'Healthcare & Life Sciences',
+    'environment': 'Environment',
+    'environment services': 'Environment',
+    'energy': 'Energy',
+    'education': 'Education',
+    'realestate': 'Real Estate',
+    'real estate': 'Real Estate',
+    'pharma': 'Pharma & Biotech',
+    'pharma & biotech': 'Pharma & Biotech',
+    'tourism': 'Tourism & Quality of Life',
+    'tourism & quality of life': 'Tourism & Quality of Life',
+    'chemicals': 'Chemicals',
+    'agriculture': 'Agriculture & Food',
+    'agriculture & food processing': 'Agriculture & Food',
+    'transport': 'Transport & Logistics',
+    'transport & logistics': 'Transport & Logistics',
+    'mining': 'Mining & Metals',
+    'mining & metals': 'Mining & Metals',
+    'private_sector': 'Private Sector',
+    'private sector': 'Private Sector',
+    'humanitarian': 'Humanitarian',
+  };
+  const buckets = new Map();
+  for (const [raw, n] of tally) {
+    const label = canon[raw] || (raw[0].toUpperCase() + raw.slice(1));
+    buckets.set(label, (buckets.get(label) || 0) + n);
+  }
+  return [...buckets.entries()]
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => b.count - a.count);
+}

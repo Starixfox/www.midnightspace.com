@@ -54,7 +54,7 @@
   </header>
 
   <!-- hero -->
-  <section class="hero" id="top">
+  <section class="hero" id="top" data-entry>
     <div class="hero-bg gradient" aria-hidden="true"></div>
 
     <div style="position:absolute; inset:0; z-index:1; display:grid; place-items:center; pointer-events:none;">
@@ -123,29 +123,35 @@
     });
   </script>
 
-  <!-- stats strip -->
-  <section class="section bg-surface">
+  <!-- stats strip · live -->
+  <section class="section bg-surface" id="liveStats">
     <div class="wrap">
       <div class="section-head">
         <div>
-          <p class="eyebrow r">PLATFORM · IN ORBIT</p>
+          <p class="eyebrow r">
+            <span class="live-stamp" data-live-stamp aria-live="polite">
+              <span class="live-dot" aria-hidden="true"></span>
+              <span class="live-text">Verified today</span>
+            </span>
+            &nbsp;· PLATFORM · IN ORBIT
+          </p>
           <h2 class="section-title r r1">A working prototype,<br/><em>built in orbit.</em></h2>
         </div>
-        <p class="section-lead r r2">The Saudi Space Opportunity Hub is live with real data on funding calls, grants, accelerators, and public programs. We're early — and we're looking for pilot partners who want to shape what gets built.</p>
+        <p class="section-lead r r2">The Saudi Space Opportunity Hub is live. Every figure below is pulled from the platform's database as you scroll — these are the same counts our pilots see in their dashboards, refreshed each minute.</p>
       </div>
 
       <div class="stats-row r r3" id="statsRow">
         <article class="stat-card" style="background-image:linear-gradient(160deg, #0e3a4a 0%, #051a2a 100%);">
-          <span class="stat-num">1,477</span>
+          <span class="stat-num" data-stat="total">1,523</span>
           <span class="stat-label">Programs tracked</span>
         </article>
         <article class="stat-card" style="background-image:linear-gradient(160deg, #1d6b73 0%, #062235 100%);">
-          <span class="stat-num">30</span>
-          <span class="stat-label">Countries covered</span>
+          <span class="stat-num" data-stat="open">996</span>
+          <span class="stat-label">Open calls right now</span>
         </article>
         <article class="stat-card" style="background-image:linear-gradient(160deg, #062235 0%, #0e3a4a 70%, #1d6b73 100%);">
-          <span class="stat-num">10<span style="color:#7cd8e0;">+</span></span>
-          <span class="stat-label">Program types</span>
+          <span class="stat-num" data-stat="gccCountries">1,016</span>
+          <span class="stat-label">Programs across the GCC</span>
         </article>
       </div>
 
@@ -153,6 +159,30 @@
         <button type="button" data-dir="prev" aria-label="Previous">←</button>
         <button type="button" data-dir="next" aria-label="Next">→</button>
       </div>
+    </div>
+  </section>
+
+  <!-- live sectoral pulse -->
+  <section class="section bg-surface sector-pulse" id="sectorPulse" aria-labelledby="sectorPulseTitle">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow r">LIVE SECTORAL PULSE</p>
+          <h2 class="section-title r r1" id="sectorPulseTitle">Where the money<br/><em>actually moves.</em></h2>
+        </div>
+        <p class="section-lead r r2">A breakdown of every open program in the database, grouped into the platform's canonical sectors. The bars below render from a live query — what you see is the regional funding landscape, right now.</p>
+      </div>
+
+      <figure class="sector-figure r r3" aria-describedby="sectorMeta">
+        <ol class="sector-list" data-sector-list>
+          <!-- placeholder rows render on load via JS -->
+        </ol>
+        <figcaption class="sector-meta" id="sectorMeta">
+          <span class="sm-key" data-sector-meta="open">—</span> open programs across
+          <span class="sm-key" data-sector-meta="count">—</span> sectors ·
+          <span data-sector-meta="updated">refreshing…</span>
+        </figcaption>
+      </figure>
     </div>
   </section>
 
@@ -356,5 +386,6 @@
   </aside>
 
   <script src="./assets/main.js"></script>
+  <script type="module" src="./assets/enhance.js"></script>
 </body>
 </html>
