@@ -512,6 +512,72 @@ async function hydrateField() {
   setInterval(tick, 60_000);
 })();
 
+// 2e) Page progress bar ----------------------------------------------
+// Cyan top rail tracking scroll depth across the whole page. Auto-
+// injected if a <div class="page-progress"></div> isn't already in the
+// markup. Throttled with rAF + passive listener.
+(() => {
+  let bar = document.querySelector('.page-progress');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.className = 'page-progress';
+    bar.setAttribute('aria-hidden', 'true');
+    document.body.prepend(bar);
+  }
+  let raf = 0;
+  const update = () => {
+    raf = 0;
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, (window.scrollY || doc.scrollTop) / max)) : 0;
+    bar.style.setProperty('--p', (p * 100).toFixed(2) + '%');
+  };
+  window.addEventListener('scroll', () => {
+    if (raf) return;
+    raf = requestAnimationFrame(update);
+  }, { passive: true });
+  window.addEventListener('resize', () => {
+    if (raf) return;
+    raf = requestAnimationFrame(update);
+  });
+  update();
+})();
+
+// 2f) Card tilt ---------------------------------------------------------
+// Subtle 3D rotation following the cursor on cards. Pointer-coarse
+// devices opt out (no hover surface, no benefit). prefers-reduced-motion
+// also opts out via the CSS override.
+(() => {
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cards = document.querySelectorAll('.tilt');
+  cards.forEach(card => {
+    let raf = 0;
+    const reset = () => {
+      cancelAnimationFrame(raf);
+      card.style.setProperty('--rx', '0deg');
+      card.style.setProperty('--ry', '0deg');
+    };
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      const mx = (e.clientX - r.left) / r.width;
+      const my = (e.clientY - r.top) / r.height;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        // Max ±5deg — restrained, never woozy.
+        const ry = ((mx - 0.5) * 10).toFixed(2);
+        const rx = ((0.5 - my) * 10).toFixed(2);
+        card.style.setProperty('--ry', ry + 'deg');
+        card.style.setProperty('--rx', rx + 'deg');
+        card.style.setProperty('--tilt-mx', (mx * 100).toFixed(1) + '%');
+        card.style.setProperty('--tilt-my', (my * 100).toFixed(1) + '%');
+      });
+    });
+    card.addEventListener('pointerleave', reset);
+    card.addEventListener('blur', reset);
+  });
+})();
+
 // 3) Magnetic CTA polish ----------------------------------------------
 // Subtle: button drifts toward the cursor by ~18% of the offset inside a
 // 90px halo. Writes CSS variables (--mx / --my) instead of a full
