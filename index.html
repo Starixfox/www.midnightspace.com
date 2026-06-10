@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Midnight Space — A space-data platform</title>
   <meta name="description" content="Midnight Space maps the funding, programs, and accelerators shaping space business — starting with Saudi Arabia and the GCC." />
-  <meta name="theme-color" content="#eef5f5" />
+  <meta name="theme-color" content="#050a18" />
   <link rel="icon" type="image/png" href="./assets/favicon-midnight-space.png?v=ms-logo" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Midnight Space — A space-data platform" />
@@ -14,12 +14,10 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="preload" as="fetch" href="./models/model.glb" crossorigin="anonymous" />
-  <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..800,0..100;1,9..144,300..800,0..100&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./assets/style.css" />
+  <link rel="stylesheet" href="./assets/style.css?v=orbit-1" />
 </head>
 <body>
 
@@ -64,27 +62,15 @@
 
   <main id="main">
 
-  <!-- hero -->
-  <section class="hero" id="top" data-entry>
-    <div class="hero-bg gradient" aria-hidden="true"></div>
-
-    <div style="position:absolute; inset:0; z-index:1; display:grid; place-items:center; pointer-events:none;">
-      <model-viewer
-        id="heroModel"
-        src="./models/model.glb"
-        alt="Orbiting form"
-        autoplay
-        camera-controls
-        disable-zoom
-        interaction-prompt="none"
-        camera-orbit="0deg 75deg 4.8m"
-        field-of-view="28deg"
-        exposure="1.0"
-        shadow-intensity="0"
-        tone-mapping="reinhard"
-        environment-image="legacy"
-        style="width:min(78vw, 760px); height:min(70vh, 620px); background:transparent; outline:none; pointer-events:auto; opacity:.85;"
-      ></model-viewer>
+  <!-- hero — the GCC at midnight, seen from orbit.
+       Layered media stage: CSS cosmos always renders; the generated
+       orbital footage (vignettes.js) fades in over it when allowed.
+       Reduced-motion and data-saver visitors keep the still frame. -->
+  <section class="hero hero--orbit" id="top" data-entry>
+    <div class="hero-media" data-hero-video data-src="./assets/media/hero-orbit.mp4" aria-hidden="true">
+      <div class="hero-cosmos"></div>
+      <img class="hero-still" src="./assets/media/hero-orbit-poster.jpg" alt="" loading="eager" decoding="async" />
+      <div class="hero-scrim"></div>
     </div>
 
     <div class="hero-inner">
@@ -96,6 +82,21 @@
           <a class="btn btn-primary" href="./platform.html">Explore the platform</a>
           <a class="btn btn-ghost" href="./pilots.html">Become a pilot partner</a>
         </div>
+        <div class="hero-readout" data-hero-readout>
+          <span class="ro-item ro-item--live">
+            <span class="ro-dot" aria-hidden="true"></span>
+            <span class="ro-num" data-readout="open">2,865</span>
+            <span>open calls now</span>
+          </span>
+          <span class="ro-item">
+            <span class="ro-num" data-readout="total">4,173</span>
+            <span>programs tracked</span>
+          </span>
+          <span class="ro-item">
+            <span class="ro-num">6</span>
+            <span>GCC states covered</span>
+          </span>
+        </div>
       </div>
       <div class="hero-text" data-tab-pane="global" hidden aria-hidden="true">
         <p class="hero-eyebrow">GLOBAL · WAITLIST</p>
@@ -106,10 +107,6 @@
           <a class="btn btn-ghost" href="./modules.html">See the planned module</a>
         </div>
       </div>
-
-      <a class="hero-card is-screen" href="./modules.html" aria-label="Discover the prototype" style="background-image:url('./assets/screens/analytics.png');">
-        <div class="card-label">Live: analytics dashboard</div>
-      </a>
     </div>
 
     <div class="hero-tabs" role="tablist" aria-label="Coverage scope">
@@ -117,22 +114,6 @@
       <button type="button" data-tab="global">Global · soon</button>
     </div>
   </section>
-
-  <script type="module">
-    const mv = document.getElementById('heroModel');
-    mv?.addEventListener('load', () => {
-      const model = mv.model;
-      [...model.materials].forEach(mat => {
-        mat.pbrMetallicRoughness.setBaseColorFactor([0.18, 0.78, 0.78, 0.32]);
-        mat.pbrMetallicRoughness.setMetallicFactor(0.05);
-        mat.pbrMetallicRoughness.setRoughnessFactor(0.10);
-        mat.setEmissiveFactor([0.10, 0.55, 0.65]);
-        if (mat.setEmissiveStrength) mat.setEmissiveStrength(1.6);
-        if (mat.setAlphaMode) mat.setAlphaMode('BLEND');
-        if (mat.setDoubleSided) mat.setDoubleSided(true);
-      });
-    });
-  </script>
 
   <!-- coverage marquee — the GCC, on a loop. Hover pauses it. -->
   <div class="marquee" aria-hidden="true">
@@ -173,15 +154,15 @@
 
       <div class="stats-row r r3" id="statsRow">
         <article class="stat-card tilt" style="background-image:linear-gradient(160deg, #0e3a4a 0%, #051a2a 100%);">
-          <span class="stat-num" data-stat="total">1,523</span>
+          <span class="stat-num" data-stat="total">4,173</span>
           <span class="stat-label">Programs tracked</span>
         </article>
         <article class="stat-card tilt" style="background-image:linear-gradient(160deg, #1d6b73 0%, #062235 100%);">
-          <span class="stat-num" data-stat="open">996</span>
+          <span class="stat-num" data-stat="open">2,865</span>
           <span class="stat-label">Open calls right now</span>
         </article>
         <article class="stat-card tilt" style="background-image:linear-gradient(160deg, #062235 0%, #0e3a4a 70%, #1d6b73 100%);">
-          <span class="stat-num" data-stat="gccCountries">1,016</span>
+          <span class="stat-num" data-stat="gccCountries">3,182</span>
           <span class="stat-label">Programs across the GCC</span>
         </article>
       </div>
@@ -204,10 +185,11 @@
         <p class="section-lead r r2">A breakdown of every open program in the database, grouped into the platform's canonical sectors. The bars below render from a live query — what you see is the regional funding landscape, right now.</p>
       </div>
 
-      <figure class="sector-figure r r3" aria-describedby="sectorMeta">
+      <figure class="sector-figure r r3" data-collapsible aria-describedby="sectorMeta">
         <ol class="sector-list" data-sector-list>
           <!-- placeholder rows render on load via JS -->
         </ol>
+        <button type="button" class="sector-toggle" data-sector-toggle hidden>Show all sectors</button>
         <figcaption class="sector-meta" id="sectorMeta">
           <span class="sm-key" data-sector-meta="open">—</span> open programs across
           <span class="sm-key" data-sector-meta="count">—</span> sectors ·
@@ -248,46 +230,143 @@
         <p class="section-lead r r2">A modular platform — start with the prototype that's live today, then grow into the structured access, signals, and ecosystem intelligence we're building next.</p>
       </div>
 
-      <div class="cards-row r r3" data-stagger>
-        <a class="feature-card is-screen tilt r" href="./modules.html" style="background-image:url('./assets/screens/opportunities.png');">
-          <span class="fc-logo">01 / DB</span>
-          <div class="fc-body">
-            <p class="fc-eyebrow">GCC · LIVE</p>
-            <h3 class="fc-title">Funding &amp; Program Database</h3>
-            <div class="fc-meta"><span>Grants</span><span>Accelerators</span><span>Tenders</span></div>
-            <span class="fc-link">Explore →</span>
-          </div>
-        </a>
+      <div class="svc-rows">
 
-        <a class="feature-card is-screen tilt r" href="./modules.html" style="background-image:url('./assets/screens/analytics.png');">
-          <span class="fc-logo">02 / DASH</span>
-          <div class="fc-body">
-            <p class="fc-eyebrow">GCC · LIVE</p>
-            <h3 class="fc-title">Basic Dashboards</h3>
-            <div class="fc-meta"><span>KPIs</span><span>Charts</span><span>Summary views</span></div>
-            <span class="fc-link">Explore →</span>
+        <!-- 01 · database — live ticker of real open programs -->
+        <article class="svc-row" data-status="live">
+          <div class="svc-copy">
+            <p class="svc-index"><em>01</em> / DB · GCC</p>
+            <h3>Funding &amp; program<br/><em>database.</em></h3>
+            <p>Every grant, accelerator, and public tender we can verify at source — one feed, kept current. The rows moving here are the actual open programs in the platform right now.</p>
+            <ul class="svc-meta">
+              <li>Grants</li><li>Accelerators</li><li>Tenders</li><li>Verified at source</li>
+            </ul>
+            <a class="svc-link r" href="./modules.html">Explore the module <span class="arr">→</span></a>
           </div>
-        </a>
+          <div class="svc-stage tilt r" data-vig="db">
+            <div class="stage-head">
+              <span class="stage-title">Open programs · rolling feed</span>
+              <span class="chip-live"><span class="live-dot" aria-hidden="true"></span>LIVE</span>
+            </div>
+            <div class="vdb-viewport">
+              <ol class="vdb-track vanim" data-vdb-track>
+                <!-- real rows render from the live query; skeleton bars if offline -->
+              </ol>
+            </div>
+          </div>
+        </article>
 
-        <a class="feature-card is-screen tilt r" href="./modules.html" style="background-image:url('./assets/screens/sectors.png');">
-          <span class="fc-logo">03 / GLOBAL</span>
-          <div class="fc-body">
-            <p class="fc-eyebrow">PLANNED · 2026</p>
-            <h3 class="fc-title">Global Funding View</h3>
-            <div class="fc-meta"><span>EU</span><span>NA</span><span>APAC</span></div>
-            <span class="fc-link">Explore →</span>
+        <!-- 02 · dashboards — real KPIs drawing in -->
+        <article class="svc-row" data-status="live">
+          <div class="svc-copy">
+            <p class="svc-index"><em>02</em> / DASH · GCC</p>
+            <h3>Dashboards with<br/><em>the day-one answers.</em></h3>
+            <p>Counts, sector splits, and deadline pressure — the platform's own numbers, summarized the way an analyst wants them before the first coffee. The figures below are live.</p>
+            <ul class="svc-meta">
+              <li>KPIs</li><li>Charts</li><li>Summary views</li>
+            </ul>
+            <a class="svc-link r" href="./modules.html">Explore the module <span class="arr">→</span></a>
           </div>
-        </a>
+          <div class="svc-stage tilt r" data-vig="dash">
+            <div class="stage-head">
+              <span class="stage-title">Summary view</span>
+              <span class="chip-live"><span class="live-dot" aria-hidden="true"></span>LIVE</span>
+            </div>
+            <div class="vdash">
+              <div class="vdash-kpi">
+                <span class="num" data-vdash="open">2,865</span>
+                <span class="lbl">Open calls right now</span>
+              </div>
+              <div class="vdash-sub">
+                <span class="num" data-vdash="total">4,173</span>
+                <span class="lbl">Programs tracked</span>
+              </div>
+              <div class="vdash-bars" aria-hidden="true">
+                <span style="--h:38"></span><span style="--h:64"></span><span style="--h:46"></span><span style="--h:82"></span><span style="--h:57"></span>
+              </div>
+              <svg class="vdash-spark" viewBox="0 0 220 64" aria-hidden="true" focusable="false">
+                <path d="M2,52 C28,48 44,32 68,36 S116,20 148,24 S202,8 216,12" pathLength="420" />
+                <circle cx="216" cy="12" r="3" />
+              </svg>
+            </div>
+          </div>
+        </article>
 
-        <a class="feature-card is-screen tilt r" href="./modules.html" style="background-image:url('./assets/screens/home.png');">
-          <span class="fc-logo">04 / API</span>
-          <div class="fc-body">
-            <p class="fc-eyebrow">PLANNED · 2026</p>
-            <h3 class="fc-title">API Access</h3>
-            <div class="fc-meta"><span>Structured</span><span>Versioned</span></div>
-            <span class="fc-link">Explore →</span>
+        <!-- 03 · global view — planned · coverage arcs, no cyan -->
+        <article class="svc-row" data-status="planned">
+          <div class="svc-copy">
+            <p class="svc-index"><em>03</em> / GLOBAL</p>
+            <h3>The global<br/><em>funding view.</em></h3>
+            <p>The same curation discipline, extended outward — Europe, North America, and Asia next. It ships when it's real, with the first global pilot cohort. Planned, and labeled that way.</p>
+            <ul class="svc-meta">
+              <li>EU</li><li>NA</li><li>APAC</li><li>Planned · 2026</li>
+            </ul>
+            <a class="svc-link r" href="./modules.html">See the roadmap <span class="arr">→</span></a>
           </div>
-        </a>
+          <div class="svc-stage tilt r" data-vig="global">
+            <div class="stage-head">
+              <span class="stage-title">Coverage roadmap</span>
+              <span class="chip-planned">planned</span>
+            </div>
+            <div class="vglobe">
+              <svg viewBox="0 0 520 300" aria-hidden="true" focusable="false">
+                <!-- faint graticule -->
+                <path class="gl-grid" d="M10,75 H510 M10,150 H510 M10,225 H510" />
+                <path class="gl-grid" d="M130,10 C110,110 110,190 130,290 M260,10 C240,110 240,190 260,290 M390,10 C370,110 370,190 390,290" />
+                <!-- coverage arcs from the GCC outward -->
+                <path class="gl-arc vanim" d="M212,186 Q228,92 268,76" />
+                <path class="gl-arc vanim" d="M212,186 Q140,84 84,68" />
+                <path class="gl-arc vanim" d="M212,186 Q340,210 432,118" />
+                <!-- nodes -->
+                <circle class="gl-halo vanim" cx="212" cy="186" r="9" />
+                <circle class="gl-node gl-node--home" cx="212" cy="186" r="4.5" />
+                <circle class="gl-node" cx="268" cy="76" r="3" />
+                <circle class="gl-node" cx="84" cy="68" r="3" />
+                <circle class="gl-node" cx="432" cy="118" r="3" />
+                <!-- labels -->
+                <text class="gl-label" x="212" y="212" text-anchor="middle">GCC · today</text>
+                <text class="gl-label gl-label--dim" x="280" y="68">EU</text>
+                <text class="gl-label gl-label--dim" x="66" y="56">NA</text>
+                <text class="gl-label gl-label--dim" x="444" y="110">APAC</text>
+              </svg>
+            </div>
+          </div>
+        </article>
+
+        <!-- 04 · API — planned · request typing itself, no cyan -->
+        <article class="svc-row" data-status="planned">
+          <div class="svc-copy">
+            <p class="svc-index"><em>04</em> / API</p>
+            <h3>Structured access,<br/><em>your tools.</em></h3>
+            <p>Versioned, documented access to the same records the dashboards read — for funds and agencies that want the data inside their own models rather than another browser tab.</p>
+            <ul class="svc-meta">
+              <li>Structured</li><li>Versioned</li><li>Planned · 2026</li>
+            </ul>
+            <a class="svc-link r" href="./modules.html">See the roadmap <span class="arr">→</span></a>
+          </div>
+          <div class="svc-stage tilt r" data-vig="api">
+            <div class="stage-head">
+              <span class="stage-title">Planned surface</span>
+              <span class="chip-planned">planned</span>
+            </div>
+            <div class="vapi">
+              <div class="vapi-chrome" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div class="vapi-cmdline">
+                <span class="vapi-prompt">$</span>
+                <span class="vapi-cmd" data-vapi-cmd></span>
+                <span class="vapi-caret" aria-hidden="true"></span>
+              </div>
+              <div class="vapi-line vapi-status">200 OK · application/json</div>
+              <div class="vapi-line">{</div>
+              <div class="vapi-line">  <span class="k">"programs"</span>: [</div>
+              <div class="vapi-line">    { <span class="k">"title"</span>: <span class="s">"…"</span>, <span class="k">"country"</span>: <span class="s">"SA"</span>, <span class="k">"status"</span>: <span class="s">"open"</span> },</div>
+              <div class="vapi-line">    { <span class="k">"title"</span>: <span class="s">"…"</span>, <span class="k">"country"</span>: <span class="s">"AE"</span>, <span class="k">"status"</span>: <span class="s">"open"</span> }</div>
+              <div class="vapi-line">  ]</div>
+              <div class="vapi-line">}</div>
+            </div>
+          </div>
+        </article>
+
       </div>
     </div>
   </section>
@@ -327,7 +406,7 @@
         data-cta-label="See the database"
         data-cta-href="./modules.html"
         data-img="./assets/screens/opportunities.png"
-        data-cap="1,477 programs, verified at source.">Database</button>
+        data-cap="4,100+ programs, verified at source.">Database</button>
       <button type="button"
         data-eyebrow="EXPLORE REPORTS"
         data-title="Briefings &amp;" data-title-em="shareable exports."
@@ -430,7 +509,10 @@
     <a href="./contact.html">Contact</a>
   </aside>
 
-  <script src="./assets/main.js"></script>
+  <div class="grain" aria-hidden="true"></div>
+
+  <script src="./assets/main.js?v=orbit-1"></script>
   <script type="module" src="./assets/enhance.js"></script>
+  <script type="module" src="./assets/vignettes.js?v=orbit-1"></script>
 </body>
 </html>

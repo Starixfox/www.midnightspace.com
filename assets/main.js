@@ -8,7 +8,7 @@ const io = new IntersectionObserver(entries => {
       io.unobserve(e.target);
     }
   });
-}, { threshold: .12, rootMargin: '0px 0px -8% 0px' });
+}, { threshold: .06, rootMargin: '0px 0px -2% 0px' });
 document.querySelectorAll('.r').forEach(el => io.observe(el));
 
 // mobile menu — open / close + focus trap + Escape-to-close
