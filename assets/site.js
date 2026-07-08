@@ -65,6 +65,24 @@
     var mm = gsap.matchMedia();
     var activeLenis = null;
 
+    /* Header switches to dark glass while a midnight tile passes under it.
+       Stateless: recomputed from geometry every scroll tick, so it can
+       never drift. A class toggle, not motion — active for everyone. */
+    var headerEl = document.getElementById('siteHeader');
+    if (headerEl) {
+      var midnightTiles = gsap.utils.toArray('.tile-midnight');
+      var updateHeader = function () {
+        var line = 52, dark = false;
+        for (var i = 0; i < midnightTiles.length; i++) {
+          var r = midnightTiles[i].getBoundingClientRect();
+          if (r.top <= line && r.bottom >= line) { dark = true; break; }
+        }
+        headerEl.classList.toggle('header-dark', dark);
+      };
+      ScrollTrigger.create({ start: 0, end: 'max', onUpdate: updateHeader, onRefresh: updateHeader });
+      updateHeader();
+    }
+
     /* Anchor links — registered once; skip link keeps native behavior.
        Focus is moved to the target so keyboard order follows the jump. */
     document.querySelectorAll('a[href^="#"]:not(.skip-link)').forEach(function (a) {
@@ -101,7 +119,10 @@
     });
 
     /* ---------- Full motion ---------- */
-    mm.add('(prefers-reduced-motion: no-preference)', function () {
+    mm.add('(prefers-reduced-motion: no-preference)', function (ctx) {
+
+      var reverted = false;
+      var heroSplit = null, honestySplit = null;
 
       var lenis = new Lenis({ lerp: 0.11 });
       activeLenis = lenis;
@@ -110,27 +131,31 @@
       gsap.ticker.add(tick);
       gsap.ticker.lagSmoothing(0);
 
-      /* Hero entrance */
+      /* Hero entrance — created after fonts settle, registered in the
+         context so a motion-preference switch cleans it up properly */
       fontsSettled().then(function () {
-        document.documentElement.classList.add('hero-ready');
-        SplitText.create('.hero-head .hl', {
-          type: 'lines',
-          mask: 'lines',
-          autoSplit: true,
-          onSplit: function (self) {
-            return gsap.from(self.lines, {
-              yPercent: 110,
-              duration: 1.05,
-              ease: 'expo.out',
-              stagger: 0.09,
-              delay: 0.15
-            });
-          }
+        if (reverted) return;
+        ctx.add(function () {
+          document.documentElement.classList.add('hero-ready');
+          heroSplit = SplitText.create('.hero-head .hl', {
+            type: 'lines',
+            mask: 'lines',
+            autoSplit: true,
+            onSplit: function (self) {
+              return gsap.from(self.lines, {
+                yPercent: 110,
+                duration: 1.05,
+                ease: 'expo.out',
+                stagger: 0.09,
+                delay: 0.15
+              });
+            }
+          });
+          gsap.fromTo('.hero-item',
+            { opacity: 0, y: 14 },
+            { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.07, delay: 0.55 }
+          );
         });
-        gsap.fromTo('.hero-item',
-          { opacity: 0, y: 14 },
-          { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.07, delay: 0.55 }
-        );
       });
 
       /* Signature moment: De Herbouw wipe */
@@ -192,6 +217,36 @@
         );
       });
 
+      /* Honesty statement — words light up as you scroll through them */
+      var honesty = document.querySelector('#honesty p');
+      if (honesty) {
+        fontsSettled().then(function () {
+          if (reverted) return;
+          ctx.add(function () {
+            var container = document.getElementById('honesty');
+            honestySplit = SplitText.create(honesty, {
+              type: 'words',
+              wordsClass: 'wr-word',
+              aria: 'auto',
+              onSplit: function (self) {
+                container.classList.add('wr-armed');
+                return gsap.to(self.words, {
+                  opacity: 1,
+                  stagger: 0.06,
+                  ease: 'none',
+                  scrollTrigger: {
+                    trigger: container,
+                    start: 'top 78%',
+                    end: 'center 42%',
+                    scrub: 0.4
+                  }
+                });
+              }
+            });
+          });
+        });
+      }
+
       /* Magnetic primary CTA — fine pointers only */
       if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
         gsap.utils.toArray('.pill-magnet').forEach(function (btn) {
@@ -209,6 +264,11 @@
       }
 
       return function () {
+        reverted = true;
+        if (heroSplit) { heroSplit.revert(); heroSplit = null; }
+        if (honestySplit) { honestySplit.revert(); honestySplit = null; }
+        var hc = document.getElementById('honesty');
+        if (hc) hc.classList.remove('wr-armed');
         gsap.ticker.remove(tick);
         lenis.destroy();
         activeLenis = null;

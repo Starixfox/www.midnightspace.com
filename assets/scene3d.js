@@ -145,13 +145,15 @@ import * as THREE from './vendor/three.module.min.js';
   scene.add(planet);
 
   /* ---------- Waypoints: fractions of the view at z=0, per section ---------- */
+  /* Midnight tiles get the starring planet; light tiles get a small
+     satellite parked in the gutter, clear of the content column. */
   var SECTIONS = [
-    { sel: '.hero',            fx: isMobile ? 0 : 0.30, fy: isMobile ? 0.30 : 0.08, s: isMobile ? 0.85 : 1.35, ry: 0 },
-    { sel: '#werkwijze',       fx: isMobile ? -0.30 : -0.40, fy: 0.10, s: isMobile ? 0.45 : 0.72, ry: 2.2 },
+    { sel: '.hero',            fx: isMobile ? 0 : 0.41, fy: isMobile ? 0.32 : 0.28, s: isMobile ? 0.9 : 1.3, ry: 0 },
+    { sel: '#werkwijze',       fx: isMobile ? -0.40 : -0.56, fy: -0.06, s: isMobile ? 0.32 : 0.36, ry: 2.2 },
     { sel: '#herbouw',         fx: isMobile ? 0.34 : 0.38, fy: 0.30, s: 0.45, ry: 4.2 },
-    { sel: '#werk',            fx: isMobile ? -0.55 : -0.60, fy: -0.38, s: 0.4, ry: 5.6 },
-    { sel: '.tile-mist.work-tile', fx: isMobile ? 0.55 : 0.60, fy: -0.34, s: 0.42, ry: 7.2 },
-    { sel: '#beloftes',        fx: isMobile ? 0.30 : 0.34, fy: -0.05, s: isMobile ? 0.5 : 0.8, ry: 8.8 },
+    { sel: '#werk',            fx: isMobile ? -0.55 : -0.62, fy: -0.38, s: 0.38, ry: 5.6 },
+    { sel: '.tile-mist.work-tile', fx: isMobile ? 0.55 : 0.62, fy: -0.34, s: 0.4, ry: 7.2 },
+    { sel: '#beloftes',        fx: isMobile ? 0.34 : 0.44, fy: -0.1, s: isMobile ? 0.45 : 0.6, ry: 8.8 },
     { sel: '#contact',         fx: isMobile ? 0 : -0.30, fy: isMobile ? 0.32 : 0.26, s: isMobile ? 0.7 : 0.95, ry: 10.5 }
   ];
 
