@@ -130,6 +130,14 @@ export function ScrollObject3D() {
       if (rates) list.push({ docY: centerOf(rates), fx: m ? -0.26 : -0.4, fy: -0.04, s: m ? 0.42 : 0.52 });
       if (crew) list.push({ docY: centerOf(crew), fx: m ? 0.26 : 0.4, fy: 0.0, s: m ? 0.45 : 0.56 });
       if (connect) list.push({ docY: centerOf(connect), fx: m ? 0 : -0.34, fy: 0.04, s: m ? 0.55 : 0.72 });
+      // Continue past the contact section through the legal bands…
+      const privacy = get('privacy');
+      const terms = get('terms');
+      if (privacy) list.push({ docY: centerOf(privacy), fx: m ? -0.18 : -0.3, fy: 0.03, s: m ? 0.5 : 0.6 });
+      if (terms) list.push({ docY: centerOf(terms), fx: m ? 0.18 : 0.28, fy: 0, s: m ? 0.52 : 0.62 });
+      // …and finish fully in view, centred, at the very bottom of the page.
+      const docEnd = document.documentElement.scrollHeight - vh * 0.5;
+      list.push({ docY: docEnd, fx: 0, fy: 0.02, s: m ? 0.78 : 0.9 });
       anchors = list.sort((a, b) => a.docY - b.docY);
     }
 
@@ -198,9 +206,17 @@ export function ScrollObject3D() {
       curY += (mouseY - curY) * 0.04;
 
       const floatY = Math.sin(t * 0.6) * 6;
-      const px = posX + curX * 18;
-      const py = posY + curY * 14 + floatY;
       const s = Math.max(0.001, scl * (0.55 + 0.45 * fade));
+
+      // Clamp so the whole object always stays in view: never clipped by
+      // the viewport edges and never hidden under the fixed navbar.
+      const half = ((box.offsetWidth || 1) * s) / 2;
+      const anchorX = window.innerWidth / 2;
+      const anchorY = window.innerHeight * (isMobile ? 0.84 : 0.5);
+      const clampTo = (v: number, lo: number, hi: number) =>
+        lo > hi ? (lo + hi) / 2 : Math.min(hi, Math.max(lo, v));
+      const px = clampTo(posX + curX * 18, 12 + half - anchorX, window.innerWidth - 12 - half - anchorX);
+      const py = clampTo(posY + curY * 14 + floatY, 74 + half - anchorY, window.innerHeight - 12 - half - anchorY);
 
       box.style.transform = `translate(-50%, -50%) translate(${px.toFixed(1)}px, ${py.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${s.toFixed(3)})`;
       box.style.opacity = Math.min(1, Math.max(0, fade)).toFixed(3);
