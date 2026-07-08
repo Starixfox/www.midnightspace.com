@@ -193,16 +193,38 @@ h2 { font-size: clamp(1.9rem, 4vw, 3rem); }
 .tile-midnight .frame-dots i, .frame-dark .frame-dots i { background: rgba(255, 255, 255, 0.2); }
 .frame > img { width: 100%; }
 
-/* ============ Hero ============ */
-.hero { padding-top: clamp(4.5rem, 9vh, 7rem); }
+/* ============ Hero — midnight stage with living starfield ============ */
+.hero { padding-top: clamp(4.5rem, 9vh, 7rem); position: relative; overflow: hidden; }
+.hero-fg { position: relative; z-index: 2; }
 .hero-head .hl { display: block; }
 html.js .hero-item, html.js .hero-head .hl { visibility: hidden; }
 html.js.hero-ready .hero-item, html.js.hero-ready .hero-head .hl { visibility: visible; }
 .hero-micro {
   margin-top: 1.5rem;
   font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--ink-faint);
+  color: var(--cream-faint);
 }
+
+/* WebGL layer + always-on CSS fallback stars beneath it */
+.gl-hero { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.gl-hero::before {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(1.2px 1.2px at 12% 22%, rgba(255,255,255,0.30) 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 14%, rgba(255,255,255,0.24) 50%, transparent 51%),
+    radial-gradient(1.4px 1.4px at 64% 68%, rgba(124,216,224,0.22) 50%, transparent 51%),
+    radial-gradient(1px 1px at 32% 82%, rgba(255,255,255,0.20) 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 54%, rgba(255,255,255,0.18) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 45% 38%, rgba(124,216,224,0.16) 50%, transparent 51%),
+    radial-gradient(1px 1px at 8% 62%, rgba(255,255,255,0.15) 50%, transparent 51%),
+    radial-gradient(1.3px 1.3px at 93% 86%, rgba(255,255,255,0.20) 50%, transparent 51%),
+    radial-gradient(900px 520px at 70% -10%, rgba(124,216,224,0.06), transparent 60%);
+}
+.gl-canvas {
+  position: absolute; inset: 0; width: 100% !important; height: 100% !important;
+  opacity: 0; transition: opacity 1.4s ease;
+}
+html.gl-on .gl-canvas { opacity: 1; }
 
 /* ============ Werkwijze — three quiet columns ============ */
 .leadin {

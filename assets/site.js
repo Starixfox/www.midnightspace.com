@@ -168,7 +168,7 @@
       ScrollTrigger.batch('.promise', { start: 'top 88%', once: true, onEnter: showGroup });
 
       gsap.utils.toArray('.reveal').forEach(function (el) {
-        if (el.matches('.ledger .row, .promise')) return;
+        if (el.matches('.ledger .row, .promise, .frame')) return;
         gsap.set(el, { y: 12 });
         ScrollTrigger.create({
           trigger: el,
@@ -179,6 +179,34 @@
           }
         });
       });
+
+      /* Portfolio frames rise out of the page in 3D as they enter */
+      gsap.utils.toArray('.frame').forEach(function (f) {
+        if (f.closest('.hero')) return; // hero frame is choreographed on load
+        gsap.fromTo(f,
+          { rotationX: 10, y: 80, opacity: 0.3, transformPerspective: 1000, transformOrigin: 'center 80%' },
+          {
+            rotationX: 0, y: 0, opacity: 1, ease: 'none',
+            scrollTrigger: { trigger: f, start: 'top 96%', end: 'top 42%', scrub: 0.6 }
+          }
+        );
+      });
+
+      /* Magnetic primary CTA — fine pointers only */
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        gsap.utils.toArray('.pill-magnet').forEach(function (btn) {
+          var xTo = gsap.quickTo(btn, 'x', { duration: 0.5, ease: 'power3' });
+          var yTo = gsap.quickTo(btn, 'y', { duration: 0.5, ease: 'power3' });
+          btn.addEventListener('mousemove', function (e) {
+            var r = btn.getBoundingClientRect();
+            xTo((e.clientX - r.left - r.width / 2) * 0.25);
+            yTo((e.clientY - r.top - r.height / 2) * 0.3);
+          });
+          btn.addEventListener('mouseleave', function () {
+            gsap.to(btn, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.45)' });
+          });
+        });
+      }
 
       return function () {
         gsap.ticker.remove(tick);
