@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Midnight Space — Websites voor zaken in Oost-Vlaanderen</title>
   <meta name="description" content="Midnight Space herbouwt verouderde websites voor lokale zaken in Oost-Vlaanderen. Eerst een gratis proefontwerp, dan pas beslissen. Vanaf nul getekend, geen sjablonen." />
-  <meta name="theme-color" content="#050a18" />
+  <meta name="theme-color" content="#ffffff" />
   <link rel="canonical" href="https://starixfox.github.io/www.midnightspace.com/" />
   <link rel="icon" type="image/png" href="./assets/favicon-midnight-space.png?v=ms-logo" />
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png?v=agency-2" />
@@ -14,14 +14,14 @@
   <meta property="og:description" content="Eerst zien, dan beslissen. Ik maak een gratis proefontwerp voor je zaak — je betaalt pas als je de volledige website wil." />
   <meta property="og:url" content="https://starixfox.github.io/www.midnightspace.com/" />
   <meta property="og:locale" content="nl_BE" />
-  <meta property="og:image" content="https://starixfox.github.io/www.midnightspace.com/assets/og.jpg?v=agency-2" />
+  <meta property="og:image" content="https://starixfox.github.io/www.midnightspace.com/assets/og.jpg?v=agency-3" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..600,0..100;1,9..144,400..600,0..100&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./assets/site.css?v=agency-2" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@1,9..144,400..600,0..100&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/site.css?v=agency-3" />
   <script>document.documentElement.classList.add('js');</script>
   <script type="application/ld+json">
   {
@@ -32,7 +32,7 @@
     "url": "https://starixfox.github.io/www.midnightspace.com/",
     "email": "j.guzman@midnightspaceconsultancy.com",
     "image": "https://starixfox.github.io/www.midnightspace.com/assets/og.jpg",
-    "areaServed": ["Zele", "Dendermonde", "Aalst", "Sint-Niklaas", "Oost-Vlaanderen"],
+    "areaServed": ["Zele", "Dendermonde", "Aalst", "Sint-Niklaas", "Buggenhout", "Oost-Vlaanderen"],
     "founder": { "@type": "Person", "name": "Jordan Guzman" }
   }
   </script>
@@ -43,36 +43,77 @@
 
   <header class="site-header" id="siteHeader">
     <a href="./" class="brand" aria-label="Midnight Space">
-      <img src="./assets/logo-midnight-space-80.webp" alt="" class="brand-badge" width="40" height="40" />
+      <img src="./assets/logo-midnight-space-80.webp" alt="" class="brand-badge" width="28" height="28" />
       <span class="brand-name">Midnight Space</span>
     </a>
-    <a class="header-mail" href="mailto:j.guzman@midnightspaceconsultancy.com?subject=Proefontwerp%20voor%20mijn%20zaak">Mail mij</a>
+    <nav class="header-nav" aria-label="Hoofdnavigatie">
+      <a href="#werk">Werk</a>
+      <a href="#werkwijze">Werkwijze</a>
+      <a href="#contact">Contact</a>
+      <a class="header-mail" href="mailto:j.guzman@midnightspaceconsultancy.com?subject=Proefontwerp%20voor%20mijn%20zaak">Mail mij</a>
+    </nav>
   </header>
 
   <main id="main">
 
-    <!-- ============ HERO ============ -->
-    <section class="hero" aria-label="Intro">
-      <div class="hero-inner">
-        <p class="eyebrow mono hero-item">webstudio · Oost-Vlaanderen</p>
+    <!-- ============ TILE 1 — Hero (white) ============ -->
+    <section class="tile hero center" aria-label="Intro">
+      <div class="wrap-wide">
         <h1 class="hero-head">
           <span class="hl">Je zaak groeide.</span>
           <span class="hl it accent">Je website bleef staan.</span>
         </h1>
-        <p class="hero-sub hero-item">Midnight Space herbouwt verouderde websites voor zaken in Oost-Vlaanderen — Zele, Dendermonde, Aalst, Sint-Niklaas. Vanaf nul getekend, geen sjablonen. Hieronder zie je wat dat betekent.</p>
-        <p class="hero-micro mono hero-item"><span class="nb">geen telefoontjes ·</span> <span class="nb">geen verplichtingen ·</span> <span class="nb">één e-mail</span></p>
-        <a class="hero-link hero-item" href="#herbouw">Bekijk de herbouw <span class="arrow" aria-hidden="true">&darr;</span></a>
+        <p class="tagline hero-item">Midnight Space herbouwt verouderde websites voor zaken in Oost-Vlaanderen. Vanaf nul getekend, geen sjablonen.</p>
+        <div class="cta-row hero-item">
+          <a class="pill" href="mailto:j.guzman@midnightspaceconsultancy.com?subject=Proefontwerp%20voor%20mijn%20zaak">Vraag je gratis proefontwerp aan</a>
+          <a class="textlink" href="#werk">Bekijk het werk <span class="chev" aria-hidden="true">&rsaquo;</span></a>
+        </div>
+        <p class="hero-micro hero-item"><span class="nb">geen telefoontjes ·</span> <span class="nb">geen verplichtingen ·</span> <span class="nb">één e-mail</span></p>
+        <figure class="frame hero-item">
+          <div class="frame-bar"><span class="frame-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>conceptstudie — Jimmy's Classic Cars, Buggenhout</span></div>
+          <img src="./assets/work/jimmys-hero.webp" alt="Conceptontwerp voor Jimmy's Classic Cars: donkere homepage met een rode Ford Mustang in de werkplaats" width="1600" height="956" />
+        </figure>
+        <figcaption class="caption hero-item">Elk ontwerp hieronder werd eerst gemaakt, en dan pas voorgesteld. Zo werk ik.</figcaption>
       </div>
     </section>
 
-    <!-- ============ DE HERBOUW — signature moment ============ -->
-    <section class="herbouw" id="herbouw" aria-label="Voor en na: de herbouw">
+    <!-- ============ TILE 2 — Werkwijze (mist) ============ -->
+    <section class="tile tile-mist center" id="werkwijze" aria-label="Werkwijze">
+      <div class="wrap">
+        <p class="leadin it reveal">Misschien kreeg je al een mail van mij.</p>
+        <h2 class="reveal">Eerst zien, <span class="it accent">dan beslissen.</span></h2>
+        <div class="steps">
+          <div class="step reveal">
+            <h3>Ik zoek</h3>
+            <p>Ik zoek zaken in de streek met een verouderde website — of helemaal geen.</p>
+          </div>
+          <div class="step reveal">
+            <h3>Ik bouw</h3>
+            <p>Ik maak eerst een gratis voorstel voor je homepage en mail het je. Ongevraagd, af, klaar om te bekijken.</p>
+          </div>
+          <div class="step reveal">
+            <h3>Jij beslist</h3>
+            <p>Je betaalt pas als je de volledige website wil. Wil je die niet? Dan heeft het je niets gekost — zelfs geen vergadering.</p>
+          </div>
+        </div>
+        <p class="chips reveal"><span class="nb">geen offerte vooraf /</span> <span class="nb">geen voorschot /</span> <span class="nb">geen verplichting</span></p>
+      </div>
+    </section>
+
+    <!-- ============ TILE 3 — De Herbouw (midnight, pinned wipe) ============ -->
+    <section class="tile tile-midnight herbouw" id="herbouw" aria-label="Voor en na: de herbouw">
+      <div class="herbouw-intro center">
+        <div class="wrap">
+          <h2 class="reveal">Van 2012 naar vandaag, <span class="it accent">in één scroll.</span></h2>
+          <p class="tagline reveal">Een carrosseriebedrijf in Zele, met een website uit 2012 die vandaag nog online staat. Scroll — en kijk wat er kan.</p>
+        </div>
+      </div>
       <div class="stage" id="stage">
         <div class="stage-pad">
-          <figure class="browser-frame">
-            <figcaption class="frame-bar mono">
+          <figure class="frame frame-dark" style="margin-top:0">
+            <figcaption class="frame-bar">
               <span class="frame-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-              <span class="frame-label">conceptstudie — carrosseriebedrijf, Zele</span>
+              <span>conceptstudie — carrosseriebedrijf, Zele</span>
             </figcaption>
             <div class="shots">
               <picture class="shot shot-before">
@@ -90,97 +131,99 @@
               </div>
             </div>
           </figure>
-          <div class="stage-meta mono" aria-hidden="true">
+          <div class="stage-meta" aria-hidden="true">
             <span class="meta-before">gebouwd in 2012 · nooit vernieuwd · vandaag nog online</span>
             <span class="meta-after">concept 2026 · vanaf nul getekend</span>
           </div>
         </div>
       </div>
       <div class="herbouw-slot">
-        <p class="slotzin serif-it">Dit voorstel werd gemaakt zonder dat de zaakvoerder er iets voor vroeg — of voor betaalde.</p>
-        <p class="slot-caption mono">conceptstudie · nog niet in productie</p>
+        <p class="slotzin">Dit voorstel werd gemaakt zonder dat de zaakvoerder er iets voor vroeg — of voor betaalde.</p>
+        <p class="slot-caption">conceptstudie · nog niet in productie</p>
       </div>
     </section>
 
-    <!-- ============ WERKWIJZE ============ -->
-    <section class="werkwijze" id="werkwijze" aria-label="Werkwijze">
-      <div class="wrap">
-        <p class="leadin serif-it reveal">Misschien kreeg je al een mail van mij.</p>
-        <h2 class="reveal">Eerst zien, <span class="it accent">dan beslissen.</span></h2>
-        <div class="ledger">
-          <div class="row reveal">
-            <span class="row-label mono">ik zoek</span>
-            <p class="row-line">Ik zoek zaken in de streek met een verouderde website — of helemaal geen.</p>
-          </div>
-          <div class="row reveal">
-            <span class="row-label mono">ik bouw</span>
-            <p class="row-line">Ik maak eerst een gratis voorstel voor je homepage en mail het je. Ongevraagd, af, klaar om te bekijken.</p>
-          </div>
-          <div class="row reveal">
-            <span class="row-label mono">jij beslist</span>
-            <p class="row-line">Je betaalt pas als je de volledige website wil. Wil je die niet? Dan heeft het je niets gekost — zelfs geen vergadering.</p>
-          </div>
-        </div>
-        <p class="chips mono reveal">geen offerte vooraf&ensp;/&ensp;geen voorschot&ensp;/&ensp;geen verplichting</p>
-        <p class="kicker serif-it reveal">Geen offerte vol beloftes. Een voorstel dat al bestaat.</p>
+    <!-- ============ TILE 4 — Werk: Michiels (white) ============ -->
+    <section class="tile center work-tile" id="werk" aria-label="Werk: Schrijnwerkerij Michiels">
+      <div class="wrap-wide">
+        <h2 class="reveal">Drie generaties vakmanschap, <span class="it accent">eindelijk zichtbaar.</span></h2>
+        <p class="tagline reveal">Voor een schrijnwerkerij in Zele — met hun eigen realisaties als beeldmateriaal, geen stockfoto's.</p>
+        <figure class="frame reveal">
+          <div class="frame-bar"><span class="frame-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>conceptstudie — Schrijnwerkerij Michiels, Zele</span></div>
+          <img src="./assets/work/michiels-hero.webp" alt="Conceptontwerp voor Schrijnwerkerij Michiels: homepage met houten ramen en luiken en de titel 'Drie generaties. Eén ambacht.'" width="1600" height="956" loading="lazy" decoding="async" />
+        </figure>
+        <figcaption class="caption reveal">conceptstudie · nog niet in productie</figcaption>
       </div>
     </section>
 
-    <!-- ============ BELOFTES ============ -->
-    <section class="beloftes" id="beloftes" aria-label="Wat je mag verwachten">
+    <!-- ============ TILE 5 — Werk: De Beule (mist) ============ -->
+    <section class="tile tile-mist center work-tile" aria-label="Werk: Autoschadebedrijf De Beule">
+      <div class="wrap-wide">
+        <h2 class="reveal">Blikschade? <span class="it accent">In een mum van tijd geflikst.</span></h2>
+        <p class="tagline reveal">Het volledige concept achter de herbouw hierboven — donker industrieel, met hun eigen slogan als kop.</p>
+        <figure class="frame reveal">
+          <div class="frame-bar"><span class="frame-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>conceptstudie — Autoschadebedrijf De Beule, Zele</span></div>
+          <img src="./assets/work/debeule-hero.webp" alt="Conceptontwerp voor Autoschadebedrijf De Beule: donkere industriële homepage met oranje accenten" width="1600" height="956" loading="lazy" decoding="async" />
+        </figure>
+        <figcaption class="caption reveal">conceptstudie · nog niet in productie</figcaption>
+      </div>
+    </section>
+
+    <!-- ============ TILE 6 — Beloftes (white) ============ -->
+    <section class="tile center" id="beloftes" aria-label="Wat je mag verwachten">
       <div class="wrap">
         <h2 class="reveal">Wat je wél mag verwachten</h2>
-        <dl class="promise-list">
+        <div class="promise-grid">
           <div class="promise reveal">
-            <dt class="mono">mobiel eerst</dt>
-            <dd>Ontworpen op een telefoonscherm, want daar kijken je klanten.</dd>
+            <h3>Mobiel eerst</h3>
+            <p>Ontworpen op een telefoonscherm, want daar kijken je klanten.</p>
           </div>
           <div class="promise reveal">
-            <dt class="mono">snel</dt>
-            <dd>Licht gebouwd — geen zware thema's, geen trage plug-ins.</dd>
+            <h3>Snel</h3>
+            <p>Licht gebouwd — geen zware thema's, geen trage plug-ins.</p>
           </div>
           <div class="promise reveal">
-            <dt class="mono">geen sjablonen</dt>
-            <dd>Elk ontwerp begint op een leeg blad, getekend voor jouw zaak.</dd>
+            <h3>Geen sjablonen</h3>
+            <p>Elk ontwerp begint op een leeg blad, getekend voor jouw zaak.</p>
           </div>
           <div class="promise reveal">
-            <dt class="mono">rechtstreeks</dt>
-            <dd>Je mailt met de persoon die je site ontwerpt én bouwt. Niemand ertussen.</dd>
+            <h3>Rechtstreeks</h3>
+            <p>Je mailt met de persoon die je site ontwerpt én bouwt. Niemand ertussen.</p>
           </div>
-        </dl>
+        </div>
         <aside class="honesty reveal">
-          <p class="serif-it">Je vindt hier geen klantenlogo's, geen sterren, geen citaten. De studio is jong, en ik verzin er liever geen. Daarom ligt het risico bij mij: het eerste ontwerp maak ik voor je zaak — nog voordat jij iets beslist.</p>
+          <p>Je vindt hier geen klantenlogo's, geen sterren, geen citaten. De studio is jong, en ik verzin er liever geen. Daarom ligt het risico bij mij: het eerste ontwerp maak ik voor je zaak — nog voordat jij iets beslist.</p>
         </aside>
       </div>
     </section>
 
-    <!-- ============ CONTACT ============ -->
-    <section class="contact" id="contact" aria-label="Contact">
+    <!-- ============ TILE 7 — Contact (midnight) ============ -->
+    <section class="tile tile-midnight center" id="contact" aria-label="Contact">
       <div class="wrap">
-        <h2 class="contact-head reveal">Eén e-mail. <span class="it accent">Meer moet dat niet zijn.</span></h2>
+        <h2 class="reveal">Eén e-mail. <span class="it accent">Meer moet dat niet zijn.</span></h2>
         <div class="contact-actions reveal">
-          <a class="mail-cta" href="mailto:j.guzman@midnightspaceconsultancy.com?subject=Proefontwerp%20voor%20mijn%20zaak">Vraag je proefontwerp aan</a>
-          <button class="copy-mail mono" id="copyMail" type="button" data-mail="j.guzman@midnightspaceconsultancy.com">
+          <a class="pill" href="mailto:j.guzman@midnightspaceconsultancy.com?subject=Proefontwerp%20voor%20mijn%20zaak">Vraag je proefontwerp aan</a>
+          <button class="copy-mail" id="copyMail" type="button" data-mail="j.guzman@midnightspaceconsultancy.com">
             <span class="copy-addr">j.guzman@midnightspaceconsultancy.com</span>
             <span class="copy-flash" aria-hidden="true">gekopieerd</span>
           </button>
         </div>
         <p class="contact-why reveal">Waarom alleen e-mail? Alles staat zwart op wit, en je beslist in je eigen tempo.</p>
-        <p class="signoff serif-it reveal">— Jordan</p>
+        <p class="signoff reveal">— Jordan</p>
+
+        <footer class="site-footer">
+          <p>&copy; 2026 Midnight Space · Oost-Vlaanderen</p>
+          <p>Ook deze site is vanaf nul gebouwd — geen sjabloon.</p>
+        </footer>
       </div>
     </section>
 
   </main>
 
-  <footer class="site-footer">
-    <p class="mono">&copy; 2026 Midnight Space · Oost-Vlaanderen</p>
-    <p class="mono footer-note">Ook deze site is vanaf nul gebouwd — geen sjabloon.</p>
-  </footer>
-
   <script src="./assets/vendor/gsap.min.js" defer></script>
   <script src="./assets/vendor/ScrollTrigger.min.js" defer></script>
   <script src="./assets/vendor/SplitText.min.js" defer></script>
   <script src="./assets/vendor/lenis.min.js" defer></script>
-  <script src="./assets/site.js?v=agency-2" defer></script>
+  <script src="./assets/site.js?v=agency-3" defer></script>
 </body>
 </html>
