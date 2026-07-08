@@ -18,9 +18,10 @@ type Anchor = { docY: number; fx: number; fy: number; s: number };
 
 const smooth = (t: number) => t * t * (3 - 2 * t);
 
-/* Load the <spline-viewer> custom element once, on demand. */
+/* Load the <spline-viewer> custom element once, on demand.
+   Shared with FooterObject3D (the static scene at the page bottom). */
 let viewerPromise: Promise<void> | null = null;
-function loadViewer(): Promise<void> {
+export function loadSplineViewer(): Promise<void> {
   if (window.customElements?.get('spline-viewer')) return Promise.resolve();
   if (viewerPromise) return viewerPromise;
   viewerPromise = new Promise<void>((resolve, reject) => {
@@ -69,7 +70,7 @@ export function ScrollObject3D() {
     const mountViewer = () => {
       if (viewerRequested) return;
       viewerRequested = true;
-      loadViewer()
+      loadSplineViewer()
         .then(() => {
           const viewer = document.createElement('spline-viewer');
           viewer.setAttribute('url', SPLINE_SCENE);
