@@ -5,9 +5,10 @@ something isn't already in the design system.
 
 ## Who we're for
 
-Sovereign-fund principals, agency strategists, fund analysts, and operators
-deciding where to point capital next in GCC space. They are tired, smart, and
-allergic to puffery. Most of them have spreadsheets that are out of date.
+Flemish SME owners — garage owners, plumbers, hairdressers, contractors in
+Oost-Vlaanderen — deciding whether to trust a one-person studio with their
+website. They are busy, practical, and allergic to puffery. Most of them have
+websites that are out of date. Site copy is Dutch, je-form, honest editorial.
 
 ## Voice — five rules
 
