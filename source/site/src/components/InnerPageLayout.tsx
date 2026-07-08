@@ -6,25 +6,24 @@ type InnerPageLayoutProps = {
   title: string;
   subtitle?: string;
   children: ReactNode;
-  /** Optional full-bleed layer painted behind the content (e.g. a
-      Spline scene backdrop on the Connect section). */
-  backdrop?: ReactNode;
+  /** Transparent variant: no section background, so the fixed
+      BackgroundVideo (light footage) shows through — text stays dark. */
+  transparent?: boolean;
 };
 
-export function InnerPageLayout({ counter, title, subtitle, children, backdrop }: InnerPageLayoutProps) {
+export function InnerPageLayout({ counter, title, subtitle, children, transparent = false }: InnerPageLayoutProps) {
   return (
     <section
       style={{
         position: 'relative',
-        background: '#C5C5C5',
+        background: transparent ? 'transparent' : '#C5C5C5',
         minHeight: '100vh',
         padding: '120px 32px 80px',
         overflow: 'hidden',
       }}
     >
-      {backdrop}
       {/* Content sits above the drifting 3D object (z 2); the section's
-          opaque background stays below it. */}
+          background (when opaque) stays below it. */}
       <div style={{ position: 'relative', zIndex: 3 }}>
       <FadeUp delay={0}>
         <p style={{ fontSize: 11, letterSpacing: '0.08em', color: '#666', margin: '0 0 20px' }}>{counter}</p>

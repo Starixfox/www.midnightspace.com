@@ -1,11 +1,14 @@
 export function LegalSections() {
+  /* Transparent windows onto the fixed BackgroundVideo, so the closing
+     stretch of the page shows the video — dark text reads well on the
+     light footage. */
   return (
     <>
       <section
         id="privacy"
         style={{
           position: 'relative',
-          background: '#C5C5C5',
+          background: 'transparent',
           borderTop: '1px solid rgba(0,0,0,0.18)',
           padding: '70px 32px',
         }}
@@ -31,7 +34,7 @@ export function LegalSections() {
         id="terms"
         style={{
           position: 'relative',
-          background: '#b8b8b8',
+          background: 'transparent',
           borderTop: '1px solid rgba(0,0,0,0.18)',
           padding: '70px 32px',
         }}

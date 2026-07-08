@@ -1,7 +1,6 @@
 import { Mail } from 'lucide-react';
 import { FadeUp } from '../components/FadeUp';
 import { InnerPageLayout } from '../components/InnerPageLayout';
-import { SplineBackdrop } from '../components/SplineBackdrop';
 
 type ConnectPageProps = {
   embedded?: boolean;
@@ -13,7 +12,7 @@ export function ConnectPage({ embedded = false }: ConnectPageProps) {
       counter="005 / 005"
       title="Connect"
       subtitle="Vertel over je zaak — alles staat zwart op wit, en je beslist in je eigen tempo."
-      backdrop={<SplineBackdrop />}
+      transparent
     >
       <FadeUp delay={0.2}>
         <a
