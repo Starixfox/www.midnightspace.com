@@ -1,6 +1,7 @@
 import { RATE_TIERS } from '../constants';
 import { FadeUp } from '../components/FadeUp';
 import { InnerPageLayout } from '../components/InnerPageLayout';
+import { Parallax } from '../components/Parallax';
 import { navigateToRoute } from '../../../_shared/preset-site-routing';
 
 type RatesPageProps = {
@@ -24,7 +25,8 @@ export function RatesPage({ embedded = false }: RatesPageProps) {
         {RATE_TIERS.map((tier, idx) => {
           const highlighted = 'highlight' in tier && tier.highlight;
           return (
-          <FadeUp key={tier.name} delay={0.15 + idx * 0.1}>
+          <Parallax key={tier.name} amount={idx % 2 === 0 ? 30 : -18}>
+          <FadeUp delay={0.15 + idx * 0.1}>
             <div
               style={{
                 border: '1px solid rgba(0,0,0,0.18)',
@@ -48,6 +50,7 @@ export function RatesPage({ embedded = false }: RatesPageProps) {
               </ul>
             </div>
           </FadeUp>
+          </Parallax>
           );
         })}
       </div>

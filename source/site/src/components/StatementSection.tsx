@@ -1,4 +1,5 @@
 import { FadeUp } from './FadeUp';
+import { Parallax } from './Parallax';
 
 const STATEMENT_WORDS = 'EERST ZIEN. DAN BESLISSEN. ZO SIMPEL IS HET.'.split(' ');
 
@@ -16,7 +17,8 @@ export function StatementSection() {
         padding: '70px 32px 32px 32px',
       }}
     >
-      <div
+      <Parallax
+        amount={28}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -58,7 +60,7 @@ export function StatementSection() {
             We provide all-in-one AI automation services in one place.
           </p>
         </FadeUp>
-      </div>
+      </Parallax>
     </section>
   );
 }

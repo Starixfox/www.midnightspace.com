@@ -1,6 +1,7 @@
 import { SERVICE_CARDS } from '../constants';
 import { FadeUp } from '../components/FadeUp';
 import { InnerPageLayout } from '../components/InnerPageLayout';
+import { Parallax } from '../components/Parallax';
 
 type OfferingPageProps = {
   embedded?: boolean;
@@ -21,7 +22,8 @@ export function OfferingPage({ embedded = false }: OfferingPageProps) {
         }}
       >
         {SERVICE_CARDS.map((card, idx) => (
-          <FadeUp key={card.title} delay={0.2 + idx * 0.1}>
+          <Parallax key={card.title} amount={idx % 2 === 0 ? 24 : -16}>
+          <FadeUp delay={0.2 + idx * 0.1}>
             <article
               style={{
                 border: '1px solid rgba(0,0,0,0.18)',
@@ -50,6 +52,7 @@ export function OfferingPage({ embedded = false }: OfferingPageProps) {
               </div>
             </article>
           </FadeUp>
+          </Parallax>
         ))}
       </div>
     </InnerPageLayout>

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { CASE_STUDIES } from '../constants';
 import { FadeUp } from '../components/FadeUp';
 import { InnerPageLayout } from '../components/InnerPageLayout';
+import { Parallax } from '../components/Parallax';
 
 type CasePageProps = {
   embedded?: boolean;
@@ -16,7 +17,8 @@ export function CasePage({ embedded = false }: CasePageProps) {
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 640 }}>
         {CASE_STUDIES.map((item, idx) => (
-          <FadeUp key={item.client} delay={0.15 + idx * 0.1}>
+          <Parallax key={item.client} amount={idx % 2 === 0 ? 24 : -16}>
+          <FadeUp delay={0.15 + idx * 0.1}>
             <motion.div
               whileHover={{ y: -4 }}
               transition={{ type: 'spring', stiffness: 320, damping: 26 }}
@@ -57,6 +59,7 @@ export function CasePage({ embedded = false }: CasePageProps) {
               </div>
             </motion.div>
           </FadeUp>
+          </Parallax>
         ))}
       </div>
     </InnerPageLayout>

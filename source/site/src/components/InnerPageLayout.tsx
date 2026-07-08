@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { FadeUp } from './FadeUp';
+import { Parallax } from './Parallax';
 
 type InnerPageLayoutProps = {
   counter: string;
@@ -25,6 +26,7 @@ export function InnerPageLayout({ counter, title, subtitle, children, transparen
       {/* Content sits above the drifting 3D object (z 2); the section's
           background (when opaque) stays below it. */}
       <div style={{ position: 'relative', zIndex: 3 }}>
+      <Parallax amount={26}>
       <FadeUp delay={0}>
         <p style={{ fontSize: 11, letterSpacing: '0.08em', color: '#666', margin: '0 0 20px' }}>{counter}</p>
       </FadeUp>
@@ -59,6 +61,7 @@ export function InnerPageLayout({ counter, title, subtitle, children, transparen
           </p>
         </FadeUp>
       )}
+      </Parallax>
       <div style={{ marginTop: 48 }}>{children}</div>
       </div>
     </section>

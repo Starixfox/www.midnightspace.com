@@ -1,6 +1,7 @@
 import { CREW } from '../constants';
 import { FadeUp } from '../components/FadeUp';
 import { InnerPageLayout } from '../components/InnerPageLayout';
+import { Parallax } from '../components/Parallax';
 
 type CrewPageProps = {
   embedded?: boolean;
@@ -21,7 +22,8 @@ export function CrewPage({ embedded = false }: CrewPageProps) {
         }}
       >
         {CREW.map((member, idx) => (
-          <FadeUp key={member.name} delay={0.1 + idx * 0.08}>
+          <Parallax key={member.name} amount={idx % 2 === 0 ? 22 : -14}>
+          <FadeUp delay={0.1 + idx * 0.08}>
             <div
               style={{
                 border: '1px solid rgba(0,0,0,0.18)',
@@ -41,6 +43,7 @@ export function CrewPage({ embedded = false }: CrewPageProps) {
               <p style={{ fontSize: 13, lineHeight: 1.5, margin: 0, color: '#3a3a3a' }}>{member.focus}</p>
             </div>
           </FadeUp>
+          </Parallax>
         ))}
       </div>
     </InnerPageLayout>
