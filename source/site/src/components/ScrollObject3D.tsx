@@ -105,6 +105,7 @@ export function ScrollObject3D() {
     /* ---------- Waypoints down the page ---------- */
     let anchors: Anchor[] = [];
     let heroBottom = 0;
+    let maxProbeY = 0; // probe value when fully scrolled to the bottom
     function buildAnchors() {
       const vh = window.innerHeight;
       const get = (id: string) => document.getElementById(id);
@@ -138,6 +139,7 @@ export function ScrollObject3D() {
       // …and finish fully in view, centred, at the very bottom of the page.
       const docEnd = document.documentElement.scrollHeight - vh * 0.5;
       list.push({ docY: docEnd, fx: 0, fy: 0.02, s: m ? 0.78 : 0.9 });
+      maxProbeY = docEnd;
       anchors = list.sort((a, b) => a.docY - b.docY);
     }
 
@@ -191,7 +193,13 @@ export function ScrollObject3D() {
 
       const target = targetFor(probe);
       const k = 1 - Math.exp(-5 * dt);
-      const fadeTarget = probe > heroBottom + window.innerHeight * 0.05 ? 1 : 0;
+      let fadeTarget = probe > heroBottom + window.innerHeight * 0.05 ? 1 : 0;
+      // Fade back out over the last stretch of scroll, so the object has
+      // fully dissolved by the time the visitor reaches the very bottom.
+      if (maxProbeY > 0) {
+        const endFade = Math.min(1, Math.max(0, (maxProbeY - probe) / (window.innerHeight * 0.6)));
+        fadeTarget *= endFade;
+      }
       fade += (fadeTarget - fade) * (1 - Math.exp(-4 * dt));
 
       posX += (target.x - posX) * k;
