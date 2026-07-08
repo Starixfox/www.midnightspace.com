@@ -205,7 +205,17 @@ html.js.hero-ready .hero-item, html.js.hero-ready .hero-head .hl { visibility: v
   color: var(--cream-faint);
 }
 
-/* WebGL layer + always-on CSS fallback stars beneath it */
+/* Persistent 3D stage — one fixed transparent canvas above the page.
+   pointer-events: none keeps every link, button, and selection native. */
+#gl-stage { position: fixed; inset: 0; z-index: 10; pointer-events: none; }
+#gl-stage canvas {
+  position: absolute; inset: 0; width: 100% !important; height: 100% !important;
+  opacity: 0; transition: opacity 1.4s ease;
+}
+html.gl-on #gl-stage canvas { opacity: 1; }
+.site-header { z-index: 50; } /* nav stays above the stage */
+
+/* CSS fallback stars in the hero (visible when WebGL is unavailable) */
 .gl-hero { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
 .gl-hero::before {
   content: ""; position: absolute; inset: 0;
@@ -220,11 +230,6 @@ html.js.hero-ready .hero-item, html.js.hero-ready .hero-head .hl { visibility: v
     radial-gradient(1.3px 1.3px at 93% 86%, rgba(255,255,255,0.20) 50%, transparent 51%),
     radial-gradient(900px 520px at 70% -10%, rgba(124,216,224,0.06), transparent 60%);
 }
-.gl-canvas {
-  position: absolute; inset: 0; width: 100% !important; height: 100% !important;
-  opacity: 0; transition: opacity 1.4s ease;
-}
-html.gl-on .gl-canvas { opacity: 1; }
 
 /* ============ Werkwijze — three quiet columns ============ */
 .leadin {
