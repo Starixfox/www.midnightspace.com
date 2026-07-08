@@ -4,3 +4,5 @@ package-lock.json
 package.json
 source/site/dist/
 source/site/index.html
+source/site/assets/
+source/site/tsconfig.tsbuildinfo

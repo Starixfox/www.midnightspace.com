@@ -8,7 +8,7 @@ export function StatementSection() {
       className="cognitra-section-pad"
       style={{
         position: 'relative',
-        zIndex: 1,
+        zIndex: 3, // text above the drifting 3D object (which sits at z 2)
         height: '100vh',
         display: 'flex',
         flexDirection: 'column',

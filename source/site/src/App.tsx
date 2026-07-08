@@ -33,7 +33,7 @@ export default function App() {
       <footer
         style={{
           position: 'relative',
-          zIndex: 2,
+          zIndex: 3,
           background: '#1a1a1a',
           color: 'rgba(255,255,255,0.5)',
           textAlign: 'center',

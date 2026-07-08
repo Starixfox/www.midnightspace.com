@@ -44,6 +44,8 @@ export function ConnectPage({ embedded = false }: ConnectPageProps) {
               padding: '12px 20px',
               fontSize: 13,
               background: 'rgba(255,255,255,0.5)',
+              backdropFilter: 'blur(18px)',
+              WebkitBackdropFilter: 'blur(18px)',
             }}
           />
           <input
@@ -56,6 +58,8 @@ export function ConnectPage({ embedded = false }: ConnectPageProps) {
               padding: '12px 20px',
               fontSize: 13,
               background: 'rgba(255,255,255,0.5)',
+              backdropFilter: 'blur(18px)',
+              WebkitBackdropFilter: 'blur(18px)',
             }}
           />
           <textarea
@@ -68,6 +72,8 @@ export function ConnectPage({ embedded = false }: ConnectPageProps) {
               padding: '12px 20px',
               fontSize: 13,
               background: 'rgba(255,255,255,0.5)',
+              backdropFilter: 'blur(18px)',
+              WebkitBackdropFilter: 'blur(18px)',
               resize: 'vertical',
             }}
           />

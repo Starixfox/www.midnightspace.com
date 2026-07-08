@@ -121,7 +121,9 @@ function CardShell({ title, text, children }: CardShellProps) {
       whileHover={{ y: -6 }}
       transition={{ type: 'spring', stiffness: 320, damping: 26 }}
       style={{
-        background: 'transparent',
+        background: 'rgba(255,255,255,0.22)',
+        backdropFilter: 'blur(22px)',
+        WebkitBackdropFilter: 'blur(22px)',
         border: '1px solid rgba(0,0,0,0.18)',
         borderRadius: 20,
         overflow: 'hidden',
@@ -144,7 +146,7 @@ function CardShell({ title, text, children }: CardShellProps) {
 
 function SectionHead({ compact }: { compact?: boolean }) {
   return (
-    <>
+    <div style={{ position: 'relative', zIndex: 3 }}>
       <FadeUp delay={0}>
         <p style={{ fontSize: 11, letterSpacing: '0.08em', color: '#666', marginBottom: compact ? 12 : 20, marginTop: 0 }}>
           003 / 005
@@ -186,7 +188,7 @@ function SectionHead({ compact }: { compact?: boolean }) {
           </FadeUp>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -219,7 +221,6 @@ export function ServicesSection() {
         className="cognitra-section-3 cognitra-section-pad-lg"
         style={{
           position: 'relative',
-          zIndex: 2,
           background: '#C5C5C5',
           display: 'flex',
           flexDirection: 'column',
@@ -230,7 +231,7 @@ export function ServicesSection() {
         <SectionHead />
         <div
           className="cognitra-cards-grid"
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, gridAutoRows: '1fr' }}
+          style={{ position: 'relative', zIndex: 3, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, gridAutoRows: '1fr' }}
         >
           {SERVICE_CARDS.map((card, idx) => (
             <FadeUp key={card.title} delay={0.3 + idx * 0.12}>
@@ -265,7 +266,7 @@ export function ServicesSection() {
   /* Pinned scrollytelling variant: the section holds while each shape
      hands over to its example, then the page continues. */
   return (
-    <div ref={wrapRef} style={{ position: 'relative', zIndex: 2, height: '340vh' }}>
+    <div ref={wrapRef} style={{ position: 'relative', height: '340vh' }}>
       <section
         id="offering"
         className="cognitra-section-3"
@@ -284,7 +285,7 @@ export function ServicesSection() {
         <SectionHead compact />
         <div
           className="cognitra-cards-grid"
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, gridAutoRows: '1fr' }}
+          style={{ position: 'relative', zIndex: 3, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, gridAutoRows: '1fr' }}
         >
           {SERVICE_CARDS.map((card, idx) => (
             <CardShell key={card.title} title={card.title} text={card.text}>
@@ -292,7 +293,7 @@ export function ServicesSection() {
             </CardShell>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 22 }}>
+        <div style={{ position: 'relative', zIndex: 3, display: 'flex', gap: 8, justifyContent: 'center', marginTop: 22 }}>
           {SERVICE_CARDS.map((_, idx) => (
             <PhaseDot key={idx} idx={idx} progress={scrollYProgress} />
           ))}

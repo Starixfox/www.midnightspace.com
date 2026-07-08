@@ -1,17 +1,38 @@
 import { useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
-import * as THREE from 'three';
 
-/* A real-time companion object in the spirit of the hero video:
-   a single clean wireframe icosahedron with a warm glowing core.
-   It travels down the page between section waypoints as the
-   visitor scrolls — reversible, damped, cursor-aware.
-   Original implementation; degrades to nothing on reduced motion or
-   when WebGL is unavailable (the page is complete without it). */
+/* A real-time companion object that travels down the page between
+   section waypoints as the visitor scrolls — reversible, damped,
+   cursor-aware. The object itself is a Spline scene (a self-contained
+   WebGL canvas), so instead of moving a mesh inside a shared Three.js
+   scene we drive the DOM container that holds <spline-viewer>: the
+   same waypoint maths now feed translate / scale / opacity on that
+   element. Degrades to nothing on reduced motion or if the Spline
+   runtime fails to load (the page is complete without it). */
+
+const SPLINE_SCENE = 'https://prod.spline.design/aS95Ao7UpuJOJi6b/scene.splinecode';
+// @1 lets unpkg resolve the latest 1.x build (no brittle pinned patch).
+const VIEWER_SRC = 'https://unpkg.com/@splinetool/viewer@1/build/spline-viewer.js';
 
 type Anchor = { docY: number; fx: number; fy: number; s: number };
 
 const smooth = (t: number) => t * t * (3 - 2 * t);
+
+/* Load the <spline-viewer> custom element once, on demand. */
+let viewerPromise: Promise<void> | null = null;
+function loadViewer(): Promise<void> {
+  if (window.customElements?.get('spline-viewer')) return Promise.resolve();
+  if (viewerPromise) return viewerPromise;
+  viewerPromise = new Promise<void>((resolve, reject) => {
+    const s = document.createElement('script');
+    s.type = 'module';
+    s.src = VIEWER_SRC;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error('spline-viewer failed to load'));
+    document.head.appendChild(s);
+  });
+  return viewerPromise;
+}
 
 export function ScrollObject3D() {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -22,60 +43,65 @@ export function ScrollObject3D() {
     const host = hostRef.current;
     if (!host) return;
 
-    let renderer: THREE.WebGLRenderer;
-    try {
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
-    } catch {
-      return;
-    }
-    if (!renderer.getContext()) return;
-
     const isMobile = window.matchMedia('(max-width: 860px)').matches;
-    const DPR = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
-    renderer.setPixelRatio(DPR);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearAlpha(0);
-    host.appendChild(renderer.domElement);
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 60);
-    camera.position.z = 9;
+    /* ---------- The drifting box (holds the Spline canvas) ---------- */
+    const box = document.createElement('div');
+    box.setAttribute('aria-hidden', 'true');
+    Object.assign(box.style, {
+      position: 'absolute',
+      left: '50%',
+      // On mobile the object lives in the bottom band of the screen so it
+      // never blocks the content the visitor is reading.
+      top: isMobile ? '84%' : '50%',
+      width: isMobile ? 'min(34vh, 58vw)' : 'min(93vh, 87vw)',
+      height: isMobile ? 'min(34vh, 58vw)' : 'min(93vh, 87vw)',
+      transform: 'translate(-50%, -50%)',
+      transformOrigin: 'center center',
+      opacity: '0',
+      willChange: 'transform, opacity',
+      pointerEvents: 'none',
+    });
+    host.appendChild(box);
 
-    /* ---------- The object ---------- */
-    const group = new THREE.Group();   // waypoints drive this
-    const spinner = new THREE.Group(); // idle motion drives this
-    group.add(spinner);
-    scene.add(group);
-
-    // One clean wireframe icosahedron
-    const wireMat = new THREE.LineBasicMaterial({ color: 0x2a2a30, transparent: true, opacity: 0 });
-    const wire = new THREE.LineSegments(
-      new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(1.05, 1)),
-      wireMat,
-    );
-    spinner.add(wire);
-
-    // Core glow sprite (radial gradient, generated — no external asset)
-    const glowCanvas = document.createElement('canvas');
-    glowCanvas.width = glowCanvas.height = 128;
-    const gctx = glowCanvas.getContext('2d')!;
-    const grad = gctx.createRadialGradient(64, 64, 4, 64, 64, 64);
-    grad.addColorStop(0, 'rgba(255, 190, 110, 0.9)');
-    grad.addColorStop(0.35, 'rgba(255, 140, 50, 0.45)');
-    grad.addColorStop(1, 'rgba(255, 120, 40, 0)');
-    gctx.fillStyle = grad;
-    gctx.fillRect(0, 0, 128, 128);
-    const glowTex = new THREE.CanvasTexture(glowCanvas);
-    const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
-    glow.scale.setScalar(1.4);
-    spinner.add(glow);
+    let viewerRequested = false;
+    let failed = false;
+    const mountViewer = () => {
+      if (viewerRequested) return;
+      viewerRequested = true;
+      loadViewer()
+        .then(() => {
+          const viewer = document.createElement('spline-viewer');
+          viewer.setAttribute('url', SPLINE_SCENE);
+          // Override the scene's baked (black) background with full
+          // transparency so only the object itself shows on the page.
+          viewer.setAttribute('background', 'rgba(0,0,0,0)');
+          Object.assign(viewer.style, {
+            width: '100%',
+            height: '100%',
+            background: 'transparent',
+            pointerEvents: 'none',
+          });
+          box.appendChild(viewer);
+          // Best-effort: drop the corner "Built with Spline" badge if the
+          // shadow root is open (no-op on closed roots / newer builds).
+          window.setTimeout(() => {
+            try {
+              (viewer as HTMLElement & { shadowRoot?: ShadowRoot }).shadowRoot
+                ?.querySelector('#logo')
+                ?.remove();
+            } catch {
+              /* ignore */
+            }
+          }, 600);
+        })
+        .catch(() => {
+          failed = true;
+          host.style.display = 'none';
+        });
+    };
 
     /* ---------- Waypoints down the page ---------- */
-    function worldSize() {
-      const h = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * camera.position.z;
-      return { w: h * camera.aspect, h };
-    }
-
     let anchors: Anchor[] = [];
     let heroBottom = 0;
     function buildAnchors() {
@@ -106,9 +132,10 @@ export function ScrollObject3D() {
       anchors = list.sort((a, b) => a.docY - b.docY);
     }
 
+    /* Screen-space target: fx/fy are fractions of the viewport, mapped
+       to pixel offsets from centre; s is the container scale. */
     function targetFor(probe: number) {
-      if (!anchors.length) return { x: 0, y: 0, s: 1 };
-      const ws = worldSize();
+      if (!anchors.length) return { x: 0, y: 0, s: 0.5 };
       let a = anchors[0], b = anchors[0];
       for (let i = 0; i < anchors.length; i++) {
         if (anchors[i].docY <= probe) { a = anchors[i]; b = anchors[Math.min(i + 1, anchors.length - 1)]; }
@@ -119,7 +146,9 @@ export function ScrollObject3D() {
       const fx = a.fx + (b.fx - a.fx) * t;
       const fy = a.fy + (b.fy - a.fy) * t;
       const s = a.s + (b.s - a.s) * t;
-      return { x: fx * ws.w, y: fy * ws.h, s };
+      // Mobile: keep the object pinned to its bottom band — only drift
+      // horizontally; vertical waypoint offsets are a desktop luxury.
+      return { x: fx * window.innerWidth, y: (isMobile ? 0 : fy) * window.innerHeight, s };
     }
 
     /* ---------- Loop ---------- */
@@ -127,6 +156,8 @@ export function ScrollObject3D() {
     let raf = 0;
     let mouseX = 0, mouseY = 0, curX = 0, curY = 0;
     let fade = 0;
+    let posX = 0, posY = 0, scl = 0.5;
+    let rot = 0; // scroll-driven spin (degrees), damped + reversible
     let last = performance.now();
 
     const onPointer = (e: PointerEvent) => {
@@ -138,31 +169,40 @@ export function ScrollObject3D() {
     function frame(now: number) {
       if (!running) return;
       raf = requestAnimationFrame(frame);
+      if (failed) return;
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       const t = now / 1000;
 
       const probe = window.scrollY + window.innerHeight * 0.5;
+
+      // Lazy-load the Spline runtime only once the visitor approaches the
+      // hero's end (keeps the hero's LCP clean).
+      if (!viewerRequested && probe > heroBottom - window.innerHeight * 0.75) mountViewer();
+
       const target = targetFor(probe);
       const k = 1 - Math.exp(-5 * dt);
       const fadeTarget = probe > heroBottom + window.innerHeight * 0.05 ? 1 : 0;
       fade += (fadeTarget - fade) * (1 - Math.exp(-4 * dt));
-      group.position.x += (target.x - group.position.x) * k;
-      group.position.y += (target.y - group.position.y) * k;
-      const s = group.scale.x + (target.s - group.scale.x) * k;
-      group.scale.setScalar(Math.max(0.001, s * (0.55 + 0.45 * fade)));
+
+      posX += (target.x - posX) * k;
+      posY += (target.y - posY) * k;
+      scl += (target.s - scl) * k;
+
+      // Spin with scroll: ~one full turn per ~3000px, damped so it eases
+      // in/out and runs backwards when scrolling up.
+      rot += (window.scrollY * 0.12 - rot) * k;
 
       curX += (mouseX - curX) * 0.04;
       curY += (mouseY - curY) * 0.04;
 
-      spinner.rotation.y = t * 0.18 + window.scrollY * 0.0004 + curX * 0.08;
-      spinner.rotation.x = Math.sin(t * 0.22) * 0.12 + curY * 0.06;
-      spinner.position.y = Math.sin(t * 0.6) * 0.05;
-      wireMat.opacity = 0.9 * fade;
-      glow.material.opacity = (0.75 + Math.sin(t * 1.4) * 0.15) * fade;
+      const floatY = Math.sin(t * 0.6) * 6;
+      const px = posX + curX * 18;
+      const py = posY + curY * 14 + floatY;
+      const s = Math.max(0.001, scl * (0.55 + 0.45 * fade));
 
-      if (fade > 0.01 || fadeTarget === 1) renderer.render(scene, camera);
-      else renderer.clear();
+      box.style.transform = `translate(-50%, -50%) translate(${px.toFixed(1)}px, ${py.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${s.toFixed(3)})`;
+      box.style.opacity = Math.min(1, Math.max(0, fade)).toFixed(3);
     }
 
     const onVis = () => {
@@ -172,19 +212,8 @@ export function ScrollObject3D() {
     };
     document.addEventListener('visibilitychange', onVis);
 
-    const onResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      buildAnchors();
-    };
+    const onResize = () => { buildAnchors(); };
     window.addEventListener('resize', onResize, { passive: true });
-
-    renderer.domElement.addEventListener('webglcontextlost', () => {
-      running = false;
-      cancelAnimationFrame(raf);
-      host.style.display = 'none';
-    });
 
     /* Anchors depend on final layout (videos/images) */
     buildAnchors();
@@ -201,8 +230,7 @@ export function ScrollObject3D() {
       window.removeEventListener('resize', onResize);
       window.removeEventListener('load', buildAnchors);
       document.removeEventListener('visibilitychange', onVis);
-      renderer.dispose();
-      host.innerHTML = '';
+      host.replaceChildren();
     };
   }, [reduced]);
 
@@ -212,7 +240,7 @@ export function ScrollObject3D() {
     <div
       ref={hostRef}
       aria-hidden
-      style={{ position: 'fixed', inset: 0, zIndex: 5, pointerEvents: 'none' }}
+      style={{ position: 'fixed', inset: 0, zIndex: 2, pointerEvents: 'none' }}
     />
   );
 }

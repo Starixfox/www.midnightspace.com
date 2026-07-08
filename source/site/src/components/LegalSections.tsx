@@ -5,13 +5,12 @@ export function LegalSections() {
         id="privacy"
         style={{
           position: 'relative',
-          zIndex: 2,
           background: '#C5C5C5',
           borderTop: '1px solid rgba(0,0,0,0.18)',
           padding: '70px 32px',
         }}
       >
-        <div style={{ maxWidth: 720 }}>
+        <div style={{ maxWidth: 720, position: 'relative', zIndex: 3 }}>
           <h2
             style={{
               fontSize: 'clamp(22px, 2.5vw, 32px)',
@@ -32,13 +31,12 @@ export function LegalSections() {
         id="terms"
         style={{
           position: 'relative',
-          zIndex: 2,
           background: '#b8b8b8',
           borderTop: '1px solid rgba(0,0,0,0.18)',
           padding: '70px 32px',
         }}
       >
-        <div style={{ maxWidth: 720 }}>
+        <div style={{ maxWidth: 720, position: 'relative', zIndex: 3 }}>
           <h2
             style={{
               fontSize: 'clamp(22px, 2.5vw, 32px)',

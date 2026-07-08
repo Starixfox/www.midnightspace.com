@@ -28,6 +28,8 @@ export function OfferingPage({ embedded = false }: OfferingPageProps) {
                 borderRadius: 20,
                 overflow: 'hidden',
                 background: 'rgba(255,255,255,0.35)',
+                backdropFilter: 'blur(18px)',
+                WebkitBackdropFilter: 'blur(18px)',
               }}
             >
               <div style={{ aspectRatio: '4/3', position: 'relative' }}>

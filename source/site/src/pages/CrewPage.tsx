@@ -28,6 +28,8 @@ export function CrewPage({ embedded = false }: CrewPageProps) {
                 borderRadius: 16,
                 padding: 24,
                 background: 'rgba(255,255,255,0.35)',
+                backdropFilter: 'blur(18px)',
+                WebkitBackdropFilter: 'blur(18px)',
               }}
             >
               <h3 style={{ fontSize: 16, fontWeight: 600, margin: '0 0 4px', color: '#1a1a1a' }}>

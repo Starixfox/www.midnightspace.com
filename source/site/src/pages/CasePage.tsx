@@ -25,6 +25,8 @@ export function CasePage({ embedded = false }: CasePageProps) {
                 borderRadius: 16,
                 overflow: 'hidden',
                 background: 'rgba(255,255,255,0.35)',
+                backdropFilter: 'blur(18px)',
+                WebkitBackdropFilter: 'blur(18px)',
               }}
             >
               <div style={{ width: '100%', aspectRatio: '21/9', overflow: 'hidden' }}>

@@ -13,12 +13,14 @@ export function InnerPageLayout({ counter, title, subtitle, children }: InnerPag
     <section
       style={{
         position: 'relative',
-        zIndex: 2,
         background: '#C5C5C5',
         minHeight: '100vh',
         padding: '120px 32px 80px',
       }}
     >
+      {/* Content sits above the drifting 3D object (z 2); the section's
+          opaque background stays below it. */}
+      <div style={{ position: 'relative', zIndex: 3 }}>
       <FadeUp delay={0}>
         <p style={{ fontSize: 11, letterSpacing: '0.08em', color: '#666', margin: '0 0 20px' }}>{counter}</p>
       </FadeUp>
@@ -54,6 +56,7 @@ export function InnerPageLayout({ counter, title, subtitle, children }: InnerPag
         </FadeUp>
       )}
       <div style={{ marginTop: 48 }}>{children}</div>
+      </div>
     </section>
   );
 }

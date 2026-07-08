@@ -30,8 +30,10 @@ export function RatesPage({ embedded = false }: RatesPageProps) {
                 border: '1px solid rgba(0,0,0,0.18)',
                 borderRadius: 20,
                 padding: 28,
-                background: highlighted ? '#1a1a1a' : 'rgba(255,255,255,0.35)',
+                background: highlighted ? 'rgba(26,26,26,0.82)' : 'rgba(255,255,255,0.35)',
                 color: highlighted ? '#fff' : '#1a1a1a',
+                backdropFilter: 'blur(18px)',
+                WebkitBackdropFilter: 'blur(18px)',
               }}
             >
               <p style={{ fontSize: 11, letterSpacing: '0.08em', margin: 0, opacity: 0.7 }}>
