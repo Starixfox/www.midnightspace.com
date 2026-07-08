@@ -6,9 +6,12 @@ type InnerPageLayoutProps = {
   title: string;
   subtitle?: string;
   children: ReactNode;
+  /** Optional full-bleed layer painted behind the content (e.g. a
+      Spline scene backdrop on the Connect section). */
+  backdrop?: ReactNode;
 };
 
-export function InnerPageLayout({ counter, title, subtitle, children }: InnerPageLayoutProps) {
+export function InnerPageLayout({ counter, title, subtitle, children, backdrop }: InnerPageLayoutProps) {
   return (
     <section
       style={{
@@ -16,8 +19,10 @@ export function InnerPageLayout({ counter, title, subtitle, children }: InnerPag
         background: '#C5C5C5',
         minHeight: '100vh',
         padding: '120px 32px 80px',
+        overflow: 'hidden',
       }}
     >
+      {backdrop}
       {/* Content sits above the drifting 3D object (z 2); the section's
           opaque background stays below it. */}
       <div style={{ position: 'relative', zIndex: 3 }}>

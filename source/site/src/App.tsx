@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { PresetHashRouter } from '../../_shared/components/PresetHashRouter';
 import { applyPresetHashOnLoad } from '../../_shared/preset-site-routing';
 import { CognitraShell } from './components/CognitraShell';
-import { FooterObject3D } from './components/FooterObject3D';
 import { LegalSections } from './components/LegalSections';
 import { CasePage } from './pages/CasePage';
 import { ConnectPage } from './pages/ConnectPage';
@@ -31,7 +30,6 @@ export default function App() {
         }}
       />
       <LegalSections />
-      <FooterObject3D />
       <footer
         style={{
           position: 'relative',
