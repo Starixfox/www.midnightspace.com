@@ -72,6 +72,16 @@ body {
     padding: 16px 18px !important;
   }
 
+  /* The stacked mobile hero content is taller than the fixed-height
+     grey panel: let the panel grow so the buttons never spill onto the
+     video, and keep the title clear of the fixed navbar. */
+  .cognitra-hero-overlay {
+    height: auto !important;
+    min-height: 48%;
+    padding-top: 84px !important;
+    padding-bottom: 24px !important;
+  }
+
   .cognitra-nav-links {
     gap: 18px !important;
   }
@@ -145,8 +155,10 @@ body {
   }
 
   .cognitra-hero-overlay {
-    height: 56% !important;
-    padding-top: 64px !important;
+    height: auto !important;
+    min-height: 56%;
+    padding-top: 88px !important;
+    padding-bottom: 24px !important;
   }
 
   .cognitra-hero-buttons {

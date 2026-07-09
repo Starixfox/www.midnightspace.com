@@ -7,8 +7,9 @@ type InnerPageLayoutProps = {
   title: string;
   subtitle?: string;
   children: ReactNode;
-  /** Transparent variant: no section background, so the fixed
-      BackgroundVideo (light footage) shows through — text stays dark. */
+  /** Transparent variant: the fixed BackgroundVideo shows through a
+      subtle dark scrim, and the text flips to white — readable in both
+      the light and dark phases of the footage. */
   transparent?: boolean;
 };
 
@@ -17,7 +18,9 @@ export function InnerPageLayout({ counter, title, subtitle, children, transparen
     <section
       style={{
         position: 'relative',
-        background: transparent ? 'transparent' : '#C5C5C5',
+        background: transparent
+          ? 'linear-gradient(180deg, rgba(12,12,14,0.34), rgba(12,12,14,0.46))'
+          : '#C5C5C5',
         minHeight: '100vh',
         padding: '120px 32px 80px',
         overflow: 'hidden',
@@ -28,7 +31,7 @@ export function InnerPageLayout({ counter, title, subtitle, children, transparen
       <div style={{ position: 'relative', zIndex: 3 }}>
       <Parallax amount={26}>
       <FadeUp delay={0}>
-        <p style={{ fontSize: 11, letterSpacing: '0.08em', color: '#666', margin: '0 0 20px' }}>{counter}</p>
+        <p style={{ fontSize: 11, letterSpacing: '0.08em', color: transparent ? 'rgba(255,255,255,0.65)' : '#666', margin: '0 0 20px' }}>{counter}</p>
       </FadeUp>
       <FadeUp as="h1" delay={0.1}>
         <h1
@@ -38,7 +41,8 @@ export function InnerPageLayout({ counter, title, subtitle, children, transparen
             lineHeight: 1.05,
             letterSpacing: '-0.01em',
             textTransform: 'uppercase',
-            color: '#1a1a1a',
+            color: transparent ? '#fff' : '#1a1a1a',
+            textShadow: transparent ? '0 1px 14px rgba(0,0,0,0.35)' : undefined,
             maxWidth: 520,
             margin: 0,
           }}
@@ -53,7 +57,7 @@ export function InnerPageLayout({ counter, title, subtitle, children, transparen
               marginTop: 20,
               fontSize: 14,
               lineHeight: 1.65,
-              color: '#3a3a3a',
+              color: transparent ? 'rgba(255,255,255,0.88)' : '#3a3a3a',
               maxWidth: 420,
             }}
           >

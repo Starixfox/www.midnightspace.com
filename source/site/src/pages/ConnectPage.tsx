@@ -22,7 +22,8 @@ export function ConnectPage({ embedded = false }: ConnectPageProps) {
             alignItems: 'center',
             gap: 10,
             fontSize: 16,
-            color: '#1a1a1a',
+            color: '#fff',
+            textShadow: '0 1px 10px rgba(0,0,0,0.35)',
             textDecoration: 'none',
           }}
         >
