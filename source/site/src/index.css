@@ -67,6 +67,17 @@ body {
   opacity: 0.6;
 }
 
+/* Contact form fields sit on light glass — text and placeholders must
+   stay dark even though the surrounding section text is white. */
+.cognitra-contact-field {
+  color: #1a1a1a;
+}
+
+.cognitra-contact-field::placeholder {
+  color: rgba(26, 26, 26, 0.6);
+  opacity: 1;
+}
+
 @media (max-width: 900px) {
   .cognitra-nav {
     padding: 16px 18px !important;

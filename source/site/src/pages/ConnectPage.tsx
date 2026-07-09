@@ -42,6 +42,7 @@ export function ConnectPage({ embedded = false }: ConnectPageProps) {
             type="text"
             placeholder={copy.connect.formCompany}
             aria-label={copy.connect.formCompany}
+            className="cognitra-contact-field"
             style={{
               border: '1px solid rgba(0,0,0,0.18)',
               borderRadius: 9999,
@@ -56,6 +57,7 @@ export function ConnectPage({ embedded = false }: ConnectPageProps) {
             type="email"
             placeholder={copy.connect.formEmail}
             aria-label={copy.connect.formEmail}
+            className="cognitra-contact-field"
             style={{
               border: '1px solid rgba(0,0,0,0.18)',
               borderRadius: 9999,
@@ -69,6 +71,7 @@ export function ConnectPage({ embedded = false }: ConnectPageProps) {
           <textarea
             placeholder={copy.connect.formMessage}
             aria-label={copy.connect.formMessage}
+            className="cognitra-contact-field"
             rows={4}
             style={{
               border: '1px solid rgba(0,0,0,0.18)',
