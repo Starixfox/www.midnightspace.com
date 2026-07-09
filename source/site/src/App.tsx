@@ -3,6 +3,7 @@ import { PresetHashRouter } from '../../_shared/components/PresetHashRouter';
 import { applyPresetHashOnLoad } from '../../_shared/preset-site-routing';
 import { CognitraShell } from './components/CognitraShell';
 import { LegalSections } from './components/LegalSections';
+import { LanguageProvider, useCopy } from './i18n';
 import { CasePage } from './pages/CasePage';
 import { ConnectPage } from './pages/ConnectPage';
 import { CrewPage } from './pages/CrewPage';
@@ -11,7 +12,9 @@ import { OfferingPage } from './pages/OfferingPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { RatesPage } from './pages/RatesPage';
 
-export default function App() {
+function AppInner() {
+  const copy = useCopy();
+
   useEffect(() => {
     applyPresetHashOnLoad();
   }, []);
@@ -42,8 +45,16 @@ export default function App() {
           letterSpacing: '0.06em',
         }}
       >
-        © 2026 MIDNIGHT SPACE · OOST-VLAANDEREN
+        {copy.footer}
       </footer>
     </CognitraShell>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AppInner />
+    </LanguageProvider>
   );
 }

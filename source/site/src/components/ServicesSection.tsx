@@ -7,18 +7,9 @@ import {
   type MotionValue,
 } from 'framer-motion';
 import type { ReactNode } from 'react';
-import { SERVICE_CARDS } from '../constants';
+import { CASE_IMAGES, SERVICE_VIDEOS } from '../constants';
 import { FadeUp } from './FadeUp';
-
-const HEADING_WORDS = 'DIT IS WAT IK VOOR JE MAAK'.split(' ');
-
-/* Example mockups revealed while the section is pinned — own concept
-   studies, one per service card. */
-const EXAMPLES = [
-  { image: './media/debeule-hero.webp', label: 'Conceptstudie — Autoschadebedrijf De Beule, Zele' },
-  { image: './media/michiels-hero.webp', label: 'Conceptstudie — Schrijnwerkerij Michiels, Zele' },
-  { image: './media/jimmys-hero.webp', label: "Conceptstudie — Jimmy's Classic Cars, Buggenhout" },
-] as const;
+import { useCopy } from '../i18n';
 
 /* Each card gets its own scroll window inside the pinned range:
    the shape video fades out exactly while its example fades in. */
@@ -34,6 +25,8 @@ type SwapMediaProps = {
 };
 
 function SwapMedia({ video, idx, progress }: SwapMediaProps) {
+  const copy = useCopy();
+  const label = copy.services.exampleLabels[idx];
   const [start, end] = phaseWindow(idx);
   const videoOpacity = useTransform(progress, [start, end], [1, 0]);
   const imageOpacity = useTransform(progress, [start, end], [0, 1]);
@@ -58,8 +51,8 @@ function SwapMedia({ video, idx, progress }: SwapMediaProps) {
         }}
       />
       <motion.img
-        src={EXAMPLES[idx].image}
-        alt={EXAMPLES[idx].label}
+        src={CASE_IMAGES[idx]}
+        alt={label}
         style={{
           position: 'absolute',
           inset: 0,
@@ -86,7 +79,7 @@ function SwapMedia({ video, idx, progress }: SwapMediaProps) {
           opacity: labelOpacity,
         }}
       >
-        {EXAMPLES[idx].label}
+        {label}
       </motion.span>
     </div>
   );
@@ -145,6 +138,8 @@ function CardShell({ title, text, children }: CardShellProps) {
 }
 
 function SectionHead({ compact }: { compact?: boolean }) {
+  const copy = useCopy();
+  const headingWords = copy.services.heading.split(' ');
   return (
     <div style={{ position: 'relative', zIndex: 3 }}>
       <FadeUp delay={0}>
@@ -172,7 +167,7 @@ function SectionHead({ compact }: { compact?: boolean }) {
               margin: 0,
             }}
           >
-            {HEADING_WORDS.map((word, i) => (
+            {headingWords.map((word, i) => (
               <FadeUp key={word + i} as="span" delay={0.1 + i * 0.08} y={28}>
                 <span>{word}</span>
               </FadeUp>
@@ -182,8 +177,7 @@ function SectionHead({ compact }: { compact?: boolean }) {
         <div className="cognitra-services-head-col" style={{ flex: 1, paddingTop: 8 }}>
           <FadeUp as="p" delay={0.25}>
             <p style={{ fontSize: 14, lineHeight: 1.65, color: '#3a3a3a', maxWidth: 320, margin: 0 }}>
-              Websites voor zelfstandigen en lokale bedrijven — van eerste schets tot lancering,
-              door één persoon. Scroll verder en zie de voorbeelden verschijnen.
+              {copy.services.sub}
             </p>
           </FadeUp>
         </div>
@@ -193,6 +187,8 @@ function SectionHead({ compact }: { compact?: boolean }) {
 }
 
 export function ServicesSection() {
+  const copy = useCopy();
+  const cards = copy.services.cards;
   const wrapRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const [isNarrow, setIsNarrow] = useState(false);
@@ -233,13 +229,13 @@ export function ServicesSection() {
           className="cognitra-cards-grid"
           style={{ position: 'relative', zIndex: 3, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, gridAutoRows: '1fr' }}
         >
-          {SERVICE_CARDS.map((card, idx) => (
+          {cards.map((card, idx) => (
             <FadeUp key={card.title} delay={0.3 + idx * 0.12}>
               <CardShell title={card.title} text={card.text}>
                 <div style={{ width: '100%', aspectRatio: '4/3', position: 'relative', overflow: 'hidden' }}>
                   <img
-                    src={EXAMPLES[idx].image}
-                    alt={EXAMPLES[idx].label}
+                    src={CASE_IMAGES[idx]}
+                    alt={copy.services.exampleLabels[idx]}
                     loading="lazy"
                     style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
                   />
@@ -252,7 +248,7 @@ export function ServicesSection() {
                       fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase',
                     }}
                   >
-                    {EXAMPLES[idx].label}
+                    {copy.services.exampleLabels[idx]}
                   </span>
                 </div>
               </CardShell>
@@ -287,14 +283,14 @@ export function ServicesSection() {
           className="cognitra-cards-grid"
           style={{ position: 'relative', zIndex: 3, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, gridAutoRows: '1fr' }}
         >
-          {SERVICE_CARDS.map((card, idx) => (
+          {cards.map((card, idx) => (
             <CardShell key={card.title} title={card.title} text={card.text}>
-              <SwapMedia video={card.video} idx={idx} progress={scrollYProgress} />
+              <SwapMedia video={SERVICE_VIDEOS[idx]} idx={idx} progress={scrollYProgress} />
             </CardShell>
           ))}
         </div>
         <div style={{ position: 'relative', zIndex: 3, display: 'flex', gap: 8, justifyContent: 'center', marginTop: 22 }}>
-          {SERVICE_CARDS.map((_, idx) => (
+          {cards.map((_, idx) => (
             <PhaseDot key={idx} idx={idx} progress={scrollYProgress} />
           ))}
         </div>

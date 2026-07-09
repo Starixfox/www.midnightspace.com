@@ -1,18 +1,20 @@
-import { SERVICE_CARDS } from '../constants';
+import { SERVICE_VIDEOS } from '../constants';
 import { FadeUp } from '../components/FadeUp';
 import { InnerPageLayout } from '../components/InnerPageLayout';
 import { Parallax } from '../components/Parallax';
+import { useCopy } from '../i18n';
 
 type OfferingPageProps = {
   embedded?: boolean;
 };
 
 export function OfferingPage({ embedded = false }: OfferingPageProps) {
+  const copy = useCopy();
   const content = (
     <InnerPageLayout
       counter="003 / 005"
-      title="Explore what we offer"
-      subtitle="End-to-end AI automation — advisory, engineering, and process design under one roof."
+      title={copy.services.pageTitle}
+      subtitle={copy.services.pageSubtitle}
     >
       <div
         style={{
@@ -21,7 +23,7 @@ export function OfferingPage({ embedded = false }: OfferingPageProps) {
           gap: 20,
         }}
       >
-        {SERVICE_CARDS.map((card, idx) => (
+        {copy.services.cards.map((card, idx) => (
           <Parallax key={card.title} amount={idx % 2 === 0 ? 24 : -16}>
           <FadeUp delay={0.2 + idx * 0.1}>
             <article
@@ -40,7 +42,7 @@ export function OfferingPage({ embedded = false }: OfferingPageProps) {
                   muted
                   loop
                   playsInline
-                  src={card.video}
+                  src={SERVICE_VIDEOS[idx]}
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>

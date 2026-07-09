@@ -1,18 +1,19 @@
-import { CREW } from '../constants';
 import { FadeUp } from '../components/FadeUp';
 import { InnerPageLayout } from '../components/InnerPageLayout';
 import { Parallax } from '../components/Parallax';
+import { useCopy } from '../i18n';
 
 type CrewPageProps = {
   embedded?: boolean;
 };
 
 export function CrewPage({ embedded = false }: CrewPageProps) {
+  const copy = useCopy();
   const content = (
     <InnerPageLayout
       counter="002 / 005"
-      title="Wie er achter zit"
-      subtitle="Een kleine webstudio uit Oost-Vlaanderen. Je vindt hier geen klantenlogo’s of sterren — de studio is jong, en ik verzin er liever geen."
+      title={copy.crew.title}
+      subtitle={copy.crew.subtitle}
     >
       <div
         style={{
@@ -21,7 +22,7 @@ export function CrewPage({ embedded = false }: CrewPageProps) {
           gap: 16,
         }}
       >
-        {CREW.map((member, idx) => (
+        {copy.crew.members.map((member, idx) => (
           <Parallax key={member.name} amount={idx % 2 === 0 ? 22 : -14}>
           <FadeUp delay={0.1 + idx * 0.08}>
             <div

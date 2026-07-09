@@ -1,17 +1,19 @@
 import { Mail } from 'lucide-react';
 import { FadeUp } from '../components/FadeUp';
 import { InnerPageLayout } from '../components/InnerPageLayout';
+import { useCopy } from '../i18n';
 
 type ConnectPageProps = {
   embedded?: boolean;
 };
 
 export function ConnectPage({ embedded = false }: ConnectPageProps) {
+  const copy = useCopy();
   const content = (
     <InnerPageLayout
       counter="005 / 005"
-      title="Connect"
-      subtitle="Vertel over je zaak — alles staat zwart op wit, en je beslist in je eigen tempo."
+      title={copy.connect.title}
+      subtitle={copy.connect.subtitle}
       transparent
     >
       <FadeUp delay={0.2}>
@@ -38,8 +40,8 @@ export function ConnectPage({ embedded = false }: ConnectPageProps) {
         >
           <input
             type="text"
-            placeholder="Company"
-            aria-label="Company"
+            placeholder={copy.connect.formCompany}
+            aria-label={copy.connect.formCompany}
             style={{
               border: '1px solid rgba(0,0,0,0.18)',
               borderRadius: 9999,
@@ -52,8 +54,8 @@ export function ConnectPage({ embedded = false }: ConnectPageProps) {
           />
           <input
             type="email"
-            placeholder="Work email"
-            aria-label="Work email"
+            placeholder={copy.connect.formEmail}
+            aria-label={copy.connect.formEmail}
             style={{
               border: '1px solid rgba(0,0,0,0.18)',
               borderRadius: 9999,
@@ -65,8 +67,8 @@ export function ConnectPage({ embedded = false }: ConnectPageProps) {
             }}
           />
           <textarea
-            placeholder="What should we automate?"
-            aria-label="Message"
+            placeholder={copy.connect.formMessage}
+            aria-label={copy.connect.formMessage}
             rows={4}
             style={{
               border: '1px solid rgba(0,0,0,0.18)',
@@ -80,7 +82,7 @@ export function ConnectPage({ embedded = false }: ConnectPageProps) {
             }}
           />
           <button type="submit" className="btn-cognitra-primary" style={{ alignSelf: 'flex-start' }}>
-            SEND MESSAGE
+            {copy.connect.formSend}
           </button>
         </form>
       </FadeUp>

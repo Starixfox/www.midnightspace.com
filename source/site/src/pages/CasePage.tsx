@@ -1,22 +1,24 @@
 import { motion } from 'framer-motion';
-import { CASE_STUDIES } from '../constants';
+import { CASE_IMAGES } from '../constants';
 import { FadeUp } from '../components/FadeUp';
 import { InnerPageLayout } from '../components/InnerPageLayout';
 import { Parallax } from '../components/Parallax';
+import { useCopy } from '../i18n';
 
 type CasePageProps = {
   embedded?: boolean;
 };
 
 export function CasePage({ embedded = false }: CasePageProps) {
+  const copy = useCopy();
   const content = (
     <InnerPageLayout
       counter="004 / 005"
-      title="Conceptstudies, eerst gemaakt"
-      subtitle="Elk ontwerp hieronder werd eerst gemaakt en dan pas voorgesteld — zo werk ik. Eigen beeldmateriaal van de zaak, eerlijk gelabeld."
+      title={copy.cases.title}
+      subtitle={copy.cases.subtitle}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 640 }}>
-        {CASE_STUDIES.map((item, idx) => (
+        {copy.cases.items.map((item, idx) => (
           <Parallax key={item.client} amount={idx % 2 === 0 ? 24 : -16}>
           <FadeUp delay={0.15 + idx * 0.1}>
             <motion.div
@@ -33,7 +35,7 @@ export function CasePage({ embedded = false }: CasePageProps) {
             >
               <div style={{ width: '100%', aspectRatio: '21/9', overflow: 'hidden' }}>
                 <motion.img
-                  src={item.image}
+                  src={CASE_IMAGES[idx]}
                   alt={item.client}
                   loading="lazy"
                   whileHover={{ scale: 1.04 }}
@@ -50,7 +52,7 @@ export function CasePage({ embedded = false }: CasePageProps) {
                     color: '#666',
                   }}
                 >
-                  {item.tag}
+                  {copy.cases.tag}
                 </span>
                 <h3 style={{ fontSize: 18, fontWeight: 600, color: '#1a1a1a', margin: '8px 0 6px' }}>
                   {item.client}

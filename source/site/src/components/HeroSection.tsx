@@ -2,8 +2,10 @@ import type { MouseEvent } from 'react';
 import { navigateToSection } from '../../../_shared/preset-site-routing';
 import { FadeUp } from './FadeUp';
 import { Parallax } from './Parallax';
+import { useCopy } from '../i18n';
 
 export function HeroSection() {
+  const copy = useCopy();
   const cta = (sectionId: string) => (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     navigateToSection(sectionId);
@@ -61,7 +63,7 @@ export function HeroSection() {
                       whiteSpace: 'pre-line',
                     }}
                   >
-                    JE ZAAK GROEIDE.{'\n'}JE WEBSITE BLEEF STAAN.
+                    {copy.hero.title}
                   </h1>
                 </FadeUp>
               </Parallax>
@@ -93,17 +95,17 @@ export function HeroSection() {
                       margin: 0,
                     }}
                   >
-                    Midnight Space herbouwt verouderde websites voor zaken in Oost-Vlaanderen — vanaf nul getekend, geen sjablonen.
+                    {copy.hero.intro}
                   </p>
                 </FadeUp>
               </Parallax>
               <FadeUp delay={0.4}>
                 <div className="cognitra-hero-buttons" style={{ display: 'flex', gap: 10 }}>
                   <button type="button" className="btn-cognitra-primary" onClick={cta('connect')}>
-                    VRAAG JE PROEFONTWERP
+                    {copy.hero.ctaPrimary}
                   </button>
                   <button type="button" className="btn-cognitra-secondary" onClick={cta('case')}>
-                    BEKIJK HET WERK
+                    {copy.hero.ctaSecondary}
                   </button>
                 </div>
               </FadeUp>
@@ -132,7 +134,7 @@ export function HeroSection() {
               margin: 0,
             }}
           >
-            Eerst zien, dan beslissen: je krijgt een gratis proefontwerp van je homepage, en je beslist pas daarna. Geen telefoontjes, geen verplichtingen — één e-mail.
+            {copy.hero.bottom}
           </p>
         </Parallax>
       </FadeUp>

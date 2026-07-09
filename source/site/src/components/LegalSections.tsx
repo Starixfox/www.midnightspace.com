@@ -1,4 +1,7 @@
+import { useCopy } from '../i18n';
+
 export function LegalSections() {
+  const copy = useCopy();
   /* Transparent windows onto the fixed BackgroundVideo, so the closing
      stretch of the page shows the video through a subtle dark scrim —
      white text stays readable in every phase of the footage. */
@@ -24,10 +27,10 @@ export function LegalSections() {
               margin: 0,
             }}
           >
-            Privacy Policy
+            {copy.legal.privacyTitle}
           </h2>
           <p style={{ marginTop: 16, fontSize: 14, lineHeight: 1.65, color: 'rgba(255,255,255,0.88)', maxWidth: 560 }}>
-            Midnight Space bewaart alleen wat je zelf mailt: je bericht en je contactgegevens. Niets wordt gedeeld of doorverkocht. Vragen? Mail j.guzman@midnightspaceconsultancy.com.
+            {copy.legal.privacyText}
           </p>
         </div>
       </section>
@@ -51,10 +54,10 @@ export function LegalSections() {
               margin: 0,
             }}
           >
-            Terms of Service
+            {copy.legal.termsTitle}
           </h2>
           <p style={{ marginTop: 16, fontSize: 14, lineHeight: 1.65, color: 'rgba(255,255,255,0.88)', maxWidth: 560 }}>
-            Een proefontwerp is gratis en vrijblijvend. Je betaalt pas na akkoord over een volledige website. Alles verloopt per e-mail — zwart op wit, in je eigen tempo.
+            {copy.legal.termsText}
           </p>
         </div>
       </section>

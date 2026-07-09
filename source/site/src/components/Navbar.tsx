@@ -6,7 +6,7 @@ import {
   sectionHref,
 } from '../../../_shared/preset-site-routing';
 import { FadeUp } from './FadeUp';
-import { NAV_CENTER, NAV_RIGHT } from '../routes';
+import { useCopy, useLang, type Lang } from '../i18n';
 
 function scrollToSectionFromNav(sectionId: string) {
   const goHomeFirst = getPresetRoutePath() !== '';
@@ -24,7 +24,40 @@ function scrollToSectionFromNav(sectionId: string) {
   navigateToSection(sectionId);
 }
 
+function LangToggle() {
+  const { lang, setLang } = useLang();
+  const option = (l: Lang) => (
+    <button
+      type="button"
+      onClick={() => setLang(l)}
+      aria-pressed={lang === l}
+      className="cognitra-nav-link"
+      style={{
+        fontSize: 11,
+        letterSpacing: '0.06em',
+        color: '#1a1a1a',
+        fontWeight: lang === l ? 700 : 400,
+        opacity: lang === l ? 1 : 0.45,
+        background: 'none',
+        border: 'none',
+        padding: 0,
+        cursor: 'pointer',
+      }}
+    >
+      {l.toUpperCase()}
+    </button>
+  );
+  return (
+    <span aria-label="Taal / Language" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+      {option('nl')}
+      <span aria-hidden style={{ fontSize: 11, color: '#1a1a1a', opacity: 0.35 }}>/</span>
+      {option('en')}
+    </span>
+  );
+}
+
 export function Navbar() {
+  const copy = useCopy();
   const navClick = (sectionId: string) => (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     scrollToSectionFromNav(sectionId);
@@ -69,7 +102,7 @@ export function Navbar() {
         className="cognitra-nav-links hidden sm:flex"
         style={{ gap: 48, alignItems: 'center' }}
       >
-        {NAV_CENTER.map((link, i) => (
+        {copy.nav.center.map((link, i) => (
           <FadeUp key={link.section} delay={0.05 + i * 0.05}>
             <a
               href={sectionHref(link.section)}
@@ -89,28 +122,33 @@ export function Navbar() {
         ))}
       </div>
 
-      <div
-        className="cognitra-nav-links cognitra-nav-links-secondary flex"
-        style={{ gap: 48, alignItems: 'center' }}
-      >
-        {NAV_RIGHT.map((link, i) => (
-          <FadeUp key={link.section} delay={0.3 + i * 0.05}>
-            <a
-              href={sectionHref(link.section)}
-              onClick={navClick(link.section)}
-              className="cognitra-nav-link"
-              style={{
-                fontSize: 11,
-                letterSpacing: '0.06em',
-                color: '#1a1a1a',
-                fontWeight: 400,
-                textDecoration: 'none',
-              }}
-            >
-              {link.label}
-            </a>
-          </FadeUp>
-        ))}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+        <div
+          className="cognitra-nav-links cognitra-nav-links-secondary flex"
+          style={{ gap: 48, alignItems: 'center' }}
+        >
+          {copy.nav.right.map((link, i) => (
+            <FadeUp key={link.section} delay={0.3 + i * 0.05}>
+              <a
+                href={sectionHref(link.section)}
+                onClick={navClick(link.section)}
+                className="cognitra-nav-link"
+                style={{
+                  fontSize: 11,
+                  letterSpacing: '0.06em',
+                  color: '#1a1a1a',
+                  fontWeight: 400,
+                  textDecoration: 'none',
+                }}
+              >
+                {link.label}
+              </a>
+            </FadeUp>
+          ))}
+        </div>
+        <FadeUp delay={0.4}>
+          <LangToggle />
+        </FadeUp>
       </div>
     </nav>
   );

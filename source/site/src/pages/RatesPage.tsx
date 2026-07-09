@@ -1,19 +1,20 @@
-import { RATE_TIERS } from '../constants';
 import { FadeUp } from '../components/FadeUp';
 import { InnerPageLayout } from '../components/InnerPageLayout';
 import { Parallax } from '../components/Parallax';
 import { navigateToRoute } from '../../../_shared/preset-site-routing';
+import { useCopy } from '../i18n';
 
 type RatesPageProps = {
   embedded?: boolean;
 };
 
 export function RatesPage({ embedded = false }: RatesPageProps) {
+  const copy = useCopy();
   const content = (
     <InnerPageLayout
       counter="005 / 005"
-      title="Hoe het werkt"
-      subtitle="Geen offerte vol beloftes: het eerste ontwerp bestaat al voor jij iets beslist."
+      title={copy.rates.title}
+      subtitle={copy.rates.subtitle}
     >
       <div
         style={{
@@ -22,8 +23,8 @@ export function RatesPage({ embedded = false }: RatesPageProps) {
           gap: 20,
         }}
       >
-        {RATE_TIERS.map((tier, idx) => {
-          const highlighted = 'highlight' in tier && tier.highlight;
+        {copy.rates.tiers.map((tier, idx) => {
+          const highlighted = !!tier.highlight;
           return (
           <Parallax key={tier.name} amount={idx % 2 === 0 ? 30 : -18}>
           <FadeUp delay={0.15 + idx * 0.1}>
@@ -61,7 +62,7 @@ export function RatesPage({ embedded = false }: RatesPageProps) {
           style={{ marginTop: 32 }}
           onClick={() => navigateToRoute('connect')}
         >
-          VRAAG JE PROEFONTWERP
+          {copy.rates.cta}
         </button>
       </FadeUp>
     </InnerPageLayout>

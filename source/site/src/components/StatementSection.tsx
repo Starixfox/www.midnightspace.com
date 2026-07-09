@@ -1,9 +1,10 @@
 import { FadeUp } from './FadeUp';
 import { Parallax } from './Parallax';
-
-const STATEMENT_WORDS = 'EERST ZIEN. DAN BESLISSEN. ZO SIMPEL IS HET.'.split(' ');
+import { useCopy } from '../i18n';
 
 export function StatementSection() {
+  const copy = useCopy();
+  const words = copy.statement.title.split(' ');
   return (
     <section
       className="cognitra-section-pad"
@@ -41,7 +42,7 @@ export function StatementSection() {
             margin: 0,
           }}
         >
-          {STATEMENT_WORDS.map((word, i) => (
+          {words.map((word, i) => (
             <FadeUp key={word + i} as="span" delay={0.15 + i * 0.08} y={32}>
               <span>{word}</span>
             </FadeUp>
@@ -57,7 +58,7 @@ export function StatementSection() {
               maxWidth: 260,
             }}
           >
-            We provide all-in-one AI automation services in one place.
+            {copy.statement.sub}
           </p>
         </FadeUp>
       </Parallax>
