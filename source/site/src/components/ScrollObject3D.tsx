@@ -55,8 +55,8 @@ export function ScrollObject3D() {
       // On mobile the object lives in the bottom band of the screen so it
       // never blocks the content the visitor is reading.
       top: isMobile ? '84%' : '50%',
-      width: isMobile ? 'min(34vh, 58vw)' : 'min(93vh, 87vw)',
-      height: isMobile ? 'min(34vh, 58vw)' : 'min(93vh, 87vw)',
+      width: isMobile ? 'min(68vh, 116vw)' : 'min(93vh, 87vw)',
+      height: isMobile ? 'min(68vh, 116vw)' : 'min(93vh, 87vw)',
       transform: 'translate(-50%, -50%)',
       transformOrigin: 'center center',
       opacity: '0',
