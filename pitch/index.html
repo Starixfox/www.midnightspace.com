@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Pitch-overzicht — Midnight Space</title>
+<style>
+  :root { --ink:#1a1a1a; --canvas:#C5C5C5; --paper:#fff; --muted:#666; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#e8e8e8; color:var(--ink);
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+  header { background:var(--canvas); border-bottom:1px solid rgba(0,0,0,.18); padding:28px 24px; }
+  header h1 { margin:0; font-size:20px; letter-spacing:.12em; text-transform:uppercase; }
+  header p { margin:8px 0 0; color:var(--muted); font-size:13px; max-width:640px; line-height:1.6; }
+  .wrap { max-width:1040px; margin:0 auto; padding:24px; }
+  nav.jump { display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 8px; }
+  nav.jump a { font-size:11px; letter-spacing:.04em; text-decoration:none; color:var(--ink);
+    background:var(--paper); border:1px solid rgba(0,0,0,.18); border-radius:999px; padding:6px 12px; }
+  nav.jump a:hover { background:var(--ink); color:#fff; }
+  article { background:var(--paper); border:1px solid rgba(0,0,0,.18); border-radius:16px;
+    margin:22px 0; overflow:hidden; }
+  .head { display:flex; flex-wrap:wrap; align-items:baseline; gap:12px; padding:20px 24px;
+    border-bottom:1px solid rgba(0,0,0,.1); }
+  .head .n { font-size:12px; color:var(--muted); letter-spacing:.08em; }
+  .head h2 { margin:0; font-size:19px; }
+  .head a.mail { margin-left:auto; font-size:13px; color:#0a58ca; text-decoration:none; }
+  .shots { display:grid; grid-template-columns:1fr 300px; gap:18px; padding:22px 24px; }
+  .shots .full img, .shots .mob img { width:100%; height:auto; display:block;
+    border:1px solid rgba(0,0,0,.14); border-radius:8px; }
+  .lbl { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+    margin:0 0 6px; }
+  .stack > div + div { margin-top:16px; }
+  @media (max-width:760px){ .shots{ grid-template-columns:1fr; } }
+  footer { text-align:center; color:var(--muted); font-size:12px; padding:40px 24px 60px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Pitch-overzicht</h1>
+  <p>Interne review van de 10 proefontwerpen. Elke kaart toont de volledige pagina (links) en de mobiele weergave (rechts), met het e-mailadres waar de pitch naartoe gaat. Enkel voor Jordan — niet gedeeld, niet geïndexeerd.</p>
+</header>
+<div class="wrap">
+  <nav class="jump" id="jump"></nav>
+  <div id="cards"></div>
+</div>
+<footer>Midnight Space · Conceptontwerpen — ter illustratie</footer>
+<script>
+  const items = [
+    { slug:'verhoye', name:'Verhoye — platte daken & zinkwerken', mail:'info@verhoye.eu' },
+    { slug:'henauw', name:'Elektriciteitswerken Peter Henauw', mail:'info@peterhenauw.be' },
+    { slug:'kmr', name:'KMR Verwarming & Sanitair', mail:'info@kmr-cv.be' },
+    { slug:'deproft', name:'Kristof De Proft — sanitair & verwarming', mail:'info@kristofdeproft.be' },
+    { slug:'vanbossuyt', name:'CV Van bossuyt', mail:'cv.vanbossuyt@hotmail.com' },
+    { slug:'dekoster', name:'De Koster Technics', mail:'info@verwarmingdekoster.be' },
+    { slug:'norkan', name:'Norkan nv — loodgieter', mail:'norkan@telenet.be' },
+    { slug:'snoeck', name:'Michaël Snoeck Sanitair & Verwarming', mail:'info.michaelsnoeck@gmail.com' },
+    { slug:'multiinstallatie', name:'Multi Installatie Techniek', mail:'multiinstallatietechniek@outlook.com' },
+    { slug:'leeman', name:'Verwarming & Sanitair Jonas Leeman', mail:'info@jonasleeman.be' },
+  ];
+  const jump = document.getElementById('jump');
+  const cards = document.getElementById('cards');
+  items.forEach((it, i) => {
+    const num = String(i+1).padStart(2,'0');
+    const a = document.createElement('a'); a.href = '#'+it.slug; a.textContent = num+' '+it.slug; jump.appendChild(a);
+    const art = document.createElement('article'); art.id = it.slug;
+    art.innerHTML =
+      '<div class="head"><span class="n">'+num+' / 10</span><h2>'+it.name+'</h2>'+
+      '<a class="mail" href="mailto:'+it.mail+'">'+it.mail+'</a></div>'+
+      '<div class="shots">'+
+        '<div class="full stack">'+
+          '<div><p class="lbl">Bovenkant (hero)</p><img loading="lazy" src="'+it.slug+'/hero.jpg" alt="hero"></div>'+
+          '<div><p class="lbl">Volledige pagina</p><img loading="lazy" src="'+it.slug+'/volledig.jpg" alt="volledig"></div>'+
+        '</div>'+
+        '<div class="mob"><p class="lbl">Smartphone</p><img loading="lazy" src="'+it.slug+'/mobiel.jpg" alt="mobiel"></div>'+
+      '</div>';
+    cards.appendChild(art);
+  });
+</script>
+</body>
+</html>
